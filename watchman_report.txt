@@ -1,0 +1,35 @@
+-== Watchman Report ==- 
+
+-== Missing 3 action(s) from 44 found in your config:
++--------------------------------+---------+--------------------------------------------------------------+
+| Action ID                      | State   | Location                                                     |
++--------------------------------+---------+--------------------------------------------------------------+
+| notify.mobile_app_             | missing | blueprints/automation/Blackshome/state-notifications-and-act |
+|                                |         | ions.yaml:1299,1356,1372,1388,1404,1430,1552,1609,1624,1639, |
+|                                |         | 1655,1681                                                    |
+| todo.add_item                  | missing | blueprints/automation/Blackshome/low-battery-notifications-  |
+|                                |         | and-actions.yaml:1015,1043                                   |
+| auto_backup.backup             | missing | blueprints/automation/jcwillox/automatic_backups.yaml:96,154 |
+|                                |         | ,194                                                         |
++--------------------------------+---------+--------------------------------------------------------------+
+
+-== Missing 5 entity(ies) from 122 found in your config:
++--------------------------------+---------+--------------------------------------------------------------+
+| Entity ID                      | State   | Location                                                     |
++--------------------------------+---------+--------------------------------------------------------------+
+| light.couch_lamp_right         | missing | automations.yaml:141                                         |
+| binary_sensor.hvac_hrv_minimum | missing | automations.yaml:1310                                        |
+| _runtime_trigger               |         |                                                              |
+| light.data                     | missing | blueprints/automation/Blackshome/sensor-light-add-on.yaml:12 |
+|                                |         | 33,1235,1237,1239,1241,1242,1244,1274,1276,1278,1280,1282,12 |
+|                                |         | 84,1285,1317,1319,1321,1323,1325,1327,1328                   |
+| notify.mobile_app_             | missing | blueprints/automation/Blackshome/state-notifications-and-act |
+|                                |         | ions.yaml:1299,1356,1372,1388,1404,1430,1552,1609,1624,1639, |
+|                                |         | 1655,1681                                                    |
+| todo.add_item                  | missing | blueprints/automation/Blackshome/low-battery-notifications-  |
+|                                |         | and-actions.yaml:1015,1043                                   |
++--------------------------------+---------+--------------------------------------------------------------+
+
+-== Report created on 21 Apr 2025 15:31:51
+-== Parsed 56 files in 10.78s., ignored 0 files 
+-== Generated in: 0.00s. Validated in: 0.00s.

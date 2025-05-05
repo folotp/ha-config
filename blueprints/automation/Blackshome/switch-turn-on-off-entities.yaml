@@ -1,0 +1,111 @@
+blueprint:
+  name: Switch - Turn ON & OFF Entities
+  description: "# \U0001F51B Switch - Turn ON & OFF Entities\n**Version: 1.3**\n\nLet
+    us know what you think of this blueprint and for community support including updates:
+    [Click Here](https://community.home-assistant.io/t/switch-turn-on-off-entities/481546)\n\n**The
+    Automation Process:**\n  - When you turn any switch ON it will turn ON the main
+    entity input.\n  - When you turn all the switches OFF it will turn OFF the main
+    entity input.\n  - You have the option to input an alternating entity that will
+    be the opposite state to the main entity.\n\n**NOTE** - The switch can be any
+    entity with an ON & OFF state.\n\nRequired = *\n\nNeed help? See our FAQ: [Click
+    Here](https://community.home-assistant.io/t/switch-turn-on-off-entities/481546/2?u=blacky)\n\n**If
+    you like my blueprints, and would like to show your support or just say thank
+    you?** [Click Here](https://www.paypal.com/donate/?hosted_button_id=WAZS3QSDTPGA8)
+    \U0001F642\n"
+  domain: automation
+  input:
+    switch:
+      name: Switch *
+      description: The switch that controls the entities.
+      selector:
+        entity:
+          multiple: true
+    main_entity:
+      name: Main Entity *
+      description: The main entity that will be turned ON when the switch is ON.
+      selector:
+        entity:
+          multiple: true
+    alternating_entity:
+      name: Alternating Entity (optional)
+      description: The alternating entity that will be the opposite state to the main
+        entity when the switch is ON.
+      default: []
+      selector:
+        entity:
+          multiple: true
+  source_url: https://gist.github.com/Blackshome/dbcd8ebfdd0350144fc1503fc0fa8112
+variables:
+  switch: !input switch
+  main_entity: !input main_entity
+  alternating_entity: !input alternating_entity
+trigger:
+- platform: state
+  entity_id: !input switch
+  from: 'off'
+  to: 'on'
+- platform: state
+  entity_id: !input switch
+  from: 'on'
+  to: 'off'
+  for:
+    milliseconds: 200
+action:
+- choose:
+  - alias: Check if any alternating entity are enter in
+    conditions:
+    - '{{ alternating_entity == [] }}'
+    sequence:
+    - choose:
+      - alias: Check if switch is on
+        conditions:
+        - condition: state
+          entity_id: !input switch
+          state: 'on'
+          match: any
+        sequence:
+        - alias: Turn ON the main entities
+          service: homeassistant.turn_on
+          target:
+            entity_id: !input main_entity
+      - alias: Check if switch is off
+        conditions:
+        - condition: state
+          entity_id: !input switch
+          state: 'off'
+        sequence:
+        - alias: Turn OFF the main entities
+          service: homeassistant.turn_off
+          target:
+            entity_id: !input main_entity
+  default:
+  - choose:
+    - alias: Check if switch is on
+      conditions:
+      - condition: state
+        entity_id: !input switch
+        state: 'on'
+        match: any
+      sequence:
+      - alias: Turn ON the main entities
+        service: homeassistant.turn_on
+        target:
+          entity_id: !input main_entity
+      - alias: Turn OFF the alternating entity entities
+        service: homeassistant.turn_off
+        target:
+          entity_id: !input alternating_entity
+    - alias: Check if switch is off
+      conditions:
+      - condition: state
+        entity_id: !input switch
+        state: 'off'
+      sequence:
+      - alias: Turn OFF the main entities
+        service: homeassistant.turn_off
+        target:
+          entity_id: !input main_entity
+      - alias: Turn ON the alternating entity entities
+        service: homeassistant.turn_on
+        target:
+          entity_id: !input alternating_entity

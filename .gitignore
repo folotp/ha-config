@@ -1,0 +1,14 @@
+# Ignore all .storage files by default
+.storage/*
+# But keep UI-configured files:
+!.storage/core.config_entries
+!.storage/core.entity_registry
+!.storage/lovelace.*
+!.storage/input_*.*
+
+# Exclude secrets, SSH artifacts, databases, logs
+secrets.yaml
+.homeassistant_ssh
+*.db
+home-assistant.log*
+*.log
