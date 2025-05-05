@@ -1,0 +1,79 @@
+blueprint:
+  name: PAF - Window-safe roller blind
+  description: >
+    Prevents a blind from closing while its window is open.
+  domain: automation
+  # Require Home Assistant 2025.4.0+ for full schema support
+  homeassistant:
+    min_version: 2025.4.0
+  author: Pierre-Andre Folot
+
+  input:
+    cover_entity:
+      name: Roller blind entity
+      description: Entity ID of the cover to protect
+      selector:
+        entity:
+          filter:
+            domain: cover # select any cover device
+
+    window_sensor:
+      name: Window contact sensor
+      description: Binary sensor that is 'on' when the window is open
+      selector:
+        entity:
+          filter:
+            domain: binary_sensor
+            device_class: window # restrict to window sensors
+
+mode: restart # restart overlapping runs
+max_exceeded: silent # suppress overflow warnings
+
+triggers:
+  - trigger: state
+    entity_id:
+      - !input cover_entity
+    attribute: current_position # blind movement
+    alias: Cover Position Changed
+    id: Cover_Position_Changed
+
+  - trigger: state
+    entity_id:
+      - !input window_sensor
+    to: "on" # window opened
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 1
+
+  - trigger: homeassistant
+    event: start # HA restart
+
+conditions:
+  - condition: state
+    entity_id: !input window_sensor
+    state: "on" # only if window is open
+
+actions:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id:
+              - Cover_Position_Changed
+        sequence:
+          - sequence:
+            - action: cover.stop_cover
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input cover_entity
+            - action: cover.open_cover # snap back open
+              metadata: {}
+              data: {}
+              target:
+                entity_id: !input cover_entity
+    default:
+      - action: cover.open_cover
+        target:
+          entity_id: !input cover_entity
+        data: {}

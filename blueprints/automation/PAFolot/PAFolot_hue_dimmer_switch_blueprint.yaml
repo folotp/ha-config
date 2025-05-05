@@ -1,0 +1,276 @@
+blueprint:
+  name: PAF - Philips Hue Dimmer Switch Blueprint
+  description: "Control lights with a Philips Hue Dimmer Switch (only RWL020 (US)
+    and RWL021 (EU), RWL022, the one that says 'hue' on the bottom, has a different
+    button layout.)
+    
+    This blueprint is an expanded version of sandervv's 'ZHA - Philips Hue Dimmer Switch Config - V2024.11.25', but this one exposes all button events. Original: https://gist.github.com/sandervv/f326ff3b2bcb945b5a9dc0bfb82e3308"
+  domain: automation
+  author: Pierre-Andre Folot
+  homeassistant:
+    min_version: 2024.6.0
+  input:
+    remote:
+      name: Philips Hue Dimmer Switch
+      description: Pick either RWL020 (US) or RWL021 (EU)
+      selector:
+        device:
+          filter:
+            - integration: zha
+              manufacturer: Philips
+          entity:
+            - domain: sensor
+              device_class: battery
+          multiple: false
+    button_on_section:
+      name: ON Button
+      icon: mdi:numeric-1-box-outline
+      input:
+        button_on_single_press:
+          name: ON button single press
+          description: Action to run on single ON button press.
+          default: []
+          selector:
+            action: {}
+        button_on_double_press:
+          name: ON button double press
+          description: Action to run on double ON button press.
+          default: []
+          selector:
+            action: {}
+        button_on_triple_press:
+          name: ON button triple press
+          description: Action to run on triple ON button press.
+          default: []
+          selector:
+            action: {}
+        button_on_quadruple_press:
+          name: ON button quadruple press
+          description: Action to run on quadruple ON button press.
+          default: []
+          selector:
+            action: {}
+        button_on_quintuple_press:
+          name: ON button quintuple press
+          description: Action to run on quintuple ON button press.
+          default: []
+          selector:
+            action: {}
+        button_on_hold:
+          name: ON button hold
+          description: Action to run 'repeatedly' – ±0.8 sec – when holding the ON button. (Be carefull if also using long press.)
+          default: []
+          selector:
+            action: {}
+        button_on_long_press:
+          name: ON button long press
+          description: Action to run on a long ON button press. (Triggered when releasing a hold so be carefull if also using hold.)
+          default: []
+          selector:
+            action: {}
+    button_up_section:
+      name: UP Button
+      icon: mdi:numeric-2-box-outline
+      input:
+        button_up_single_press:
+          name: UP button single press
+          description: Action to run on single UP button press.
+          default: []
+          selector:
+            action: {}
+        button_up_double_press:
+          name: UP button double press
+          description: Action to run on double UP button press.
+          default: []
+          selector:
+            action: {}
+        button_up_triple_press:
+          name: UP button triple press
+          description: Action to run on triple UP button press.
+          default: []
+          selector:
+            action: {}
+        button_up_quadruple_press:
+          name: UP button quadruple press
+          description: Action to run on quadruple UP button press.
+          default: []
+          selector:
+            action: {}
+        button_up_quintuple_press:
+          name: UP button quintuple press
+          description: Action to run on quintuple UP button press.
+          default: []
+          selector:
+            action: {}
+        button_up_hold:
+          name: UP button hold
+          description: Action to run 'repeatedly' – ±0.8 sec – when holding the UP button. (Be carefull if also using long press.)
+          default: []
+          selector:
+            action: {}
+        button_up_long_press:
+          name: UP button long press
+          description: Action to run on a long UP button press. (Triggered when releasing a hold so be carefull if also using hold.)
+          default: []
+          selector:
+            action: {}
+    button_down_section:
+      name: DOWN Button
+      icon: mdi:numeric-3-box-outline
+      input:
+        button_down_single_press:
+          name: DOWN button single press
+          description: Action to run on single DOWN button press.
+          default: []
+          selector:
+            action: {}
+        button_down_double_press:
+          name: DOWN button double press
+          description: Action to run on double DOWN button press.
+          default: []
+          selector:
+            action: {}
+        button_down_triple_press:
+          name: DOWN button triple press
+          description: Action to run on triple DOWN button press.
+          default: []
+          selector:
+            action: {}
+        button_down_quadruple_press:
+          name: DOWN button quadruple press
+          description: Action to run on quadruple DOWN button press.
+          default: []
+          selector:
+            action: {}
+        button_down_quintuple_press:
+          name: DOWN button quintuple press
+          description: Action to run on quintuple DOWN button press.
+          default: []
+          selector:
+            action: {}
+        button_down_hold:
+          name: DOWN button hold
+          description: Action to run 'repeatedly' – ±0.8 sec – when holding the DOWN button. (Be carefull if also using long press.)
+          default: []
+          selector:
+            action: {}
+        button_down_long_press:
+          name: DOWN button long press
+          description: Action to run on a long DOWN button press. (Triggered when releasing a hold so be carefull if also using hold.)
+          default: []
+          selector:
+            action: {}
+    button_off_section:
+      name: OFF Button
+      icon: mdi:numeric-4-box-outline
+      input:
+        button_off_single_press:
+          name: OFF button single press
+          description: Action to run on single OFF button press.
+          default: []
+          selector:
+            action: {}
+        button_off_double_press:
+          name: OFF button double press
+          description: Action to run on double OFF button press.
+          default: []
+          selector:
+            action: {}
+        button_off_triple_press:
+          name: OFF button triple press
+          description: Action to run on triple OFF button press.
+          default: []
+          selector:
+            action: {}
+        button_off_quadruple_press:
+          name: OFF button quadruple press
+          description: Action to run on quadruple OFF button press.
+          default: []
+          selector:
+            action: {}
+        button_off_quintuple_press:
+          name: OFF button quintuple press
+          description: Action to run on quintuple OFF button press.
+          default: []
+          selector:
+            action: {}
+        button_off_hold:
+          name: OFF button hold
+          description: Action to run 'repeatedly' – ±0.8 sec – when holding the OFF button. (Be carefull if also using long press.)
+          default: []
+          selector:
+            action: {}
+        button_off_long_press:
+          name: OFF button long press
+          description: Action to run on a long OFF button press. (Triggered when releasing a hold so be carefull if also using hold.)
+          default: []
+          selector:
+            action: {}
+mode: parallel
+max_exceeded: silent
+triggers:
+  - trigger: event
+    event_type: zha_event
+    event_data:
+      device_id: !input remote
+      cluster_id: 64512
+variables:
+  command: '{{ trigger.event.data.command }}'
+actions:
+  - choose:
+    - conditions: '{{ command == ''on_press'' }}'
+      sequence: !input button_on_single_press
+    - conditions: '{{ command == ''on_double_press'' }}'
+      sequence: !input button_on_double_press
+    - conditions: '{{ command == ''on_triple_press'' }}'
+      sequence: !input button_on_triple_press
+    - conditions: '{{ command == ''on_quadruple_press'' }}'
+      sequence: !input button_on_quadruple_press
+    - conditions: '{{ command == ''on_quintuple_press'' }}'
+      sequence: !input button_on_quintuple_press
+    - conditions: '{{ command == ''on_hold'' }}'
+      sequence: !input button_on_hold
+    - conditions: '{{ command == ''on_long_release'' }}'
+      sequence: !input button_on_long_press
+    - conditions: '{{ command == ''up_press'' }}'
+      sequence: !input button_up_single_press
+    - conditions: '{{ command == ''up_double_press'' }}'
+      sequence: !input button_up_double_press
+    - conditions: '{{ command == ''up_triple_press'' }}'
+      sequence: !input button_up_triple_press
+    - conditions: '{{ command == ''up_quadruple_press'' }}'
+      sequence: !input button_up_quadruple_press
+    - conditions: '{{ command == ''up_quintuple_press'' }}'
+      sequence: !input button_up_quintuple_press
+    - conditions: '{{ command == ''up_hold'' }}'
+      sequence: !input button_up_hold
+    - conditions: '{{ command == ''up_long_release'' }}'
+      sequence: !input button_up_long_press
+    - conditions: '{{ command == ''down_press'' }}'
+      sequence: !input button_down_single_press
+    - conditions: '{{ command == ''down_double_press'' }}'
+      sequence: !input button_down_double_press
+    - conditions: '{{ command == ''down_triple_press'' }}'
+      sequence: !input button_down_triple_press
+    - conditions: '{{ command == ''down_quadruple_press'' }}'
+      sequence: !input button_down_quadruple_press
+    - conditions: '{{ command == ''down_quintuple_press'' }}'
+      sequence: !input button_down_quintuple_press
+    - conditions: '{{ command == ''down_hold'' }}'
+      sequence: !input button_down_hold
+    - conditions: '{{ command == ''down_long_release'' }}'
+      sequence: !input button_down_long_press
+    - conditions: '{{ command == ''off_press'' }}'
+      sequence: !input button_off_single_press
+    - conditions: '{{ command == ''off_double_press'' }}'
+      sequence: !input button_off_double_press
+    - conditions: '{{ command == ''off_triple_press'' }}'
+      sequence: !input button_off_triple_press
+    - conditions: '{{ command == ''off_quadruple_press'' }}'
+      sequence: !input button_off_quadruple_press
+    - conditions: '{{ command == ''off_quintuple_press'' }}'
+      sequence: !input button_off_quintuple_press
+    - conditions: '{{ command == ''off_hold'' }}'
+      sequence: !input button_off_hold
+    - conditions: '{{ command == ''off_long_release'' }}'
+      sequence: !input button_off_long_press

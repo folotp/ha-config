@@ -1,0 +1,128 @@
+ht_blind_reset:
+  alias: HT Blind Reset
+  sequence:
+  - action: button.press
+    metadata: {}
+    data: {}
+    target:
+      entity_id: button.adaptive_reset_manual_override_ht_blind
+  description: Reset home theater blind to calculated adaptive cover position.
+  icon: mdi:refresh-auto
+sleep_mode:
+  alias: Upstairs Sleep Mode
+  sequence:
+  - action: switch.turn_off
+    metadata: {}
+    data: {}
+    target:
+      label_id: adaptive_cover_toggle_switch
+  - choose:
+    - conditions: []
+      sequence: []
+      alias: Set house for sleep
+    - conditions: []
+      sequence: []
+      alias: Unset house from sleep
+  description: ''
+  fields: {}
+hrv:
+  alias: Run HRV 15 min
+  sequence:
+  - action: climate.set_fan_mode
+    metadata: {}
+    data:
+      fan_mode: 'on'
+    target:
+      device_id: 74b2e490499eba29d6e6edcb89e9f9e6
+    enabled: false
+  - action: fan.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: fan.hvac_hrv
+  - delay:
+      hours: 0
+      minutes: 15
+      seconds: 0
+      milliseconds: 0
+  - action: climate.set_fan_mode
+    metadata: {}
+    data:
+      fan_mode: auto
+    target:
+      device_id: 74b2e490499eba29d6e6edcb89e9f9e6
+    enabled: false
+  - action: fan.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: fan.hvac_hrv
+  description: Runs the HRV and fan for 15 minutes
+blind_automation_main_floor:
+  sequence:
+  - choose:
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: input_boolean.sleep_mode
+          state: 'on'
+        - condition: state
+          entity_id: input_boolean.circadian_mode
+          state: 'on'
+      sequence:
+      - action: cover.close_cover
+        metadata: {}
+        data: {}
+  alias: Blind Automation Main Floor
+  description: ''
+  fields: {}
+sync_two_lights:
+  alias: Sync lights
+  description: Mirrors one or many lights' brightness and color temperature to a source
+    light.
+  fields:
+    source_light:
+      name: Source Light Entity
+      description: Entity ID of the light to copy from
+      selector:
+        entity:
+          filter:
+          - domain: light
+      required: true
+    target_light:
+      description: Entity ID of the light to apply settings to
+      selector:
+        entity:
+          multiple: true
+          filter:
+          - domain: light
+      required: true
+      name: Target Light Entities
+  sequence:
+  - metadata: {}
+    data:
+      brightness: '{{ state_attr(source_light, ''brightness'') | default(0) | int
+        }}'
+      color_temp: '{{ state_attr(source_light, ''color_temp'') | default(0) | int
+        }}'
+      transition: 1
+    target:
+      entity_id: '{{ target_light }}'
+    action: light.turn_on
+blinds_bump_feedback:
+  fields:
+    entity_id:
+      description: Cover entity to bump
+  sequence:
+  - action: cover.close_cover
+    metadata: {}
+    data: {}
+    target:
+      entity_id: '{{ entity_id }}'
+  - delay: '00:00:00.5'
+  - action: cover.open_cover
+    metadata: {}
+    data: {}
+    target:
+      entity_id: '{{ entity_id }}'

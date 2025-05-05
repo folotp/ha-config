@@ -1,0 +1,499 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.kona_ev",
+  "data": {
+    "config": {
+      "views": [
+        {
+          "type": "sections",
+          "path": "",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "gauge",
+                  "entity": "sensor.kona_ev_battery_level",
+                  "needle": false,
+                  "severity": {
+                    "green": 80,
+                    "yellow": 40,
+                    "red": 0
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kona_ev_battery_level"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kona_car_battery_level"
+                },
+                {
+                  "type": "tile",
+                  "entity": "number.kona_charging_limit_ac"
+                },
+                {
+                  "type": "tile",
+                  "entity": "number.kona_charging_limit_dc"
+                },
+                {
+                  "type": "entities",
+                  "entities": [
+                    {
+                      "entity": "sensor.kona_estimated_charge_time_remaining"
+                    },
+                    {
+                      "entity": "sensor.kona_estimated_l1_charge_duration"
+                    },
+                    {
+                      "entity": "sensor.kona_estimated_l2_charge_duration"
+                    },
+                    {
+                      "entity": "sensor.kona_estimated_l3_charge_duration"
+                    }
+                  ],
+                  "show_header_toggle": false
+                }
+              ],
+              "title": "Recharge"
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.kona_air_conditioner"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kona_climate_temperature_setpoint"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.kona_defrost_rear_window"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.kona_steering_wheel_heater"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.kona_defrost_windshield"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kona_data"
+                },
+                {
+                  "show_name": false,
+                  "show_icon": true,
+                  "type": "button",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "kia_uvo.start_climate",
+                    "target": {},
+                    "data": {
+                      "duration": 10,
+                      "climate": true,
+                      "temperature": 23,
+                      "defrost": true,
+                      "heating": "4",
+                      "device_id": "61c287225759e9c5d6a34afd424fb587"
+                    }
+                  },
+                  "entity": "binary_sensor.kona_air_conditioner",
+                  "show_state": true,
+                  "hold_action": {
+                    "action": "perform-action",
+                    "perform_action": "kia_uvo.stop_climate",
+                    "target": {},
+                    "data": {
+                      "device_id": "61c287225759e9c5d6a34afd424fb587"
+                    }
+                  }
+                }
+              ],
+              "title": "Pre Conditioning"
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "map",
+                  "entities": [
+                    {
+                      "entity": "device_tracker.kona_location"
+                    }
+                  ],
+                  "theme_mode": "auto"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kona_geocoded_location",
+                  "layout_options": {
+                    "grid_columns": 4,
+                    "grid_rows": 1
+                  },
+                  "hide_state": false,
+                  "vertical": false,
+                  "show_entity_picture": false
+                },
+                {
+                  "type": "tile",
+                  "entity": "device_tracker.kona_location"
+                }
+              ],
+              "title": "Car Location"
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "sensor.kona_last_update_datetime",
+                  "icon_tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "kia_uvo.force_update",
+                    "target": {},
+                    "data": {
+                      "device_id": "61c287225759e9c5d6a34afd424fb587"
+                    }
+                  },
+                  "name": "Last Update",
+                  "hide_state": false,
+                  "vertical": false,
+                  "show_entity_picture": false
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.kona_tire_pressure_rear_left"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kona_data"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.kona_tire_pressure_rear_right"
+                },
+                {
+                  "type": "entities",
+                  "entities": [
+                    {
+                      "entity": "sensor.kona_odometer"
+                    },
+                    {
+                      "entity": "sensor.kona_service_odometer_last"
+                    },
+                    {
+                      "entity": "sensor.kona_service_odometer_next"
+                    }
+                  ],
+                  "layout_options": {
+                    "grid_columns": 4,
+                    "grid_rows": "auto"
+                  }
+                },
+                {
+                  "show_name": true,
+                  "show_icon": false,
+                  "type": "button",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "kia_uvo.update",
+                    "target": {},
+                    "data": {
+                      "device_id": "61c287225759e9c5d6a34afd424fb587"
+                    }
+                  },
+                  "name": "Update",
+                  "icon": "",
+                  "layout_options": {
+                    "grid_columns": 2,
+                    "grid_rows": 1
+                  },
+                  "entity": "sensor.kona_last_update_datetime"
+                },
+                {
+                  "show_name": true,
+                  "show_icon": false,
+                  "type": "button",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "kia_uvo.force_update",
+                    "target": {},
+                    "data": {
+                      "device_id": "61c287225759e9c5d6a34afd424fb587"
+                    }
+                  },
+                  "name": "Force Update",
+                  "icon": "",
+                  "entity": "sensor.kona_last_update_datetime",
+                  "layout_options": {
+                    "grid_columns": 2,
+                    "grid_rows": 1
+                  }
+                }
+              ],
+              "title": "Footer"
+            }
+          ],
+          "badges": [
+            {
+              "type": "entity",
+              "entity": "lock.kona_door_lock",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "lock.kona_door_lock",
+                  "state_not": "locked"
+                }
+              ],
+              "tap_action": {
+                "action": "perform-action",
+                "perform_action": "kia_uvo.lock",
+                "target": {},
+                "data": {
+                  "device_id": "61c287225759e9c5d6a34afd424fb587"
+                }
+              }
+            },
+            {
+              "type": "entity",
+              "entity": "sensor.kona_ev_battery_level"
+            },
+            {
+              "type": "entity",
+              "entity": "binary_sensor.kona_ev_battery_charger",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "binary_sensor.kona_ev_battery_charger",
+                  "state": "on"
+                }
+              ]
+            },
+            {
+              "type": "entity",
+              "entity": "binary_sensor.kona_charger_cable",
+              "visibility": [
+                {
+                  "condition": "and",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "binary_sensor.kona_ev_battery_charger",
+                      "state_not": "on"
+                    },
+                    {
+                      "condition": "state",
+                      "entity": "binary_sensor.kona_charger_cable",
+                      "state": "on"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "entity",
+              "entity": "binary_sensor.kona_engine",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "binary_sensor.kona_engine",
+                  "state": "on"
+                }
+              ]
+            },
+            {
+              "type": "entity",
+              "entity": "binary_sensor.kona_door_front_left",
+              "color": "red",
+              "name": "Front Driver Door",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "binary_sensor.kona_door_front_left",
+                  "state": "on"
+                }
+              ],
+              "state_content": [
+                "name",
+                "state"
+              ]
+            },
+            {
+              "type": "entity",
+              "entity": "binary_sensor.kona_door_front_right",
+              "name": "Front Passenger Door",
+              "color": "red",
+              "icon": "",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "binary_sensor.kona_door_front_right",
+                  "state": "on"
+                }
+              ],
+              "state_content": [
+                "name",
+                "state"
+              ]
+            },
+            {
+              "type": "entity",
+              "entity": "binary_sensor.kona_door_back_left",
+              "color": "red",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "binary_sensor.kona_door_back_left",
+                  "state": "on"
+                }
+              ],
+              "name": "Back Driver Side Door",
+              "state_content": [
+                "name",
+                "state"
+              ]
+            },
+            {
+              "type": "entity",
+              "entity": "binary_sensor.kona_door_back_right",
+              "color": "red",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "binary_sensor.kona_door_back_right",
+                  "state": "on"
+                }
+              ],
+              "name": "Back Passenger Side Door",
+              "state_content": [
+                "name",
+                "state"
+              ]
+            },
+            {
+              "type": "entity",
+              "entity": "binary_sensor.kona_hood",
+              "icon": "",
+              "color": "red",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "binary_sensor.kona_hood",
+                  "state": "on"
+                }
+              ],
+              "state_content": [
+                "name",
+                "state"
+              ]
+            },
+            {
+              "type": "entity",
+              "entity": "binary_sensor.kona_trunk",
+              "color": "red",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "binary_sensor.kona_trunk",
+                  "state": "on"
+                }
+              ],
+              "state_content": [
+                "name",
+                "state"
+              ]
+            },
+            {
+              "type": "entity",
+              "entity": "lock.kona_door_lock",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "lock.kona_door_lock",
+                  "state": "locked"
+                }
+              ],
+              "tap_action": {
+                "action": "perform-action",
+                "perform_action": "kia_uvo.unlock",
+                "target": {},
+                "data": {
+                  "device_id": "61c287225759e9c5d6a34afd424fb587"
+                }
+              }
+            },
+            {
+              "type": "entity",
+              "entity": "binary_sensor.kona_air_conditioner",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "binary_sensor.kona_air_conditioner",
+                  "state": "on"
+                }
+              ]
+            },
+            {
+              "type": "entity",
+              "entity": "binary_sensor.kona_defrost_windshield",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "binary_sensor.kona_defrost_windshield",
+                  "state": "on"
+                }
+              ]
+            },
+            {
+              "type": "entity",
+              "entity": "binary_sensor.kona_steering_wheel_heater",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "binary_sensor.kona_steering_wheel_heater",
+                  "state": "on"
+                }
+              ]
+            },
+            {
+              "type": "entity",
+              "entity": "binary_sensor.kona_defrost_rear_window",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "binary_sensor.kona_defrost_rear_window",
+                  "state": "on"
+                }
+              ],
+              "icon": ""
+            },
+            {
+              "type": "entity",
+              "entity": "binary_sensor.kona_tire_pressure_all",
+              "name": "Low Tire Pressure",
+              "color": "red",
+              "state_content": "name",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "binary_sensor.kona_tire_pressure_all",
+                  "state": "on"
+                }
+              ]
+            }
+          ],
+          "max_columns": 4,
+          "icon": "mdi:car-electric",
+          "title": "Kona EV",
+          "cards": []
+        }
+      ]
+    }
+  }
+}

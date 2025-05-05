@@ -1,0 +1,1922 @@
+- id: '1704990197453'
+  alias: System - Certificate renewal
+  description: Restart the Let's Encrypt add-on to renew certificates if they are
+    due.
+  triggers:
+  - at: 02:00:00
+    trigger: time
+  conditions: []
+  actions:
+  - metadata: {}
+    data:
+      addon: core_letsencrypt
+    action: hassio.addon_restart
+  mode: single
+- id: '1722599558985'
+  alias: Blinds Night Automation
+  description: ''
+  triggers:
+  - at: 07:30:00
+    id: Open Trigger
+    trigger: time
+  - at: '19:00:00'
+    id: Close 1
+    trigger: time
+  - at: '19:15:00'
+    id: Close 2
+    trigger: time
+  - at: '19:30:00'
+    id: Close Full
+    trigger: time
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - Open Trigger
+      sequence:
+      - metadata: {}
+        data: {}
+        action: cover.open_cover
+        target:
+          device_id:
+          - 010281c25822988caf61af5a0a2829e4
+          - bcecb5832f24210cb1c6a34d1893cec9
+          - 708271ad1d32391b01df777b9d198a53
+      - metadata: {}
+        data:
+          position: 97
+        action: cover.set_cover_position
+        target:
+          device_id: b141667d4f1c54fbbe85a120772cdc38
+      - alias: Open Zachary’s blind if he’s not home
+        if:
+        - condition: not
+          conditions:
+          - condition: zone
+            entity_id: person.zachary
+            zone: zone.home
+        then:
+        - action: cover.open_cover
+          metadata: {}
+          data: {}
+          target:
+            device_id: f4ae125ca4c9e278c2b67f21c7cf453a
+    - conditions:
+      - condition: trigger
+        id:
+        - Close 1
+      sequence:
+      - action: cover.set_cover_position
+        metadata: {}
+        data:
+          position: 66
+        target:
+          device_id:
+          - 2ed470427879932615434920b28767d3
+          - bcecb5832f24210cb1c6a34d1893cec9
+          - 708271ad1d32391b01df777b9d198a53
+          - f4ae125ca4c9e278c2b67f21c7cf453a
+    - conditions:
+      - condition: trigger
+        id:
+        - Close 2
+      sequence:
+      - action: cover.set_cover_position
+        metadata: {}
+        data:
+          position: 33
+        target:
+          device_id:
+          - bcecb5832f24210cb1c6a34d1893cec9
+          - 2ed470427879932615434920b28767d3
+          - 708271ad1d32391b01df777b9d198a53
+          - f4ae125ca4c9e278c2b67f21c7cf453a
+    - conditions:
+      - condition: trigger
+        id:
+        - Close Full
+      sequence:
+      - metadata: {}
+        data: {}
+        action: cover.close_cover
+        target:
+          device_id:
+          - bcecb5832f24210cb1c6a34d1893cec9
+          - 708271ad1d32391b01df777b9d198a53
+          - f4ae125ca4c9e278c2b67f21c7cf453a
+  mode: single
+- id: '1722635701579'
+  alias: Living Room - Couch Remote Left
+  description: ''
+  use_blueprint:
+    path: agners/hue_dimmer_switchV3.yaml
+    input:
+      remote: ffe4fdacca15bd4459cfe8c79421edf1
+      light: light.living_room_couch_lamp_left
+      fixed_brightness: 150
+      button_on_double:
+      - metadata: {}
+        data:
+          brightness_pct: 100
+        action: light.turn_on
+        target:
+          entity_id:
+          - light.living_room_couch_lamp_left
+      on_button_mode: fixed brightness
+- id: '1722636238022'
+  alias: Living Room - Couch Remote Right
+  description: ''
+  use_blueprint:
+    path: agners/hue_dimmer_switchV3.yaml
+    input:
+      remote: 88a4474a2cef15678a39921f2547d812
+      light: light.living_room_couch_lamp_right
+      fixed_brightness: 150
+      button_on_double:
+      - metadata: {}
+        data:
+          brightness_pct: 100
+        action: light.turn_on
+        target:
+          entity_id: light.living_room_couch_lamp_right
+      on_button_mode: fixed brightness
+- id: '1725317287020'
+  alias: Last Person Leaves Home
+  description: ''
+  triggers:
+  - entity_id:
+    - zone.home
+    to: '0'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+    trigger: state
+  conditions: []
+  actions:
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      floor_id:
+      - basement
+      - main_floor
+      - second_floor
+    alias: Turn all lights off
+  - sequence:
+    - action: media_player.media_stop
+      metadata: {}
+      data: {}
+      target:
+        floor_id:
+        - basement
+        - main_floor
+        - second_floor
+    - action: media_player.turn_off
+      metadata: {}
+      data: {}
+      target:
+        floor_id:
+        - basement
+        - second_floor
+        - main_floor
+    alias: Turn off all audio-video
+  - alias: Close blinds (where no plants)
+    sequence:
+    - action: switch.turn_off
+      target:
+        entity_id:
+        - switch.adaptive_toggle_control_ht_blind
+        - switch.adaptive_climate_mode_washroom_blind
+      data: {}
+    - action: cover.close_cover
+      target:
+        device_id:
+        - 010281c25822988caf61af5a0a2829e4
+        - 708271ad1d32391b01df777b9d198a53
+      data: {}
+  - device_id: fb9ae35f77be16649bc913ff71258e38
+    domain: select
+    entity_id: 7a919670c81e5ae6f393446e5704c35b
+    type: select_option
+    option: Away
+    alias: Set Flair to Away
+  - device_id: 74b2e490499eba29d6e6edcb89e9f9e6
+    domain: select
+    entity_id: ac6a2f0522cb82f3be47a767fd266785
+    type: select_option
+    option: away
+    alias: Set Ecobee to Away
+    enabled: false
+  mode: single
+- id: '1725384344519'
+  alias: HT Light Automation - Watching TV
+  description: ''
+  use_blueprint:
+    path: Blackshome/sensor-light-add-on.yaml
+    input:
+      trigger_entities:
+      - media_player.ht_appletv
+      trigger_on_state:
+      - playing
+      - Idle
+      trigger_off_state:
+      - 'off'
+      - standby
+      light_switch:
+        entity_id:
+        - scene.ht_blind_closed
+        - light.ht_group_lights_back
+      end_scenes: []
+      include_intermission: intermission_enable
+      intermission_state:
+      - paused
+      intermission_light_switch:
+        entity_id: light.ht_group_lights_back
+      intermission_include_light_control:
+      - use_brightness
+      - use_transition
+      intermission_light_brightness: 15
+      intermission_light_transition_on: 5
+      intermission_light_transition_off: 5
+      intermission_include_light_colour_control: use_colour_temperature
+      intermission_light_colour_temperature: 2700
+      time_delay: 7
+      end_light_switch:
+        entity_id:
+        - script.ht_blind_reset
+      include_end_turn_on: disable_end_turn_on
+      off_light_switch:
+        entity_id:
+        - light.gym_group_lights
+        - light.ht_group_lights_front
+      off_include_light_control:
+      - use_transition
+      off_light_transition_off: 20
+      include_start_turn_off: enable_start_turn_off
+      end_include_light_control: []
+      end_light_brightness: 15
+      end_light_transition_on: 5
+      end_include_light_colour_control: disable_colour_control
+      end_light_colour_temperature: 2700
+      include_automation_link: enable_automation_link
+      automation_link:
+      - input_boolean.ht_automation_link_tv_lighting
+      include_automation_link_time_delay: disable_time_delay
+      automation_link_time_delay: 0
+      include_bypass: bypass_disabled
+      light_brightness: 0
+      include_light_colour_control: use_colour_temperature
+      light_colour_temperature: 2700
+      include_light_control:
+      - use_brightness
+      - use_transition
+- id: '1725404798236'
+  alias: First Person Arrives Homes
+  description: ''
+  triggers:
+  - entity_id:
+    - zone.home
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+    from: '0'
+    trigger: state
+  conditions: []
+  actions:
+  - sequence:
+    - action: switch.turn_on
+      target:
+        label_id: adaptive_cover_toggle_switch
+      data: {}
+    - action: button.press
+      metadata: {}
+      data: {}
+      target:
+        label_id: adaptive_cover_reset_buttons
+    alias: Reset all blinds to their adaptive position
+  - device_id: 74b2e490499eba29d6e6edcb89e9f9e6
+    domain: select
+    entity_id: ac6a2f0522cb82f3be47a767fd266785
+    type: select_option
+    option: home
+    alias: Set Ecobee to Home
+    enabled: false
+  - device_id: fb9ae35f77be16649bc913ff71258e38
+    domain: select
+    entity_id: 7a919670c81e5ae6f393446e5704c35b
+    type: select_option
+    option: Home
+    alias: Set Flair to Home
+  mode: single
+- id: '1728945551366'
+  alias: MBR Underbed Sensor Light Automation
+  description: ''
+  use_blueprint:
+    path: Blackshome/sensor-light.yaml
+    input:
+      motion_trigger:
+      - binary_sensor.mbr_motion
+      light_switch:
+        entity_id: light.mbr_underbed
+      include_light_control:
+      - use_brightness
+      - use_transition
+      include_light_colour_control: use_rgb_colour
+      light_rgb_colour:
+      - 255
+      - 0
+      - 0
+      include_time: time_disabled
+      time_delay: 2
+      light_brightness: 30
+      light_transition_off: 3
+      light_transition_on: 2
+      include_ambient: ambient_enabled
+      ambient_light_sensor: sensor.mbr_light_level
+      motion_bypass_lights_on: []
+      ambient_light_value: 10
+      ambient_light_high_value: 10
+      night_light_transition_on: 0.5
+      night_light_transition_off: 0.5
+- id: '1729808913912'
+  alias: Aquarium Lighting Sunrise and Sunset
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - switch.apex_l2_sun
+    from: 'off'
+    to: 'on'
+    alias: sunrise
+    id: sunrise
+  - alias: sunset
+    trigger: state
+    entity_id:
+    - switch.apex_l2_sun
+    from: 'on'
+    to: 'off'
+    id: sunset
+  - trigger: state
+    entity_id:
+    - switch.apex_l2_on_off
+    from: 'off'
+    to: 'on'
+    alias: 'ON'
+    id: 'ON'
+  - alias: 'OFF'
+    trigger: state
+    entity_id:
+    - switch.apex_l2_on_off
+    from: 'on'
+    to: 'off'
+    id: 'OFF'
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - sunrise
+      sequence:
+      - sequence:
+        - alias: Turn On at 10% and 2000K
+          action: light.turn_on
+          metadata: {}
+          data:
+            brightness_pct: 10
+            kelvin: 2000
+          target:
+            entity_id:
+            - light.aquarium_light_hue_light
+        - alias: Ramp up to 100% and 3800K over 30 minutes
+          metadata: {}
+          data:
+            kelvin: 3800
+            brightness_pct: 100
+            transition: 1800
+          action: light.turn_on
+          target:
+            entity_id:
+            - light.aquarium_light_hue_light
+    - conditions:
+      - condition: trigger
+        id:
+        - sunset
+      sequence:
+      - alias: Ramp down to 10% and 2000K over 60 minutes
+        metadata: {}
+        data:
+          kelvin: 2000
+          brightness_pct: 10
+          transition: 3600
+        action: light.turn_on
+        target:
+          entity_id:
+          - light.aquarium_light_hue_light
+    - conditions:
+      - condition: trigger
+        id:
+        - 'ON'
+      sequence:
+      - action: light.turn_on
+        metadata: {}
+        data:
+          brightness_pct: 100
+          kelvin: 3800
+        target:
+          entity_id: light.aquarium_light_hue_light
+    - conditions:
+      - condition: trigger
+        id:
+        - 'OFF'
+      sequence:
+      - action: light.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: light.aquarium_light_hue_light
+  mode: single
+- id: '1729815063151'
+  alias: Aquarium Apex Light2 Switch Sync
+  description: ''
+  triggers:
+  - alias: Apex Light2 Switched ON
+    trigger: state
+    entity_id:
+    - light.apex_light2
+    to: 'on'
+    id: Apex switched ON
+    from: 'off'
+  - alias: Apex Light2 Switched OFF
+    trigger: state
+    entity_id:
+    - light.apex_light2
+    id: Apex switched OFF
+    from: 'on'
+    to: 'off'
+  - trigger: state
+    entity_id:
+    - light.aquarium_light_hue_light
+    to: 'on'
+    alias: Aquarium Hue Bulb turned ON
+    id: Hue Bulb turned ON
+  - alias: Aquarium Hue Bulb turned OFF
+    trigger: state
+    entity_id:
+    - light.aquarium_light_hue_light
+    to: 'off'
+    id: Hue Bulb turned OFF
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: and
+        conditions:
+        - condition: trigger
+          id:
+          - Apex switched ON
+        - condition: state
+          entity_id: light.aquarium_light_hue_light
+          state: 'off'
+      sequence:
+      - action: light.turn_on
+        metadata: {}
+        data:
+          kelvin: 3800
+          brightness_pct: 100
+        target:
+          entity_id:
+          - light.aquarium_light_hue_light
+      alias: Apex switched ON and Hue is OFF
+    - conditions:
+      - condition: and
+        conditions:
+        - condition: trigger
+          id:
+          - Apex switched OFF
+        - condition: state
+          entity_id: light.aquarium_light_hue_light
+          state: 'on'
+        alias: Apex switched OFF and Hue Light is ON
+      sequence:
+      - action: light.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: light.aquarium_light_hue_light
+    - conditions:
+      - alias: Hue Bulb turned ON and Light2 OFF
+        condition: and
+        conditions:
+        - condition: trigger
+          id:
+          - Hue Bulb turned ON
+        - condition: state
+          entity_id: light.apex_light2
+          state: 'off'
+      sequence:
+      - action: switch.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.apex_light2
+    - conditions:
+      - condition: and
+        conditions:
+        - condition: trigger
+          id:
+          - Hue Bulb turned OFF
+        - condition: state
+          entity_id: light.apex_light2
+          state: 'on'
+        alias: Hue Bulb turned OFF and Light2 ON
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id:
+          - switch.apex_light2
+        data: {}
+  mode: queued
+  max: 10
+- id: '1732578412731'
+  alias: HVAC - Flair Schedule Automation
+  description: Changes Flair SmartVent schedule
+  triggers:
+  - trigger: zone
+    entity_id: person.zachary
+    zone: zone.home
+    event: enter
+    id: Zachary Home
+  - trigger: zone
+    entity_id: person.zachary
+    zone: zone.home
+    event: leave
+    id: Zachary Away
+  - trigger: state
+    entity_id:
+    - climate.hvac_thermostat
+    to:
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: climate.hvac_thermostat
+          state: heat
+        - condition: and
+          conditions:
+          - condition: state
+            entity_id: climate.hvac_thermostat
+            state: heat_cool
+          - condition: numeric_state
+            entity_id: climate.hvac_thermostat
+            attribute: temperature
+            below: 22
+          alias: Heat/Cool AND Target < 22
+      sequence:
+      - if:
+        - condition: zone
+          entity_id: person.zachary
+          zone: zone.home
+        then:
+        - device_id: fb9ae35f77be16649bc913ff71258e38
+          domain: select
+          entity_id: 149bc03b88fc32ae6d2e0a3dba3317dd
+          type: select_option
+          option: Heating Zachary
+        else:
+        - device_id: fb9ae35f77be16649bc913ff71258e38
+          domain: select
+          entity_id: 149bc03b88fc32ae6d2e0a3dba3317dd
+          type: select_option
+          option: Heating
+      alias: Heating Mode
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: climate.hvac_thermostat
+          state: cool
+        - alias: Heat/Cool AND Target < 22
+          condition: and
+          conditions:
+          - condition: state
+            entity_id: climate.hvac_thermostat
+            state: heat_cool
+          - condition: numeric_state
+            entity_id: climate.hvac_thermostat
+            attribute: temperature
+            above: 22
+      sequence:
+      - if:
+        - condition: zone
+          entity_id: person.zachary
+          zone: zone.home
+        then:
+        - device_id: fb9ae35f77be16649bc913ff71258e38
+          domain: select
+          entity_id: 149bc03b88fc32ae6d2e0a3dba3317dd
+          type: select_option
+          option: Heating Zachary
+        else:
+        - device_id: fb9ae35f77be16649bc913ff71258e38
+          domain: select
+          entity_id: 149bc03b88fc32ae6d2e0a3dba3317dd
+          type: select_option
+          option: Heating
+      alias: Cooling Mode
+  mode: queued
+  max: 10
+- id: '1733714466587'
+  alias: When TV turns ON or OFF
+  description: ''
+  triggers:
+  - type: changed_states
+    device_id: 3e3a04862972c9de2c4ae4d675cdf83f
+    entity_id: eff01c7754491d49954d2db5fc75936f
+    domain: media_player
+    trigger: device
+  conditions: []
+  actions:
+  - action: remote.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: remote.ht_appletv
+  - choose:
+    - conditions:
+      - condition: device
+        device_id: 3e3a04862972c9de2c4ae4d675cdf83f
+        domain: media_player
+        entity_id: eff01c7754491d49954d2db5fc75936f
+        type: is_off
+      sequence:
+      - action: automation.turn_off
+        target:
+          entity_id:
+          - automation.new_automation
+          - automation.xbox_light_automation
+        data:
+          stop_actions: true
+      - action: input_boolean.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id:
+          - input_boolean.ht_automation_link_tv_lighting
+          - input_boolean.ht_automation_link_xbox_lighting
+      - action: automation.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id:
+          - automation.new_automation
+          - automation.xbox_light_automation
+    enabled: true
+  mode: single
+- id: '1734214418097'
+  alias: AVR Quick Select 1
+  description: ''
+  use_blueprint:
+    path: dotWee/denon_avr_quick_select.yaml
+    input:
+      denon_entity: media_player.ht_avr
+      quick_select: 1
+- id: '1734486132576'
+  alias: MBR Bedside Remote Right
+  description: ''
+  use_blueprint:
+    path: agners/hue_dimmer_switchV3.yaml
+    input:
+      remote: 3a591ade276592b80c1d5d25297a1ff2
+      light: light.mbr_bedside_lamp_right_light
+      on_button_mode: fixed brightness
+      fixed_brightness: 20
+      min_brightness: 10
+      button_on_double: []
+      button_off_double:
+      - action: light.turn_off
+        metadata: {}
+        data:
+          transition: 1
+        target:
+          entity_id:
+          - light.mbr_bedside_lamp_left_light
+          - light.mbr_bedside_lamp_right_light
+          - light.mbr_torchiere
+        enabled: true
+      - action: scene.turn_on
+        metadata: {}
+        data:
+          transition: 3
+        target:
+          entity_id: scene.mbr_underbed_nightlight
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 30
+          milliseconds: 0
+      - action: light.turn_off
+        metadata: {}
+        data:
+          transition: 3
+        target:
+          entity_id: light.mbr_underbed
+      button_on_long:
+      - action: light.turn_on
+        metadata: {}
+        data:
+          kelvin: 2194
+          brightness: 20
+          transition: 1
+        target:
+          entity_id:
+          - light.mbr_bedside_lamp_left_light
+          - light.mbr_bedside_lamp_right_light
+        enabled: false
+      - action: scene.turn_on
+        metadata: {}
+        data:
+          transition: 2
+        target:
+          entity_id: scene.mbr_before_bed
+- id: '1734658118790'
+  alias: Home Ventilation
+  description: Automates the HRV
+  triggers:
+  - trigger: time_pattern
+    hours: /2
+  conditions:
+  - condition: and
+    conditions:
+    - condition: numeric_state
+      entity_id: sensor.chelsea_dew_point
+      below: 14
+    - condition: device
+      device_id: 3e3a04862972c9de2c4ae4d675cdf83f
+      domain: media_player
+      entity_id: eff01c7754491d49954d2db5fc75936f
+      type: is_off
+    - type: is_temperature
+      condition: device
+      device_id: 27ce292095211b77b34576b6a4349d86
+      entity_id: 33adb820f449fde31e63fa4e1355c5b9
+      domain: sensor
+      above: -15
+      alias: Outdoor temperature above -15°C
+    - condition: device
+      device_id: 498e396176a0d7c38288bb0762e85da4
+      domain: fan
+      entity_id: 91f217b8f50f4e485fc2397b220eca0c
+      type: is_off
+  actions:
+  - action: script.hrv
+    metadata: {}
+    data: {}
+  - action: fan.turn_on
+    metadata: {}
+    data: {}
+    target:
+      device_id: 498e396176a0d7c38288bb0762e85da4
+  - delay:
+      hours: 0
+      minutes: 15
+      seconds: 0
+  - action: fan.turn_off
+    metadata: {}
+    data: {}
+    target:
+      device_id: 498e396176a0d7c38288bb0762e85da4
+  mode: single
+- id: '1734748548281'
+  alias: MBR Bedside Remote Left
+  description: ''
+  use_blueprint:
+    path: agners/hue_dimmer_switchV3.yaml
+    input:
+      remote: a6834f852dc507c220b28459291daeb1
+      light: light.mbr_bedside_lamp_left_light
+      on_button_mode: always toggle
+      fixed_brightness: 20
+      min_brightness: 10
+      button_on_double: []
+      button_off_double:
+      - action: light.turn_off
+        metadata: {}
+        data:
+          transition: 1
+        target:
+          entity_id:
+          - light.mbr_bedside_lamp_left_light
+          - light.mbr_bedside_lamp_right_light
+          - light.mbr_torchiere
+        enabled: true
+      - action: scene.turn_on
+        metadata: {}
+        data:
+          transition: 5
+        target:
+          entity_id:
+          - scene.mbr_underbed_nightlight
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 30
+          milliseconds: 0
+      - action: light.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: light.mbr_underbed
+      button_on_long:
+      - action: light.turn_on
+        metadata: {}
+        data:
+          kelvin: 2194
+          brightness: 20
+          transition: 1
+        target:
+          entity_id:
+          - light.mbr_bedside_lamp_left_light
+          - light.mbr_bedside_lamp_right_light
+        enabled: false
+      - action: scene.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: scene.mbr_before_bed
+- id: '1734892423484'
+  alias: Notification - Low Battery Notifications & Actions
+  description: ''
+  use_blueprint:
+    path: Blackshome/low-battery-notifications-and-actions.yaml
+    input:
+      include_time: time_enabled
+      weekday_options:
+      - fri
+      time: '22:00:00'
+      include_easy_notify: disabled_easy_notify
+      include_persistent_notification: enable_persistent_notification
+- id: '1734962021266'
+  alias: Notification - Auto-Backup Failed
+  description: ''
+  use_blueprint:
+    path: jcwillox/notify_auto_backup.yaml
+    input:
+      notify_hass: true
+      devices: []
+      only_after: 00:08:00
+      only_before: 00:20:00
+- id: '1734965588482'
+  alias: Washer Notifications
+  description: ''
+  use_blueprint:
+    path: Blackshome/appliance-notifications.yaml
+    input:
+      power_sensor: sensor.washing_machine_power
+      running_dead_zone: 0
+      include_start_notify: disable_start_notify_options
+      start_notify_device:
+      - e0b8985c9b0860395d782cf988cac146
+      include_end_notify: enable_end_notify_options
+      end_notify_device:
+      - e0b8985c9b0860395d782cf988cac146
+      - 232b7db24acc398ca60c12a9daad9eb7
+      end_message_title: Laveuse
+      end_message: La brassée est terminée.
+      end_notify_data: []
+      end_notify_interruption_level: time-sensitive
+      end_reminder_notification: disable_reminder_notification
+      include_power_tracking: enable_power_tracking_and_cost
+      power_consumption_sensor: sensor.washing_machine_energy
+      end_message_kwh: Consommation
+      end_message_cost: Coût approximatif $
+      cost_per_kwh: sensor.hydroqc_maison_current_billing_period_kwh_cost_mean
+      include_duration_tracking: enable_duration_tracking
+      end_message_duration_tracking: Durée
+      start_power_consumption: input_number.washing_machine_cycle_start_kwh
+      end_power_consumption: input_number.washing_machine_cycle_end_kwh
+      start_appliance_power: 7
+      end_appliance_power: 7
+      end_time_delay: 2
+      end_notify_sound: Minuet.caf
+      end_reminder_notification_max_count: 1
+- id: '1736100787452'
+  alias: Humidifier - Auto Setpoint
+  description: Set humidifier setpoint based on the condensation resistance limit
+    up to 50%.
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.condensation_resistance_limit
+  conditions:
+  - condition: numeric_state
+    entity_id: sensor.condensation_resistance_limit
+    above: 19
+  actions:
+  - alias: Set Humidifier Setpoint
+    action: humidifier.set_humidity
+    metadata: {}
+    data:
+      humidity: '{% set min_humidity = 20 %} {% set max_humidity = 50 %} {{ [ [states(''sensor.condensation_resistance_limit'')
+        | float(max_humidity), min_humidity] | max, max_humidity ] | min }}
+
+        '
+    target:
+      device_id: b9eb539922bf38d44a82cc0de21f3c07
+  mode: single
+- id: '1736197975831'
+  alias: Humidifier - Watchdog
+  description: ''
+  use_blueprint:
+    path: Blackshome/notifications-and-announcements.yaml
+    input:
+      trigger_state_entity:
+      - switch.humidifier_switch
+      trigger_state: 'on'
+      global_conditions:
+      - condition: and
+        conditions:
+        - condition: zone
+          entity_id: person.pierreandre
+          zone: zone.home
+        - condition: numeric_state
+          entity_id: sensor.humidifier_power
+          below: 30
+        - condition: state
+          entity_id: humidifier.humidifier_setpoint
+          attribute: action
+          state: humidifying
+          for:
+            hours: 0
+            minutes: 2
+            seconds: 0
+      include_notify: enable_mobile_app_notify
+      notify_device:
+      - e0b8985c9b0860395d782cf988cac146
+      notify_title: 'L’humidificateur ne fonctionne pas. '
+      notify_message: 'Le réservoir est peut-être vide. '
+      include_persistent_notification: disabled_persistent_notification
+      time_delay_state:
+        hours: 0
+        minutes: 1
+        seconds: 0
+      media_player: []
+      include_time: time_enabled
+      after_time: 06:30:00
+      before_time: '20:00:00'
+- id: '1736512919060'
+  alias: Notification - Freeze Warning in Garage or Cold Room
+  description: ''
+  use_blueprint:
+    path: Blackshome/notifications-and-announcements.yaml
+    input:
+      trigger_state_entity: []
+      trigger_numeric_entity:
+      - sensor.garage_climatesensor_temperature
+      - sensor.coldroom_climatesensor_temperature
+      below_state: 1
+      above_state: 100
+      time_delay_state:
+        hours: 1
+        minutes: 0
+        seconds: 0
+      include_notify: enable_mobile_app_notify
+      notify_device:
+      - e0b8985c9b0860395d782cf988cac146
+      notify_interruption_level: critical
+      notify_title: Alerte de gel
+      notify_message: Alerte de gel dans le garage ou la chambre froide.
+      include_persistent_notification: enable_persistent_notification
+      persistent_title: Freeze Warning
+      persistent_message: Garage or Cold Room may be freezing.
+- id: '1736634273349'
+  alias: Notification - Ficus
+  description: ''
+  use_blueprint:
+    path: Blackshome/notifications-and-announcements.yaml
+    input:
+      trigger_state_entity:
+      - plant.ficus
+      notify_device:
+      - e0b8985c9b0860395d782cf988cac146
+      notify_title: Arroser ficus
+      notify_message: Arroser ficus
+      include_persistent_notification: enable_persistent_notification
+      persistent_title: Arroser ficus
+      persistent_message: Arroser ficus
+      trigger_numeric_entity: []
+      global_conditions:
+      - condition: state
+        entity_id: plant.ficus
+        state: problem
+      below_state: 30
+      above_state: 100
+      include_notify: enable_mobile_app_notify
+- id: '1737210877920'
+  alias: HRV - HVAC Fan Control
+  description: ''
+  triggers:
+  - type: turned_on
+    device_id: 498e396176a0d7c38288bb0762e85da4
+    entity_id: 91f217b8f50f4e485fc2397b220eca0c
+    domain: fan
+    trigger: device
+    id: HRV ON
+  - type: turned_off
+    device_id: 498e396176a0d7c38288bb0762e85da4
+    entity_id: 91f217b8f50f4e485fc2397b220eca0c
+    domain: fan
+    trigger: device
+    id: HRV OFF
+  conditions: []
+  actions:
+  - alias: While HRV is ON
+    repeat:
+      sequence:
+      - sequence:
+        - action: climate.set_fan_mode
+          metadata: {}
+          data:
+            fan_mode: 'on'
+          target:
+            device_id: 74b2e490499eba29d6e6edcb89e9f9e6
+          alias: Turn HVAC Fan ON
+        - delay:
+            hours: 0
+            minutes: 2
+            seconds: 0
+            milliseconds: 0
+      while:
+      - condition: device
+        device_id: 498e396176a0d7c38288bb0762e85da4
+        domain: fan
+        entity_id: 91f217b8f50f4e485fc2397b220eca0c
+        type: is_on
+  - alias: Return HVAC Fan to Auto mode
+    action: climate.set_fan_mode
+    metadata: {}
+    data:
+      fan_mode: auto
+    target:
+      device_id: 74b2e490499eba29d6e6edcb89e9f9e6
+  mode: restart
+- id: '1737211996448'
+  alias: HRV - Air Quality
+  description: ''
+  triggers:
+  - type: volatile_organic_compounds_parts
+    device_id: 8f15a427c3182bd9512313943ce3fcf6
+    entity_id: e0064f39daed5acffee3f86ea7247f2b
+    domain: sensor
+    trigger: device
+    above: 250
+    alias: VOCs are a or 250 ppb
+  - alias: CO2 is above 800 ppm
+    type: carbon_dioxide
+    device_id: 8f15a427c3182bd9512313943ce3fcf6
+    entity_id: 7567147ed292e788966bb32a5cff4572
+    domain: sensor
+    trigger: device
+    above: 800
+  conditions: []
+  actions:
+  - action: fan.turn_on
+    metadata: {}
+    data: {}
+    target:
+      device_id: 498e396176a0d7c38288bb0762e85da4
+    alias: Turn ON HRV
+  - alias: Wait for CO2 to drop
+    wait_for_trigger:
+    - type: carbon_dioxide
+      device_id: 8f15a427c3182bd9512313943ce3fcf6
+      entity_id: 7567147ed292e788966bb32a5cff4572
+      domain: sensor
+      trigger: device
+      below: 750
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 0
+    timeout:
+      hours: 1
+      minutes: 0
+      seconds: 0
+  - alias: Wait for VOCs to drop
+    wait_for_trigger:
+    - type: volatile_organic_compounds_parts
+      device_id: 8f15a427c3182bd9512313943ce3fcf6
+      entity_id: e0064f39daed5acffee3f86ea7247f2b
+      domain: sensor
+      trigger: device
+      below: 240
+    continue_on_timeout: true
+    timeout:
+      hours: 1
+      minutes: 0
+      seconds: 0
+  - action: fan.turn_off
+    metadata: {}
+    data: {}
+    target:
+      device_id: 498e396176a0d7c38288bb0762e85da4
+    alias: Turn OFF HRV
+  mode: single
+- id: '1737212708696'
+  alias: HRV - Cool using ventilation
+  description: If outside air is cool and dry, ventilate to cool house.
+  triggers:
+  - type: turned_on
+    device_id: 498e396176a0d7c38288bb0762e85da4
+    entity_id: 9b236aa86b3fbe16594a16499006a495
+    domain: binary_sensor
+    trigger: device
+    id: Natural Cooling ON
+  - type: turned_off
+    device_id: 498e396176a0d7c38288bb0762e85da4
+    entity_id: 9b236aa86b3fbe16594a16499006a495
+    domain: binary_sensor
+    trigger: device
+    id: Natural Cooling OFF
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - Natural Cooling ON
+      sequence:
+      - action: fan.turn_on
+        metadata: {}
+        data: {}
+        target:
+          device_id: 498e396176a0d7c38288bb0762e85da4
+    - conditions:
+      - condition: trigger
+        id:
+        - Natural Cooling OFF
+      sequence:
+      - action: fan.turn_off
+        metadata: {}
+        data: {}
+        target:
+          device_id: 498e396176a0d7c38288bb0762e85da4
+  mode: single
+- id: '1737290269101'
+  alias: Living Room - Sensor Lights without brightness
+  description: ''
+  use_blueprint:
+    path: Blackshome/sensor-light.yaml
+    input:
+      motion_trigger:
+      - binary_sensor.lr_sensor_motion
+      light_switch:
+        entity_id:
+        - light.living_room_couch_lamp_left
+        - light.living_room_couch_lamp_right
+        - light.living_room_chair_lamp
+      include_light_control: []
+      include_dynamic_lighting: disable_dynamic_lighting
+      dynamic_lighting_lux_sensor: sensor.patio_sensor_illuminance
+      dynamic_lighting_min_brightness: 70
+      dynamic_lighting_min_lux: 10
+      include_ambient: ambient_enabled
+      ambient_light_sensor: sensor.patio_sensor_illuminance
+      ambient_light_high_value: 250
+      ambient_light_value: 200
+      include_night_lights: night_lights_disabled
+      night_lights_conditions:
+      - time_enabled
+      night_lights_after_time: '20:00:00'
+      night_lights_before_time: 05:00:00
+      night_lights:
+        entity_id:
+        - light.lr_couch_lamp_left
+        - light.lr_couch_lamp_right
+      dynamic_lighting_max_lux: 200
+      include_night_light_control:
+      - use_brightness
+      - use_transition
+      night_light_colour_temperature: 2000
+      time_delay: 30
+      night_lights_sun_elevation_rising: -5
+      light_transition_on: 0.5
+- id: '1738518387551'
+  alias: Dryer Notifications
+  description: ''
+  use_blueprint:
+    path: Blackshome/state-notifications-and-actions.yaml
+    input:
+      start_trigger_state_entity: []
+      end_trigger_state: numeric_state_below
+      end_trigger_state_entity: []
+      include_start_notify: disable_start_notify_options
+      start_notify_device: []
+      include_end_notify: enable_end_notify_options
+      end_notify_device:
+      - 232b7db24acc398ca60c12a9daad9eb7
+      - e0b8985c9b0860395d782cf988cac146
+      - f7c878894e69f0542c739bff9676f65a
+      end_title: Sécheuse
+      end_message: Le cycle de séchage est terminée.
+      end_notify_interruption_level: time-sensitive
+      end_notify_sound: Minuet.caf
+      global_conditions: []
+      include_end_auto_actions: []
+      end_action_1: []
+      start_trigger_numeric_entity: []
+      start_above_state: 3
+      end_trigger_numeric_entity:
+      - sensor.dryer_running
+      end_below_state: 3
+- id: '1740874602239'
+  alias: MBR Closet Light Automation
+  description: ''
+  use_blueprint:
+    path: Blackshome/sensor-light.yaml
+    input:
+      motion_trigger:
+      - binary_sensor.mbr_closet_motion_sensor_motion
+      light_switch:
+        entity_id: light.mbr_closet_light
+      time_delay: 0.25
+      light_transition_on: 0
+      light_transition_off: 0
+- id: '1740924430846'
+  alias: Front Lawn Lights Automation
+  description: ''
+  use_blueprint:
+    path: Blackshome/sensor-light.yaml
+    input:
+      include_ambient: ambient_enabled
+      ambient_light_sensor: sensor.patio_sensor_illuminance
+      ambient_light_value: 3
+      ambient_light_high_value: 6
+      include_night_lights: night_lights_enabled
+      night_lights_conditions:
+      - sun_enabled
+      include_night_glow: night_glow_enabled
+      night_glow_lights:
+        entity_id:
+        - light.driveway_lamppost_light
+        - light.porch_light
+      include_night_glow_light_control:
+      - use_brightness
+      - use_transition
+      night_glow_light_brightness: 5
+      night_glow_light_transition_on: 3
+      night_glow_light_transition_off: 3
+      include_night_glow_light_colour_control: use_colour_temperature
+      night_glow_light_colour_temperature: 2300
+      motion_trigger:
+      - binary_sensor.porch_sensor_motion
+      light_switch:
+        entity_id:
+        - light.porch_light
+        - light.driveway_lamppost_light
+        - light.driveway_garagedoor_sconce
+      include_light_control:
+      - use_brightness
+      - use_transition
+      light_transition_on: 3
+      light_transition_off: 3
+      include_light_colour_control: use_colour_temperature
+      light_colour_temperature: 2300
+- id: '1743121995709'
+  alias: HRV - Control
+  description: Combined HRV Automation using IAQ Template and Natural Cooling
+  triggers:
+  - entity_id:
+    - binary_sensor.hvac_hrv_air_quality_trigger
+    to: 'on'
+    trigger: state
+  - entity_id: binary_sensor.hvac_natural_cooling_useful
+    to: 'on'
+    trigger: state
+  - trigger: template
+    value_template: "{{ (trigger.to_state.attributes.hvac_action in ['heating', 'cooling'])
+      and\n   (states('sensor.hvac_hrv_last_hour_runtime') | float < 15) }}"
+    alias: When heating or cooling and HRV last hour runtime is less than 15 minutes
+    enabled: true
+  - trigger: state
+    entity_id:
+    - binary_sensor.hvac_hrv_minimum_runtime_trigger
+    to: 'on'
+  - trigger: homeassistant
+    event: start
+    enabled: false
+  conditions:
+  - condition: and
+    conditions:
+    - condition: numeric_state
+      entity_id: sensor.u_s_air_quality_index
+      below: 150
+    - condition: or
+      conditions:
+      - alias: Outdoor Temp above -15
+        type: is_temperature
+        condition: device
+        device_id: 27ce292095211b77b34576b6a4349d86
+        entity_id: 33adb820f449fde31e63fa4e1355c5b9
+        domain: sensor
+        above: -15
+      - condition: state
+        entity_id: binary_sensor.hvac_hrv_air_quality_trigger
+        state: 'on'
+      alias: Outdoor temp above -15°C unless IAQ unsafe
+  actions:
+  - if: []
+    then: []
+    enabled: false
+  - target:
+      entity_id: fan.hvac_hrv
+    action: fan.turn_on
+    data: {}
+  - delay:
+      hours: 0
+      minutes: 15
+      seconds: 0
+      milliseconds: 0
+  - wait_template: '{{ is_state(''binary_sensor.hvac_hrv_air_quality_trigger'', ''off'')
+      and is_state(''binary_sensor.hvac_natural_cooling_useful'', ''off'') }}
+
+      '
+  - target:
+      entity_id: fan.hvac_hrv
+    action: fan.turn_off
+    data: {}
+  mode: restart
+- id: '1743166090883'
+  alias: HVAC - Watchdog (watch for Off)
+  description: Will send a notification if HVAC is turned Off.
+  use_blueprint:
+    path: Blackshome/notifications-and-announcements.yaml
+    input:
+      trigger_state_entity:
+      - climate.hvac_thermostat_ecobee
+      trigger_state: 'off'
+      include_notify: enable_mobile_app_notify
+      notify_device:
+      - 232b7db24acc398ca60c12a9daad9eb7
+      - e0b8985c9b0860395d782cf988cac146
+      - f7c878894e69f0542c739bff9676f65a
+      notify_title: HVAC
+      notify_message: HVAC is Off
+      notify_interruption_level: critical
+      include_persistent_notification: enable_persistent_notification
+      persistent_title: HVAC
+      persistent_message: HVAC is Off!
+- id: '1743370416927'
+  alias: Family Room Lights Automation
+  description: ''
+  use_blueprint:
+    path: Blackshome/sensor-light.yaml
+    input:
+      motion_trigger:
+      - binary_sensor.ht_sensor_occupancy_fm
+      light_switch:
+        entity_id: light.gym_group_lights
+      time_delay: 1
+      include_bypass:
+      - bypass_enabled_stop
+      motion_bypass_lights_stop:
+      - input_boolean.ht_automation_link_tv_lighting
+      - input_boolean.ht_automation_link_xbox_lighting
+      light_transition_on: 0
+      bypass_auto_off_delay: 1
+- id: '1743547361556'
+  alias: HRV - Control NEW
+  description: Combined HRV Automation using IAQ Template and Natural Cooling
+  triggers:
+  - trigger: homeassistant
+    event: start
+    enabled: true
+  - entity_id:
+    - binary_sensor.hvac_hrv_air_quality_trigger
+    trigger: state
+  - entity_id:
+    - binary_sensor.hvac_natural_cooling_useful
+    trigger: state
+  - trigger: state
+    entity_id:
+    - climate.hvac_thermostat_ecobee
+    attribute: hvac_action
+  - trigger: state
+    entity_id:
+    - climate.hvac_thermostat_ecobee
+    attribute: fan_mode
+  - trigger: state
+    entity_id:
+    - sensor.hvac_hrv_last_2_hour_runtime
+    - sensor.hvac_hrv_last_hour_runtime
+  - trigger: state
+    entity_id:
+    - input_boolean.hrv_force_on
+  conditions:
+  - condition: or
+    conditions:
+    - condition: and
+      conditions:
+      - condition: numeric_state
+        entity_id: sensor.u_s_air_quality_index
+        below: 150
+      - condition: or
+        conditions:
+        - alias: Outdoor Temp above -15
+          type: is_temperature
+          condition: device
+          device_id: 27ce292095211b77b34576b6a4349d86
+          entity_id: 33adb820f449fde31e63fa4e1355c5b9
+          domain: sensor
+          above: -15
+        - condition: state
+          entity_id: binary_sensor.hvac_hrv_air_quality_trigger
+          state: 'on'
+        alias: Outdoor temp above -15°C unless IAQ unsafe
+    - condition: state
+      entity_id: input_boolean.hrv_force_on
+      state: 'on'
+  actions:
+  - choose:
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: binary_sensor.hvac_natural_cooling_useful
+          state: 'on'
+        - condition: state
+          entity_id: binary_sensor.hvac_hrv_air_quality_trigger
+          state: 'on'
+        - condition: and
+          conditions:
+          - condition: or
+            conditions:
+            - condition: state
+              entity_id: climate.hvac_thermostat_ecobee
+              attribute: hvac_action
+              state: heating
+              alias: HVAC is Heating
+            - condition: state
+              entity_id: climate.hvac_thermostat_ecobee
+              attribute: hvac_action
+              state: cooling
+              alias: HVAC is Cooling
+            alias: HVAC is Heating or Cooling
+          - condition: numeric_state
+            entity_id: sensor.hvac_hrv_last_2_hour_runtime
+            below: 30
+          alias: Heating or Cooling and last 2-hour runtime less than 30 minutes
+          enabled: true
+        - alias: HRV has run less than 15 minutes in last hour and less than 30 minutes
+            in last 2 hours
+          condition: and
+          conditions:
+          - condition: numeric_state
+            entity_id: sensor.hvac_hrv_last_hour_runtime
+            below: 15
+          - condition: numeric_state
+            entity_id: sensor.hvac_hrv_last_2_hour_runtime
+            below: 30
+          enabled: true
+        - condition: state
+          entity_id: input_boolean.hrv_force_on
+          state: 'on'
+      sequence:
+      - action: fan.turn_on
+        metadata: {}
+        data: {}
+        target:
+          device_id: 498e396176a0d7c38288bb0762e85da4
+      - action: climate.set_fan_mode
+        metadata: {}
+        data:
+          fan_mode: 'on'
+        target:
+          device_id: 74b2e490499eba29d6e6edcb89e9f9e6
+        alias: Turn HVAC Fan ON
+      alias: Run HRV
+    default:
+    - action: fan.turn_off
+      metadata: {}
+      data: {}
+      target:
+        device_id: 498e396176a0d7c38288bb0762e85da4
+    - alias: Return HVAC Fan to Auto mode
+      action: climate.set_fan_mode
+      metadata: {}
+      data:
+        fan_mode: auto
+      target:
+        device_id: 74b2e490499eba29d6e6edcb89e9f9e6
+  mode: restart
+- id: '1744569094629'
+  alias: HT Light Automation - Xbox
+  description: ''
+  use_blueprint:
+    path: Blackshome/sensor-light-add-on.yaml
+    input:
+      trigger_entities:
+      - media_player.xbox_series_s_de_z
+      trigger_on_state:
+      - 'on'
+      trigger_off_state:
+      - 'off'
+      - standby
+      end_scenes: []
+      include_intermission: intermission_disable
+      intermission_state: []
+      intermission_include_light_control:
+      - use_brightness
+      - use_transition
+      intermission_light_brightness: 15
+      intermission_light_transition_on: 5
+      intermission_light_transition_off: 5
+      intermission_include_light_colour_control: use_colour_temperature
+      intermission_light_colour_temperature: 2700
+      time_delay: 0
+      include_end_turn_on: enable_end_turn_on
+      off_light_switch:
+        entity_id:
+        - light.gym_downlight_back_right
+        - light.gym_downlight_back_left
+        - light.ht_group_lights_back
+      off_include_light_control: []
+      off_light_transition_off: 20
+      include_start_turn_off: enable_start_turn_off
+      end_include_light_control: []
+      end_light_brightness: 15
+      end_light_transition_on: 5
+      end_include_light_colour_control: disable_colour_control
+      end_light_colour_temperature: 2700
+      include_automation_link: enable_automation_link
+      automation_link:
+      - input_boolean.ht_automation_link_xbox_lighting
+      include_automation_link_time_delay: disable_time_delay
+      automation_link_time_delay: 0
+      light_switch:
+        entity_id:
+        - scene.ht_blind_closed
+        - light.gym_downlight_front_right
+        - light.gym_downlight_front_left
+        - light.ht_group_lights_front
+      light_brightness: 50
+      include_light_control:
+      - use_brightness
+      - use_transition
+      light_transition_on: 2
+      include_light_colour_control: use_colour_temperature
+      light_colour_temperature: 3800
+      include_bypass: bypass_disabled
+      app_attribute: []
+      end_light_switch:
+        entity_id: script.ht_blind_reset
+- id: '1744580480990'
+  alias: Xbox ON Switch TV to HDMI3
+  description: ''
+  triggers:
+  - device_id: 6c6fffdb63c1aa618f9770759b61942f
+    domain: media_player
+    entity_id: 930bbed65de9106cf3380a5eab6bd048
+    type: turned_on
+    trigger: device
+  conditions: []
+  actions:
+  - action: media_player.select_source
+    metadata: {}
+    data:
+      source: HDMI 3
+    target:
+      device_id: 3e3a04862972c9de2c4ae4d675cdf83f
+  mode: single
+- id: '1744588305897'
+  alias: 'Set Circadian Mode '
+  description: ''
+  triggers:
+  - trigger: time
+    at: 06:00:00
+  - trigger: time
+    at: '20:00:00'
+  - trigger: homeassistant
+    event: start
+  conditions: []
+  actions:
+  - if:
+    - condition: time
+      after: 06:00:00
+      before: '20:00:00'
+    then:
+    - action: input_boolean.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id: input_boolean.circadian_mode
+    else:
+    - action: input_boolean.turn_on
+      metadata: {}
+      data: {}
+      target:
+        entity_id: input_boolean.circadian_mode
+  mode: single
+- id: '1745447414257'
+  alias: MBR Bedside Remote Right
+  description: ''
+  use_blueprint:
+    path: PAFolot/PAFolot_hue_dimmer_switch_blueprint.yaml
+    input:
+      remote: 3a591ade276592b80c1d5d25297a1ff2
+      button_on_single_press:
+      - choose:
+        - conditions:
+          - condition: device
+            type: is_on
+            device_id: f9c51bb461bfaa9851831aefcfcbc316
+            entity_id: 93562380c74129c7a879fe90e78dcf5b
+            domain: light
+          sequence:
+          - alias: Dim Up 8%
+            action: light.turn_on
+            metadata: {}
+            data:
+              transition: 0.3
+              brightness_step_pct: 8
+            target:
+              entity_id: light.mbr_bedside_lamp_left_light
+          alias: If already ON, dim UP
+        default:
+        - action: light.turn_on
+          metadata: {}
+          data:
+            transition: 1
+          target:
+            entity_id: light.mbr_bedside_lamp_left_light
+      button_on_double_press:
+      - choose:
+        - conditions:
+          - condition: and
+            conditions:
+            - condition: device
+              type: is_on
+              device_id: f9c51bb461bfaa9851831aefcfcbc316
+              entity_id: 93562380c74129c7a879fe90e78dcf5b
+              domain: light
+            - alias: Adaptive Lighting manual control
+              condition: template
+              value_template: "{{ 'light.mbr_bedside_lamp_left_light'\n                     in
+                state_attr('switch.mbr_adaptive_lighting','manual_control')\n                     |
+                default([]) }}"
+          sequence:
+          - action: script.sync_two_lights
+            metadata: {}
+            data:
+              source_light: light.mbr_bedside_lamp_left_light
+              target_light:
+              - light.mbr_bedside_lamp_right_light
+          alias: Sync if in manual control mode
+        default:
+        - action: light.turn_on
+          metadata: {}
+          data:
+            transition: 1
+          target:
+            entity_id:
+            - light.mbr_bedside_lamp_left_light
+            - light.mbr_bedside_lamp_right_light
+      button_on_triple_press: []
+      button_off_triple_press: []
+      button_off_double_press:
+      - choose:
+        - conditions:
+          - condition: device
+            type: is_off
+            device_id: f9c51bb461bfaa9851831aefcfcbc316
+            entity_id: 93562380c74129c7a879fe90e78dcf5b
+            domain: light
+          sequence:
+          - action: light.turn_off
+            metadata: {}
+            data:
+              transition: 2
+            target:
+              entity_id: light.mbr_bedside_lamp_right_light
+        default:
+        - action: light.turn_off
+          metadata: {}
+          data:
+            transition: 2
+          target:
+            entity_id: light.mbr_bedside_lamp_left_light
+      button_off_single_press:
+      - alias: DIM to min brightness
+        choose:
+        - conditions:
+          - condition: numeric_state
+            entity_id: light.mbr_bedside_lamp_left_light
+            attribute: brightness
+            below: 22
+          sequence:
+          - action: light.turn_on
+            metadata: {}
+            data:
+              brightness: 2
+              transition: 0.8
+            target:
+              entity_id: light.mbr_bedside_lamp_left_light
+          alias: Minimum brightness 2
+        default:
+        - alias: Dim Down 8%
+          action: light.turn_on
+          metadata: {}
+          data:
+            brightness_step_pct: -8
+            transition: 0.3
+          target:
+            entity_id: light.mbr_bedside_lamp_left_light
+      button_up_hold: []
+      button_up_single_press:
+      - action: scene.turn_on
+        metadata: {}
+        data:
+          transition: 5
+        target:
+          entity_id: scene.mbr_before_bed
+      button_down_hold: []
+      button_down_single_press:
+      - action: scene.turn_on
+        metadata: {}
+        data:
+          transition: 8
+        target:
+          entity_id: scene.mbr_face_lighting
+      button_on_quadruple_press: []
+      button_off_hold:
+      - alias: DIM to min brightness
+        choose:
+        - conditions:
+          - condition: numeric_state
+            entity_id: light.mbr_bedside_lamp_left_light
+            attribute: brightness
+            below: 22
+          sequence:
+          - action: light.turn_on
+            metadata: {}
+            data:
+              transition: 0.5
+              brightness: 2
+            target:
+              entity_id: light.mbr_bedside_lamp_left_light
+          alias: Minimum brightness 2
+        default:
+        - alias: Dim Down 8%
+          action: light.turn_on
+          metadata: {}
+          data:
+            transition: 0.7
+            brightness_step_pct: -10
+          target:
+            entity_id: light.mbr_bedside_lamp_left_light
+      button_on_hold:
+      - alias: Dim Up 8%
+        action: light.turn_on
+        metadata: {}
+        data:
+          brightness_step_pct: 10
+          transition: 0.7
+        target:
+          entity_id: light.mbr_bedside_lamp_left_light
+      button_up_double_press:
+      - action: scene.turn_on
+        metadata: {}
+        data:
+          transition: 5
+        target:
+          entity_id: scene.mbr_face_lighting_duplicate
+      button_down_double_press:
+      - action: scene.turn_on
+        metadata: {}
+        data:
+          transition: 8
+        target:
+          entity_id: scene.mbr_romance_lighting
+      button_up_triple_press:
+      - action: scene.turn_on
+        metadata: {}
+        data:
+          transition: 5
+        target:
+          entity_id: scene.mbr_nightlight_blue
+- id: '1745622366136'
+  alias: HT Light Automation
+  description: ''
+  use_blueprint:
+    path: Blackshome/sensor-light.yaml
+    input:
+      motion_trigger:
+      - binary_sensor.ht_sensor_occupancy_fm
+      light_switch:
+        entity_id: light.ht_group_lights_front
+      time_delay: 1
+      include_bypass:
+      - bypass_enabled_stop
+      motion_bypass_lights_stop:
+      - input_boolean.ht_automation_link_tv_lighting
+      - input_boolean.ht_automation_link_xbox_lighting
+      light_transition_on: 2
+      bypass_auto_off_delay: 1
+      include_light_control:
+      - use_brightness
+      - use_transition
+      light_brightness: 25
+      light_transition_off: 2
+- id: '1745962206673'
+  alias: Window-safe roller blind
+  description: ''
+  triggers:
+  - alias: Cover Position Changes
+    trigger: numeric_state
+    entity_id:
+    - cover.bathroom_blind
+    attribute: current_position
+    id: Cover_Position_Change
+    below: 100
+  - trigger: state
+    entity_id: binary_sensor.bathroom_window
+    to: 'on'
+  - trigger: homeassistant
+    event: start
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.bathroom_window
+    state: 'on'
+  actions:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.entity_id == cover\n   and (trigger.to_state.attributes.current_position
+          | int) <= open_pos }}\n"
+      sequence:
+      - action: cover.close_cover
+        target:
+          entity_id: '{{ cover }}'
+      - delay:
+          seconds: '{{ bump_dur }}'
+      - action: cover.open_cover
+        target:
+          entity_id: '{{ cover }}'
+    default:
+    - action: cover.open_cover
+      target:
+        entity_id: '{{ cover }}'
+  mode: restart
+  max_exceeded: silent
+  variables:
+    cover: cover.bathroom_blind
+    window: binary_sensor.bathroom_window
+    open_pos: 100
+    bump_dur: 1
+- id: '1746043278796'
+  alias: Window-Safe Blind - Bathroom
+  description: ''
+  use_blueprint:
+    path: PAFolot/PAFolot_window_safe_blind.yaml
+    input:
+      cover_entity: cover.bathroom_blind
+      window_sensor: binary_sensor.bathroom_window
+- id: '1746043667368'
+  alias: Window-Safe Blind - Office
+  description: ''
+  use_blueprint:
+    path: PAFolot/PAFolot_window_safe_blind.yaml
+    input:
+      cover_entity: cover.office_blind
+      window_sensor: binary_sensor.office_window
+- id: '1746043731126'
+  alias: Window-Safe Blind - Washroom
+  description: ''
+  use_blueprint:
+    path: PAFolot/PAFolot_window_safe_blind.yaml
+    input:
+      window_sensor: binary_sensor.washroom_window
+      cover_entity: cover.washroom_blind
+- id: '1746043788869'
+  alias: Window-Safe Blind - Zachary's Bedroom
+  description: ''
+  use_blueprint:
+    path: PAFolot/PAFolot_window_safe_blind.yaml
+    input:
+      window_sensor: binary_sensor.zbr_window
+      cover_entity: cover.zbr_blind
+- id: '1746043923691'
+  alias: Window-Safe Blind - Family Room
+  description: ''
+  use_blueprint:
+    path: PAFolot/PAFolot_window_safe_blind.yaml
+    input:
+      cover_entity: cover.ht_blind
+      window_sensor: binary_sensor.bathroom_window

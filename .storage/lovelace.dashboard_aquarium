@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_aquarium",
+  "data": {
+    "config": {
+      "views": [
+        {
+          "title": "Home",
+          "cards": [
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "light.apex_light1"
+                },
+                {
+                  "entity": "light.aquarium_light_hue_light",
+                  "name": "Light2",
+                  "icon": "mdi:ceiling-light-outline",
+                  "secondary_info": "brightness"
+                },
+                {
+                  "entity": "light.apex_light3"
+                },
+                {
+                  "entity": "valve.apex_co2",
+                  "name": "CO₂ Injection"
+                },
+                {
+                  "entity": "switch.apex_uv"
+                },
+                {
+                  "entity": "light.apex_moonlight"
+                }
+              ],
+              "state_color": true
+            }
+          ],
+          "badges": [
+            {
+              "type": "entity",
+              "show_name": false,
+              "show_state": true,
+              "show_icon": true,
+              "entity": "sensor.apex_tmp",
+              "color": "deep-orange",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "switch.apex_heaters",
+                  "state": "on"
+                }
+              ]
+            },
+            {
+              "type": "entity",
+              "show_name": false,
+              "show_state": true,
+              "show_icon": true,
+              "entity": "sensor.apex_tmp",
+              "color": "",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "switch.apex_heaters",
+                  "state": "off"
+                }
+              ]
+            },
+            {
+              "type": "entity",
+              "show_name": true,
+              "show_state": true,
+              "show_icon": true,
+              "entity": "sensor.apex_ph",
+              "color": "",
+              "name": "pH"
+            },
+            {
+              "type": "entity",
+              "show_name": true,
+              "show_state": true,
+              "show_icon": true,
+              "entity": "sensor.apex_orp",
+              "color": "",
+              "name": "ORP"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,188 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_config",
+  "data": {
+    "config": {
+      "views": [
+        {
+          "title": "Blinds Settings",
+          "type": "sections",
+          "max_columns": 4,
+          "icon": "mdi:window-shutter-cog",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "vertical-stack",
+                  "cards": [
+                    {
+                      "type": "tile",
+                      "entity": "switch.adaptive_toggle_control_stairs_blind"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "binary_sensor.adaptive_manual_override_stairs_blind"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "button.adaptive_reset_manual_override_stairs_blind"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "switch.adaptive_outside_temperature_stairs_blind"
+                    }
+                  ],
+                  "title": "Stairs Blind"
+                }
+              ],
+              "title": "Adaptive Blind Parameters"
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "switch.stairs_blind_adaptive_toggle_control_shade_stairs_adaptive"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.stairs_blind_adaptive_sun_infront_shade_stairs_adaptive"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.stairs_blind_adaptive_start_sun_shade_stairs_adaptive"
+                },
+                {
+                  "type": "tile",
+                  "entity": "button.stairs_blind_adaptive_reset_manual_override_shade_stairs_adaptive"
+                },
+                {
+                  "type": "tile",
+                  "entity": "switch.stairs_blind_adaptive_outside_temperature_shade_stairs_adaptive"
+                },
+                {
+                  "type": "tile",
+                  "entity": "switch.stairs_blind_adaptive_manual_override_shade_stairs_adaptive"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.stairs_blind_adaptive_manual_override_shade_stairs_adaptive"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.stairs_blind_adaptive_end_sun_shade_stairs_adaptive"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.stairs_blind_adaptive_cover_position_shade_stairs_adaptive"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.stairs_blind_adaptive_control_method_shade_stairs_adaptive"
+                },
+                {
+                  "type": "tile",
+                  "entity": "switch.stairs_blind_adaptive_climate_mode_shade_stairs_adaptive"
+                }
+              ],
+              "title": "Stairs Blind Debugging"
+            }
+          ]
+        },
+        {
+          "type": "sections",
+          "path": "lighting-settings",
+          "max_columns": 4,
+          "title": "Lighting Settings",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "title": "Presence",
+          "path": "presence",
+          "type": "sections",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "device_tracker.kona_location"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Modes",
+          "path": "modes",
+          "type": "sections",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "input_select.home_occupancy_mode",
+                  "layout_options": {
+                    "grid_columns": 4,
+                    "grid_rows": 1
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.home_nearest_device"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.home_nearest_direction_of_travel"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.home_nearest_distance"
+                }
+              ],
+              "title": "Home Occupancy Mode",
+              "column_span": 1
+            }
+          ],
+          "badges": [
+            {
+              "type": "entity",
+              "entity": "zone.home"
+            }
+          ]
+        },
+        {
+          "title": "System",
+          "path": "system",
+          "icon": "mdi:cog",
+          "type": "sections",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "update.auto_backup_update"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.ha_auto_backup"
+                }
+              ],
+              "title": "Backups",
+              "column_span": 1
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

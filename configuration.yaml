@@ -1,0 +1,43 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+bluetooth:
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+# Enable HTTPS
+http:
+  ssl_certificate: /ssl/fullchain.pem
+  ssl_key: /ssl/privkey.pem
+
+# Logger settings
+logger:
+  # The next line sets the default logging level, for all python modules.
+  # It seems "recommended" to set it to avoid too much logging.
+  default: warning
+  logs:
+    zigpy: debug
+
+# ZHA Configuration
+zha:
+  zigpy_config:
+    ota:
+      otau_directory: /config/zigpy_ota
+      extra_providers:
+        # Use the unofficial Zigbee2MQTT OTA updates repository
+        - type: z2m
+          url: https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/index.json
+
+# Home Assistant settings
+homeassistant:
+  # … other homeassistant settings 
+
+  # Customizations
+  customize:
+    sensor.plant_sensor_1_soil_moisture:
+      device_class: moisture
+    sensor.apex_total_power:
+      device_class: power
+      state_class: measurement
+      unit_of_measurement: W

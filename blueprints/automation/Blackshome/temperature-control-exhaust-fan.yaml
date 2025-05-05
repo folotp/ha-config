@@ -1,0 +1,2087 @@
+blueprint:
+  name: Temperature Control Fan
+  description: "# \U0001F321️ Temperature Control Fan\n**Version: 1.9**\n\nFan-tastic
+    Fan Control: The Ultimate Fan Control for Optimal Temperature Regulation. \U0001F32C️\U0001F4C9\n\n**If
+    you like my blueprints, and would like to show your support or just say thank
+    you?** [Click Here](https://www.paypal.com/donate/?hosted_button_id=WAZS3QSDTPGA8)
+    \U0001F642\n<details> <summary><b>The Automation Process:</b> \U0001F448</summary>\n\n\n
+    \ - **Triggering:**\n    - Select a toggle helper or switch in the UI to enable
+    or disable Auto Mode.\n    - When the temperature sensor rises above the set value,
+    the fan turns ON.\n    - When the temperature sensor falls below the set value,
+    the fan turns OFF.\n\n  - **Fan Modes:**\n    - **Basic Mode:** Turns the fan
+    ON when the temperature exceeds the `Rising Temperature` and OFF when it drops
+    below the `Falling Temperature`.\n    - **Basic Mode + Maximum Run Time:** Operates
+    like Basic Mode, with the addition of a maximum duration the fan can stay ON after
+    being triggered.\n    - **Economy Mode:** Operates like Basic Mode, but the `Secondary
+    Sensor` must be cooler than the `Trigger Sensor` by the set `Differential Value`.
+    Optimizes roof space cooling while minimizing running costs and fan noise.\n    -
+    **Heat Transfer Mode:** Transfers heat from one room to another when the `Trigger
+    Sensor` is warmer than the `Secondary Sensor` by the set `Differential Value`,
+    and the `Secondary Sensor` is below its setpoint, ensuring efficient heating and
+    maintaining temperature control in the other room.\n\n  - **Ceiling Fan Modes:**\n
+    \   - **3 Speed Fan:** Controls the fan with 3 speeds based on room temperature.\n
+    \   - **Fan Preset Mode:** Controls the fan with set preset modes based on room
+    temperature.\n    - **Fan Percentage:** Controls the fan by a percentage value
+    based on room temperature.\n\n  - **Manual Override:**\n    - Use Bypass for manual
+    bypassing of trigger sensors, providing additional customization.\n\n  - **Time-Based
+    Options:**\n    - Specify precise start and end times along with weekday selections
+    to define when the automation should run.\n\n  - **HA Restart Safeguards:**\n
+    \   - Benefit from built-in safeguards for Home Assistant restarts.\n</details>\n\nNeed
+    help?\n- FAQ: [Click Here](https://community.home-assistant.io/t/515861/2)\n-
+    Community Support Including Updates: [Click Here](https://community.home-assistant.io/t/515861)\n\nRequired
+    = *\n"
+  domain: automation
+  input:
+    trigger_settings:
+      name: Triggers *
+      icon: mdi:cog-outline
+      collapsed: true
+      input:
+        trigger_sensor:
+          name: Trigger Sensor - Primary Temperature Sensor *
+          description: 'The **Trigger Sensor** is the primary temperature sensor used
+            to monitor the current temperature. This sensor triggers the fan automation
+            based on the temperature readings. The fan will adjust its speed or turn
+            on/off depending on the temperature changes detected by this sensor.
+
+            '
+          default: []
+          selector:
+            entity:
+              filter:
+              - domain:
+                - sensor
+              multiple: false
+        auto_mode_entity:
+          name: Auto Mode Control Entity *
+          description: 'Select a toggle helper or switch to manage Auto Mode in the
+            UI. When this entity is ON, the fan will operate automatically based on
+            the configured temperature thresholds and modes. When this entity is OFF,
+            the fan will be controlled manually, and temperature-based automation
+            will be disabled.
+
+
+            ⚠️ **In Auto Mode, the fan may start at any time based on the temperature
+            thresholds you''ve set.** Be cautious to avoid unexpected fan operation,
+            which could cause injury or damage. For safety, especially when working
+            on the fan or if there''s a risk of injury, it’s strongly recommended
+            to physically isolate the power supply to prevent the fan from operating.
+            **Keep in mind that the fan may still start even if Auto Mode is OFF,
+            so never rely solely on software controls.** Always disable this automation
+            when it''s not needed.
+
+            '
+          default: []
+          selector:
+            entity:
+              filter:
+              - domain:
+                - switch
+                - input_boolean
+              multiple: false
+        rising_temp:
+          name: Rising Temperature
+          description: 'Sets the temperature threshold that triggers the automation
+            to activate the fan. When the temperature rises above this set value,
+            the automation will initiate the fan control based on the defined mode.
+
+            '
+          default: 22
+          selector:
+            number:
+              min: 0.0
+              max: 100.0
+              step: 0.5
+              unit_of_measurement: °C | °F
+              mode: slider
+        falling_temp:
+          name: Falling Temperature
+          description: 'Defines the temperature threshold at which the automation
+            will deactivate the fan. When the temperature drops below this set value,
+            the fan will be turned OFF, ceasing its operation based on the defined
+            control mode.
+
+            '
+          default: 20
+          selector:
+            number:
+              min: 0.0
+              max: 100.0
+              step: 0.5
+              unit_of_measurement: °C | °F
+              mode: slider
+        fan_mode:
+          name: Fan Mode
+          description: "Select the type of fan you are using:\n\n  \n- **Fan**: Controls
+            a fan based on selected options, adjusting according to the temperature.\n\n-
+            **Ceiling Fan**: Controls a ceiling fan with either 3-speed fan, fan with
+            preset modes or percentage-based fan, adjusting according to the temperature.\n"
+          default: fan
+          selector:
+            select:
+              options:
+              - label: Fan
+                value: fan
+              - label: Ceiling Fan
+                value: ceiling_fan
+              multiple: false
+              custom_value: false
+              sort: false
+    fan_settings:
+      name: Fan
+      icon: mdi:fan
+      description: ⚠️ To ensure these options work, expand the **Triggers** section
+        and enable the **Fan** setting in the **Fan Mode** section.
+      collapsed: true
+      input:
+        fan_control_mode:
+          name: Fan Control Mode
+          description: "Select how the fan is controlled:\n\n  \n- **Basic Mode**:
+            Turns the fan ON when the temperature rises above the **Rising Value**
+            and turns it OFF when the temperature falls below the **Falling Value**.\n\n-
+            **Basic Mode + Maximum Run Time**: Works similarly to Basic Mode but includes
+            a maximum run-time limit. Once triggered, the fan will turn off after
+            the set time, even if the temperature remains above the **Falling Value**.\n\n-
+            **Economy Mode**: Activates the fan when the **Trigger Sensor** rises
+            above the **Rising Value**, provided the **Secondary Sensor** is cooler
+            than the **Trigger Sensor** by the set **Differential Value**, ensuring
+            efficient cooling. The fan continues to run while these conditions are
+            met, with checks at each **Heartbeat** interval. It will turn off if the
+            **Trigger Sensor** falls below its **Falling Value** or if the conditions
+            are no longer satisfied.\n\n- **Heat Transfer Mode**: Activates the fan
+            when the **Trigger Sensor** rises above the **Rising Value**, provided
+            the **Trigger Sensor** is warmer than the **Secondary Sensor** by the
+            set **Differential Value** and the **Secondary Sensor** is below its **Secondary
+            Sensor - Setpoint**, ensuring effective heating. The fan continues to
+            run as long as these conditions are met, with checks at each **Heartbeat**
+            interval. It will turn off if the **Trigger Sensor** temperature falls
+            below the **Falling Value** or if the conditions are no longer satisfied.\n"
+          default: basic_mode
+          selector:
+            select:
+              options:
+              - label: Basic Mode
+                value: basic_mode
+              - label: Basic Mode + Maximum Run Time
+                value: maximum_run_time
+              - label: Economy Mode
+                value: economy_mode
+              - label: Heat Transfer Mode
+                value: heat_transfer_mode
+              multiple: false
+              custom_value: false
+              sort: false
+        fan_switch:
+          name: Fan Switch
+          description: 'Enter the fan you would like to turn ON.
+
+            '
+          default: []
+          selector:
+            target:
+              entity:
+              - domain:
+                - switch
+                - fan
+        include_fan_speed_options:
+          name: Fan Speed - Switch OFF (Optional)
+          description: 'In some cases, you may need to select a different entity to
+            turn ON in order to turn the fan OFF. This is typically used when dealing
+            with a fan that has multiple speed settings.
+
+            '
+          default: fan_speed_off_disabled
+          selector:
+            select:
+              options:
+              - label: Enable Fan Speed - Switch OFF
+                value: fan_speed_off_enabled
+              - label: Disable Fan Speed - Switch OFF
+                value: fan_speed_off_disabled
+              multiple: false
+              custom_value: false
+              sort: false
+        fan_speed_off:
+          name: Fan Speed - Switch OFF
+          description: 'This entity will be used to turn the fan OFF if you have selected
+            the **Enable Fan Speed - Switch Off**. Please ensure this entity is different
+            from those selected in the **Fan Switch** section to avoid conflicts.
+
+            '
+          default: []
+          selector:
+            entity:
+              multiple: true
+              filter:
+              - domain:
+                - switch
+                - fan
+        maximum_run_time:
+          name: Maximum Run Time
+          description: 'If you enabled Maximum Run Time above, please enter the duration
+            the fan is allowed to run.
+
+
+            *Used For Basic Mode + Maximum Run Time*
+
+            '
+          default:
+            hours: 0
+            minutes: 0
+            seconds: 0
+          selector:
+            duration: {}
+        secondary_sensor:
+          name: Secondary Sensor
+          description: 'The sensor used for Economy Mode and Heat Transfer Mode. It
+            helps determine the temperature differential or setpoint against the Trigger
+            Sensor to control fan operation.
+
+
+            *Used For Economy Mode & Heat Transfer Mode*
+
+            '
+          default: []
+          selector:
+            entity:
+              filter:
+              - domain:
+                - sensor
+              multiple: false
+        secondary_sensor_setpoint:
+          name: Secondary Sensor - Setpoint
+          description: 'The temperature threshold for the Secondary Sensor, used exclusively
+            in Heat Transfer Mode. The fan will only operate if the Secondary Sensor''s
+            temperature is below this setpoint, ensuring that heat is transferred
+            effectively.
+
+
+            *Used For Heat Transfer Mode*
+
+            '
+          default: 20
+          selector:
+            number:
+              min: 0.0
+              max: 100.0
+              step: 0.5
+              unit_of_measurement: °C | °F
+              mode: slider
+        differential_value:
+          name: Differential Value
+          description: 'The temperature difference required to turn the fan ON and
+            keep it running.
+
+
+            *Used For Economy Mode & Heat Transfer Mode*
+
+            '
+          default: 8
+          selector:
+            number:
+              min: 0.0
+              max: 70.0
+              step: 0.5
+              unit_of_measurement: °C | °F
+              mode: slider
+        fan_heartbeat:
+          name: Heartbeat - Check Interval
+          description: 'The interval at which the differential condition is checked.
+
+
+            *Used For Economy Mode & Heat Transfer Mode*
+
+            '
+          default: 10
+          selector:
+            number:
+              min: 1.0
+              max: 60.0
+              unit_of_measurement: minutes
+              step: 1.0
+              mode: slider
+    ceiling_fan_settings:
+      name: Ceiling Fan
+      icon: mdi:ceiling-fan
+      description: ⚠️ To ensure these options work, expand the **Triggers** section
+        and enable the **Ceiling Fan** setting in the **Fan Mode** section.
+      collapsed: true
+      input:
+        ceiling_fan_control_mode:
+          name: Ceiling Fan Control Mode
+          description: "Select how the fan is controlled:\n\n  \n- **3 Speed Fan**:
+            Controls the fan with 3 speeds.\n\n- **Fan Preset Mode**: Controls the
+            fan with set preset modes.\n\n- **Fan Percentage**: Controls the fan by
+            a percentage value.\n"
+          default: three_speed
+          selector:
+            select:
+              options:
+              - label: 3 Speed Fan
+                value: three_speed
+              - label: Fan Preset Modes
+                value: fan_preset
+              - label: Fan Percentage
+                value: fan_percentage
+              multiple: false
+              custom_value: false
+              sort: false
+        fan_high_speed:
+          name: High Speed
+          description: 'Specifies the fan entity that will be controlled to operate
+            at high speed. This fan entity will be activated when the temperature
+            exceeds the **High Speed Temperature** threshold.
+
+
+            *Used For 3 Speed Fan*
+
+            '
+          default: []
+          selector:
+            entity:
+              multiple: true
+              filter:
+              - domain:
+                - fan
+                - switch
+        fan_medium_speed:
+          name: Medium Speed
+          description: 'Specifies the fan entity that will be controlled to operate
+            at medium speed. This fan entity will be activated when the temperature
+            is within the range defined by the **Medium Speed Temperature** and **High
+            Speed Temperature** thresholds.
+
+
+            *Used For 3 Speed Fan*
+
+            '
+          default: []
+          selector:
+            entity:
+              multiple: true
+              filter:
+              - domain:
+                - fan
+                - switch
+        fan_low_speed:
+          name: Low Speed
+          description: 'Specifies the fan entity that will be controlled to operate
+            at low speed. This fan entity will be activated when the temperature rises
+            above the **Rising Temperature** but remains below the **Medium Speed
+            Temperature** threshold. The fan entity will be turned off when the **Falling
+            Temperature** is triggered.
+
+
+            *Used For 3 Speed Fan*
+
+            '
+          default: []
+          selector:
+            entity:
+              multiple: true
+              filter:
+              - domain:
+                - fan
+                - switch
+        fan_off:
+          name: Fan OFF
+          description: 'Specifies the fan entity that will be turned on to stop the
+            fan when the **Falling Temperature** is reached. This fan entity will
+            be activated to ensure the fan is turned off when the temperature drops
+            below the **Falling Temperature** threshold.
+
+
+            *Used For 3 Speed Fan*
+
+            '
+          default: []
+          selector:
+            entity:
+              multiple: true
+              filter:
+              - domain:
+                - fan
+                - switch
+        medium_speed_temp:
+          name: Medium Speed Temperature
+          description: 'Defines the temperature threshold at which the fan will switch
+            to medium speed. When the temperature rises above this value but is below
+            the High Speed Temperature, the fan will operate at medium speed for balanced
+            cooling. If the temperature drops below this threshold, the fan will automatically
+            switch to low speed.
+
+
+            *Used For 3 Speed Fan*
+
+            '
+          default: 25
+          selector:
+            number:
+              min: 15.0
+              max: 95.0
+              step: 0.5
+              unit_of_measurement: °C | °F
+              mode: slider
+        high_speed_temp:
+          name: High Speed Temperature
+          description: 'Sets the temperature threshold at which the fan will switch
+            to high speed. When the temperature exceeds this value, the fan will operate
+            at its highest speed to provide maximum cooling. If the temperature falls
+            below this threshold, the fan will automatically switch to medium speed.
+
+
+            *Used For 3 Speed Fan*
+
+            '
+          default: 29
+          selector:
+            number:
+              min: 15.0
+              max: 95.0
+              step: 0.5
+              unit_of_measurement: °C | °F
+              mode: slider
+        three_speed_dead_zone:
+          name: Dead Zone
+          description: 'Select total dead zone range. This value is divided by 2 and
+            applied equally on each side of your **Medium** and **High Temperature**
+            setpoints. For example, if your Medium Speed setpoint is 25°C and the
+            Dead Zone is 2°C, it creates a dead zone between 24°C and 26°C. The fan
+            will switch to Low speed when the temperature drops below 24°C and to
+            medium speed when it rises above 26°C. This prevents the fan from constantly
+            switching speeds at the exact setpoint, reducing irritation.
+
+
+            *Used For 3 Speed Fan*
+
+            '
+          default: 2
+          selector:
+            number:
+              min: 0.5
+              max: 40.0
+              step: 0.5
+              unit_of_measurement: °C | °F
+              mode: slider
+        three_speed_heartbeat:
+          name: Heartbeat - Time Interval
+          description: 'Defines the time interval between each periodic check of the
+            fan speed. This interval helps prevent constant adjustments and ensures
+            stable operation.
+
+
+            *Used For 3 Speed Fan*
+
+            '
+          default: 10
+          selector:
+            number:
+              min: 1.0
+              max: 60.0
+              unit_of_measurement: minutes
+              step: 1.0
+              mode: slider
+        preset_fan_entities:
+          name: Fan Controled By A Preset Mode
+          description: 'Specify the fan entities that will be controlled using a preset
+            mode. These fans will have their preset speeds adjusted based on the defined
+            temperature thresholds.
+
+
+            **NOTE:** Only individual fan entities are supported. Areas, devices,
+            and labels cannot be used.
+
+
+            *Used For Fan Preset Modes*
+
+            '
+          default: {}
+          selector:
+            target:
+              entity:
+              - domain:
+                - climate
+                - fan
+        preset_high_speed:
+          name: High Speed
+          description: 'Specifies the fan entity that will be controlled to operate
+            at high speed. This fan entity will be activated when the temperature
+            exceeds the **High Speed Temperature** threshold.
+
+
+            *Used For Fan Preset Modes*
+
+            '
+          default: high
+          selector:
+            select:
+              custom_value: true
+              options:
+              - label: Max
+                value: max
+              - label: High
+                value: high
+              - label: Medium
+                value: medium
+              - label: '6'
+                value: '6'
+              - label: '5'
+                value: '5'
+              - label: '4'
+                value: '4'
+              - label: '3'
+                value: '3'
+              multiple: false
+              sort: false
+        preset_medium_speed:
+          name: Medium Speed
+          description: 'Specifies the fan entity that will be controlled to operate
+            at medium speed. This fan entity will be activated when the temperature
+            is within the range defined by the **Medium Speed Temperature** and **High
+            Speed Temperature** thresholds.
+
+
+            *Used For Fan Preset Modes*
+
+            '
+          default: medium
+          selector:
+            select:
+              custom_value: true
+              options:
+              - label: High
+                value: high
+              - label: Medium
+                value: medium
+              - label: Low
+                value: low
+              - label: '5'
+                value: '5'
+              - label: '4'
+                value: '4'
+              - label: '3'
+                value: '3'
+              - label: '2'
+                value: '2'
+              multiple: false
+              sort: false
+        preset_low_speed:
+          name: Low Speed
+          description: 'Specifies the fan entity that will be controlled to operate
+            at low speed. This fan entity will be activated when the temperature rises
+            above the **Rising Temperature** but remains below the **Medium Speed
+            Temperature** threshold. The fan entity will be turned off when the **Falling
+            Temperature** is triggered.
+
+
+            *Used For Fan Preset Modes*
+
+            '
+          default: low
+          selector:
+            select:
+              custom_value: true
+              options:
+              - label: Medium
+                value: medium
+              - label: Low
+                value: low
+              - label: Min
+                value: min
+              - label: '4'
+                value: '4'
+              - label: '3'
+                value: '3'
+              - label: '2'
+                value: '2'
+              - label: '1'
+                value: '1'
+              multiple: false
+              sort: false
+        preset_off:
+          name: Fan OFF
+          description: 'Specifies the fan entity that will be turned on to stop the
+            fan when the **Falling Temperature** is reached. This fan entity will
+            be activated to ensure the fan is turned off when the temperature drops
+            below the **Falling Temperature** threshold.
+
+
+            *Used For Fan Preset Modes*
+
+            '
+          default: 'off'
+          selector:
+            select:
+              custom_value: true
+              options:
+              - label: 'Off'
+                value: 'off'
+              - label: '0'
+                value: '0'
+              multiple: false
+              sort: false
+        preset_medium_speed_temp:
+          name: Medium Speed Temperature
+          description: 'Defines the temperature threshold at which the fan will switch
+            to medium speed. When the temperature rises above this value but is below
+            the High Speed Temperature, the fan will operate at medium speed for balanced
+            cooling. If the temperature drops below this threshold, the fan will automatically
+            switch to low speed.
+
+
+            *Used For Fan Preset Modes*
+
+            '
+          default: 25
+          selector:
+            number:
+              min: 15.0
+              max: 95.0
+              step: 0.5
+              unit_of_measurement: °C | °F
+              mode: slider
+        preset_high_speed_temp:
+          name: High Speed Temperature
+          description: 'Sets the temperature threshold at which the fan will switch
+            to high speed. When the temperature exceeds this value, the fan will operate
+            at its highest speed to provide maximum cooling. If the temperature falls
+            below this threshold, the fan will automatically switch to medium speed.
+
+
+            *Used For Fan Preset Modes*
+
+            '
+          default: 29
+          selector:
+            number:
+              min: 15.0
+              max: 95.0
+              step: 0.5
+              unit_of_measurement: °C | °F
+              mode: slider
+        preset_dead_zone:
+          name: Dead Zone
+          description: 'Select total dead zone range. This value is divided by 2 and
+            applied equally on each side of your **Medium** and **High Temperature**
+            setpoints. For example, if your Medium Speed setpoint is 25°C and the
+            Dead Zone is 2°C, it creates a dead zone between 24°C and 26°C. The fan
+            will switch to Low speed when the temperature drops below 24°C and to
+            medium speed when it rises above 26°C. This prevents the fan from constantly
+            switching speeds at the exact setpoint, reducing irritation.
+
+
+            *Used For Fan Preset Modes*
+
+            '
+          default: 2
+          selector:
+            number:
+              min: 0.5
+              max: 40.0
+              step: 0.5
+              unit_of_measurement: °C | °F
+              mode: slider
+        preset_heartbeat:
+          name: Heartbeat - Time Interval
+          description: 'Defines the time interval between each periodic check of the
+            fan speed. This interval helps prevent constant adjustments and ensures
+            stable operation.
+
+
+            *Used For Fan Preset Modes*
+
+            '
+          default: 10
+          selector:
+            number:
+              min: 1.0
+              max: 60.0
+              unit_of_measurement: minutes
+              step: 1.0
+              mode: slider
+        ceiling_fan_entities:
+          name: Fan Controled By A Percentage Value
+          description: 'Specify the fan entities that will be controlled using a percentage
+            value. These fans will have their speeds adjusted based on the defined
+            temperature thresholds.
+
+
+            **NOTE:** Only individual fan entities are supported. Areas, devices,
+            and labels cannot be used.
+
+
+            *Used For Fan Percentage*
+
+            '
+          default: {}
+          selector:
+            target:
+              entity:
+              - domain:
+                - climate
+                - fan
+        ceiling_fan_max_temp:
+          name: Max Temperature
+          description: 'Defines the temperature at which the fan will reach its maximum
+            speed. When the temperature rises to this value, the fan will operate
+            at the **Max Fan Percentage** to provide maximum cooling.
+
+
+            *Used For Fan Percentage*
+
+            '
+          default: 29
+          selector:
+            number:
+              min: 10.0
+              max: 100.0
+              step: 0.5
+              unit_of_measurement: °C | °F
+              mode: slider
+        ceiling_fan_max_pct:
+          name: Max Fan Percentage
+          description: 'Specifies the highest speed percentage the fan is allowed
+            to reach. At the **Max Temperature**, the fan will operate at this percentage
+            to ensure maximum cooling.
+
+
+            *Used For Fan Percentage*
+
+            '
+          default: 70
+          selector:
+            number:
+              min: 10.0
+              max: 100.0
+              step: 1.0
+              unit_of_measurement: '%'
+              mode: slider
+        ceiling_fan_min_pct:
+          name: Min Fan Percentage
+          description: 'Specifies the lowest speed percentage the fan is allowed to
+            operate at. When the temperature reaches the **Rising Temperature** threshold,
+            the fan will run at this minimum percentage to provide a gentle breeze.
+
+
+            **Important**: If set to 0 (not recommended), the fan will turn off when
+            the temperature falls to the **Rising Temperature**. It is better to set
+            a minimum fan percentage and use the **Falling Temperature** threshold
+            to turn the fan off completely.
+
+
+            *Used For Fan Percentage*
+
+            '
+          default: 10
+          selector:
+            number:
+              min: 0.0
+              max: 100.0
+              step: 1.0
+              unit_of_measurement: '%'
+              mode: slider
+        ceiling_fan_heartbeat:
+          name: Heartbeat
+          description: 'Defines the interval at which the system checks and adjusts
+            the fan speed. During each heartbeat, the system evaluates the temperature,
+            current fan percentage, and the target percentage, making necessary adjustments
+            to the fan speed to ensure efficient operation.
+
+
+            *Used For Fan Percentage*
+
+            '
+          default: 1
+          selector:
+            number:
+              min: 0.25
+              max: 10.0
+              step: 0.25
+              unit_of_measurement: minutes
+              mode: slider
+        ceiling_fan_step_value:
+          name: Step Value
+          description: 'Determines the maximum percentage change in fan speed allowed
+            during each heartbeat. This value helps in moderating the rate of speed
+            change, ensuring smoother transitions and preventing abrupt changes in
+            the fan''s operation.
+
+
+            *Used For Fan Percentage*
+
+            '
+          default: 4
+          selector:
+            number:
+              min: 1.0
+              max: 100.0
+              step: 1.0
+              unit_of_measurement: '%'
+              mode: slider
+        ceiling_fan_dead_zone:
+          name: Dead Zone (±)
+          description: 'Specifies the range around the target fan percentage within
+            which no adjustments are made. If the current fan percentage falls within
+            this dead zone, the fan speed remains constant, preventing minor fluctuations
+            that could be bothersome.
+
+
+            For example, if the fan speed aims to reach 88%. With a Dead Zone set
+            to 7%, if your actual fan speed falls between 81% and 95%, there will
+            be no change to the fan speed. While a 7% Dead Zone might seem significant
+            at first, testing has shown that it results in a much smaller actual impact
+            than expected.
+
+
+            *Used For Fan Percentage*
+
+            '
+          default: 7
+          selector:
+            number:
+              min: 0.5
+              max: 15.0
+              step: 0.5
+              unit_of_measurement: '%'
+              mode: slider
+    bypass_settings:
+      name: Bypass
+      icon: mdi:cog-pause-outline
+      collapsed: true
+      input:
+        include_bypass:
+          name: Use The Trigger Sensor By-pass Option (Optional)
+          description: 'All the bypass options will allow manual control of your fan.
+            Each option determines what should happen when you turn the bypass ON.
+            Choose the action that you would like to activate.
+
+
+            **TIP:** Consider using the bypass feature as a handy tool for toggling
+            between Auto and Manual modes on your dashboard. You can set this up easily
+            with a toggle helper.
+
+            '
+          default: bypass_disabled
+          selector:
+            select:
+              options:
+              - label: 1 - Enable the By-pass - Turn fan ON
+                value: bypass_enabled_turn_on
+              - label: 2 - Enable the By-pass - Turn fan OFF
+                value: bypass_enabled
+              - label: 3 - Enable the By-pass - Keep the current fan state
+                value: bypass_enabled_stop
+              - label: Disable the By-pass option
+                value: bypass_disabled
+              multiple: false
+              custom_value: false
+              sort: false
+        bypass_fan_off:
+          name: Trigger Sensor By-pass
+          description: 'Select a switch that will bypass the **Trigger Sensor** and
+            enable manual control of your fan.
+
+
+            **Note** - Ensure that the chosen entity is not included in the ''Fan''
+            selection, as it will cause the automation to malfunction.
+
+            '
+          default: []
+          selector:
+            entity: {}
+        include_bypass_auto_off:
+          name: Use The By-pass Auto OFF Option (Optional)
+          description: 'Select this option if you want the bypass to automatically
+            turn OFF after a set time delay.
+
+
+            **Note** - It can also function as a timer to turn the fan ON and then
+            OFF if you''ve chosen option **1 - Enable the By-pass - Turn fan ON**
+            above.
+
+            '
+          default: bypass_auto_off_disabled
+          selector:
+            select:
+              options:
+              - label: Enable the by-pass auto off option
+                value: bypass_auto_off_enabled
+              - label: Disable the by-pass auto off option
+                value: bypass_auto_off_disabled
+              multiple: false
+              custom_value: false
+              sort: false
+        bypass_auto_off_delay:
+          name: By-pass Auto OFF - Time Delay
+          description: 'Please set the auto OFF time delay for the bypass.
+
+            '
+          default: 60
+          selector:
+            number:
+              min: 1.0
+              max: 240.0
+              step: 1.0
+              unit_of_measurement: minutes
+              mode: slider
+    time_settings:
+      name: Time
+      icon: mdi:clock-outline
+      collapsed: true
+      input:
+        include_time:
+          name: Use The Time Options (Optional)
+          description: 'This option is used to add a condition that only allows the
+            automation to run between the start time and end time settings on the
+            selected weekdays.
+
+            '
+          default: time_disabled
+          selector:
+            select:
+              options:
+              - label: Enable the time options
+                value: time_enabled
+              - label: Disable the time options
+                value: time_disabled
+              multiple: false
+              custom_value: false
+              sort: false
+        after_time:
+          name: Start Time
+          description: 'Set the start time.
+
+            '
+          default: 00:00:00
+          selector:
+            time: {}
+        before_time:
+          name: End Time
+          description: 'Set the end time.
+
+            '
+          default: 00:00:00
+          selector:
+            time: {}
+        weekday_options:
+          name: Weekdays
+          description: 'Select the days of the week you would like the automation
+            to run. You must select **Enable the time options** above for the weekdays
+            selections to work.
+
+            '
+          default:
+          - mon
+          - tue
+          - wed
+          - thu
+          - fri
+          - sat
+          - sun
+          selector:
+            select:
+              multiple: true
+              mode: list
+              options:
+              - label: Monday
+                value: mon
+              - label: Tuesday
+                value: tue
+              - label: Wednesday
+                value: wed
+              - label: Thursday
+                value: thu
+              - label: Friday
+                value: fri
+              - label: Saturday
+                value: sat
+              - label: Sunday
+                value: sun
+              custom_value: false
+              sort: false
+  source_url: https://gist.github.com/Blackshome/043e1e4e8bcf91d7efa1fa56c06bde2f
+mode: restart
+max_exceeded: silent
+variables:
+  trigger_sensor: !input trigger_sensor
+  auto_mode_entity: !input auto_mode_entity
+  rising_temp: !input rising_temp
+  falling_temp: !input falling_temp
+  fan_mode: !input fan_mode
+  fan_control_mode: !input fan_control_mode
+  fan_switch: !input fan_switch
+  include_fan_speed_options: !input include_fan_speed_options
+  fan_speed_off: !input fan_speed_off
+  maximum_run_time: !input maximum_run_time
+  secondary_sensor: !input secondary_sensor
+  secondary_sensor_setpoint: !input secondary_sensor_setpoint
+  differential_value: !input differential_value
+  fan_heartbeat: !input fan_heartbeat
+  ceiling_fan_control_mode: !input ceiling_fan_control_mode
+  fan_high_speed: !input fan_high_speed
+  fan_medium_speed: !input fan_medium_speed
+  fan_low_speed: !input fan_low_speed
+  fan_off: !input fan_off
+  medium_speed_temp: !input medium_speed_temp
+  high_speed_temp: !input high_speed_temp
+  three_speed_dead_zone: !input three_speed_dead_zone
+  dead_zone_three_speed: '{{ three_speed_dead_zone / 2 }}'
+  three_speed_heartbeat: !input three_speed_heartbeat
+  preset_fan_entities: !input preset_fan_entities
+  preset_high_speed: !input preset_high_speed
+  preset_medium_speed: !input preset_medium_speed
+  preset_low_speed: !input preset_low_speed
+  preset_off: !input preset_off
+  preset_medium_speed_temp: !input preset_medium_speed_temp
+  preset_high_speed_temp: !input preset_high_speed_temp
+  preset_dead_zone: !input preset_dead_zone
+  dead_zone_preset: '{{ preset_dead_zone / 2 }}'
+  preset_heartbeat: !input preset_heartbeat
+  ceiling_fan_entities: !input ceiling_fan_entities
+  ceiling_fan_max_temp: !input ceiling_fan_max_temp
+  ceiling_fan_max_pct: !input ceiling_fan_max_pct
+  ceiling_fan_min_pct: !input ceiling_fan_min_pct
+  ceiling_fan_heartbeat: !input ceiling_fan_heartbeat
+  ceiling_fan_step_value: !input ceiling_fan_step_value
+  ceiling_fan_dead_zone: !input ceiling_fan_dead_zone
+  include_bypass: !input include_bypass
+  bypass_fan_off: !input bypass_fan_off
+  include_bypass_auto_off: !input include_bypass_auto_off
+  bypass_auto_off_delay: !input bypass_auto_off_delay
+  include_time: !input include_time
+  after_time: !input after_time
+  before_time: !input before_time
+  weekday_options: !input weekday_options
+  fan_switch_target: "{% set b = fan_switch and fan_switch.entity_id %} {% if b %}\n
+    \ {{ expand(b) | map(attribute='entity_id') | list }}\n{% else %}\n  []\n{% endif
+    %}"
+  preset_control_ceiling_fan: "{% set b = preset_fan_entities and preset_fan_entities.entity_id
+    %} {% if b %}\n  {{ expand(b) | selectattr('domain', 'eq', 'fan') | map(attribute='entity_id')
+    | list }}\n{% else %}\n  []\n{% endif %}"
+  pct_control_ceiling_fan: "{% set b = ceiling_fan_entities and ceiling_fan_entities.entity_id
+    %} {% if b %}\n  {{ expand(b) | selectattr('domain', 'eq', 'fan') | map(attribute='entity_id')
+    | list }}\n{% else %}\n  []\n{% endif %}"
+trigger:
+- platform: numeric_state
+  id: t0
+  entity_id: !input trigger_sensor
+  above: !input rising_temp
+- platform: time
+  id: t1
+  at: !input after_time
+- platform: time
+  id: t2
+  at: !input before_time
+- platform: state
+  id: t3
+  entity_id: !input bypass_fan_off
+  from: 'off'
+  to: 'on'
+- platform: state
+  id: t4
+  entity_id: !input bypass_fan_off
+  from: 'on'
+  to: 'off'
+- platform: state
+  id: t5
+  entity_id: !input auto_mode_entity
+  from: 'off'
+  to: 'on'
+- platform: state
+  id: t6
+  entity_id: !input auto_mode_entity
+  from: 'on'
+  to: 'off'
+- platform: homeassistant
+  id: t7
+  event: start
+condition:
+- condition: or
+  conditions:
+  - condition: and
+    conditions:
+    - '{{ auto_mode_entity != [] }}'
+    - condition: state
+      entity_id: !input auto_mode_entity
+      state: 'on'
+  - condition: and
+    conditions:
+    - condition: trigger
+      id: t6
+    - '{{ auto_mode_entity != [] }}'
+    - condition: state
+      entity_id: !input auto_mode_entity
+      state: 'off'
+- condition: or
+  conditions:
+  - condition: and
+    conditions:
+    - condition: numeric_state
+      entity_id: !input trigger_sensor
+      above: !input rising_temp
+    - condition: trigger
+      id: t0
+  - condition: and
+    conditions:
+    - condition: numeric_state
+      entity_id: !input trigger_sensor
+      above: !input rising_temp
+    - '{{ include_time == ''time_enabled'' }}'
+    - condition: trigger
+      id: t1
+  - condition: and
+    conditions:
+    - condition: numeric_state
+      entity_id: !input trigger_sensor
+      above: !input rising_temp
+    - '{{ include_time == ''time_enabled'' }}'
+    - condition: trigger
+      id: t2
+  - condition: and
+    conditions:
+    - condition: trigger
+      id: t3
+    - '{{ (include_bypass == ''bypass_enabled_turn_on'') or (include_bypass == ''bypass_enabled'')
+      or (include_bypass == ''bypass_enabled_stop'') }}'
+  - condition: and
+    conditions:
+    - condition: trigger
+      id: t4
+    - '{{ (include_bypass == ''bypass_enabled'') or (include_bypass == ''bypass_enabled_stop'')
+      or (include_bypass == ''bypass_enabled_turn_on'') }}'
+  - condition: and
+    conditions:
+    - condition: trigger
+      id:
+      - t5
+      - t6
+  - condition: and
+    conditions:
+    - '{{ (expand(fan_switch.entity_id) | selectattr(''state'', ''=='', ''on'') |
+      list | count > 0) or ((include_bypass_auto_off == ''bypass_auto_off_enabled'')
+      and (states[bypass_fan_off].state == ''on'')) }}'
+    - condition: trigger
+      id: t7
+  - condition: and
+    conditions:
+    - condition: numeric_state
+      entity_id: !input trigger_sensor
+      above: !input rising_temp
+    - condition: trigger
+      id: t7
+- condition: or
+  conditions:
+  - '{{ include_bypass == ''bypass_disabled'' }}'
+  - '{{ bypass_fan_off == [] }}'
+  - '{{ (include_bypass == ''bypass_enabled_turn_on'') and (states[bypass_fan_off].state
+    == ''off'') }}'
+  - '{{ (include_bypass == ''bypass_enabled'') and (states[bypass_fan_off].state ==
+    ''off'') }}'
+  - '{{ (include_bypass == ''bypass_enabled_stop'') and (states[bypass_fan_off].state
+    == ''off'') }}'
+  - '{{ (include_bypass_auto_off == ''bypass_auto_off_enabled'') and (states[bypass_fan_off].state
+    == ''off'') }}'
+  - '{{ (include_bypass_auto_off == ''bypass_auto_off_enabled'') and (states[bypass_fan_off].state
+    == ''on'') and (trigger.id == ''t7'') }}'
+  - condition: trigger
+    id:
+    - t3
+    - t6
+- condition: or
+  conditions:
+  - '{{ include_time == ''time_disabled'' }}'
+  - condition: and
+    conditions:
+    - condition: time
+      after: !input after_time
+      before: !input before_time
+      weekday: !input weekday_options
+    - '{{ include_time == ''time_enabled'' }}'
+  - condition: and
+    conditions:
+    - condition: time
+      weekday: !input weekday_options
+    - condition: trigger
+      id: t2
+  - condition: trigger
+    id:
+    - t6
+action:
+- choose:
+  - alias: Auto Mode Entity turned off - Triggered by End Time
+    conditions:
+    - condition: trigger
+      id:
+      - t2
+      - t6
+    sequence:
+    - choose:
+      - alias: Check if the trigger is on fan mode
+        conditions:
+        - '{{ fan_mode == ''fan'' }}'
+        - '{{ fan_control_mode in [''basic_mode'', ''maximum_run_time'', ''economy_mode'']
+          }}'
+        sequence:
+        - alias: Turn off the entity
+          service: homeassistant.turn_off
+          target:
+            entity_id: '{{ fan_switch_target }}'
+        - choose:
+          - alias: Check if the fan speed off is enabled
+            conditions:
+            - '{{ include_fan_speed_options == ''fan_speed_off_enabled'' }}'
+            sequence:
+            - alias: Fan speed off option
+              service: homeassistant.turn_on
+              entity_id: !input fan_speed_off
+      - alias: 3 Speed Ceiling Fan
+        conditions:
+        - '{{ fan_mode == ''ceiling_fan'' }}'
+        - '{{ ceiling_fan_control_mode == ''three_speed'' }}'
+        sequence:
+        - alias: Safeguard turn off high speed
+          service: homeassistant.turn_off
+          entity_id: !input fan_high_speed
+        - alias: Safeguard turn off medium speed
+          service: homeassistant.turn_off
+          entity_id: !input fan_medium_speed
+        - alias: Safeguard turn off low speed
+          service: homeassistant.turn_off
+          entity_id: !input fan_low_speed
+        - alias: Turn on the fan off
+          service: homeassistant.turn_on
+          entity_id: !input fan_off
+      - alias: Preset Mode Ceiling Fan
+        conditions:
+        - '{{ fan_mode == ''ceiling_fan'' }}'
+        - '{{ ceiling_fan_control_mode == ''fan_preset'' }}'
+        sequence:
+        - alias: Turn preset fan off
+          service: fan.set_preset_mode
+          target:
+            entity_id: '{{ preset_control_ceiling_fan }}'
+          data:
+            preset_mode: '{{ preset_off }}'
+      - alias: Percentage Controled Ceiling Fan
+        conditions:
+        - '{{ fan_mode == ''ceiling_fan'' }}'
+        - '{{ ceiling_fan_control_mode == ''fan_percentage'' }}'
+        sequence:
+        - alias: Turn off the fan
+          service: fan.turn_off
+          target:
+            entity_id: '{{ pct_control_ceiling_fan }}'
+    - stop: Stop the automation
+- choose:
+  - alias: By-pass is turned on & check by-pass option - turn fan off
+    conditions:
+    - condition: trigger
+      id: t3
+    - condition: template
+      value_template: '{{ include_bypass == ''bypass_enabled'' }}'
+    sequence:
+    - choose:
+      - alias: Check if the trigger is on fan mode
+        conditions:
+        - '{{ fan_mode == ''fan'' }}'
+        - '{{ fan_control_mode in [''basic_mode'', ''maximum_run_time'', ''economy_mode'']
+          }}'
+        sequence:
+        - alias: Turn off the entity
+          service: homeassistant.turn_off
+          target:
+            entity_id: '{{ fan_switch_target }}'
+        - choose:
+          - alias: Check if the fan speed off is enabled
+            conditions:
+            - '{{ include_fan_speed_options == ''fan_speed_off_enabled'' }}'
+            sequence:
+            - alias: Fan speed off option
+              service: homeassistant.turn_on
+              entity_id: !input fan_speed_off
+      - alias: 3 Speed Ceiling Fan
+        conditions:
+        - '{{ fan_mode == ''ceiling_fan'' }}'
+        - '{{ ceiling_fan_control_mode == ''three_speed'' }}'
+        sequence:
+        - alias: Safeguard turn off high speed
+          service: homeassistant.turn_off
+          entity_id: !input fan_high_speed
+        - alias: Safeguard turn off medium speed
+          service: homeassistant.turn_off
+          entity_id: !input fan_medium_speed
+        - alias: Safeguard turn off low speed
+          service: homeassistant.turn_off
+          entity_id: !input fan_low_speed
+        - alias: Turn on the fan off
+          service: homeassistant.turn_on
+          entity_id: !input fan_off
+      - alias: Preset Mode Ceiling Fan
+        conditions:
+        - '{{ fan_mode == ''ceiling_fan'' }}'
+        - '{{ ceiling_fan_control_mode == ''fan_preset'' }}'
+        sequence:
+        - alias: Turn preset fan off
+          service: fan.set_preset_mode
+          target:
+            entity_id: '{{ preset_control_ceiling_fan }}'
+          data:
+            preset_mode: '{{ preset_off }}'
+      - alias: Percentage Controled Ceiling Fan
+        conditions:
+        - '{{ fan_mode == ''ceiling_fan'' }}'
+        - '{{ ceiling_fan_control_mode == ''fan_percentage'' }}'
+        sequence:
+        - alias: Turn off the fan
+          service: fan.turn_off
+          target:
+            entity_id: '{{ pct_control_ceiling_fan }}'
+    - choose:
+      - alias: Check if the by-pass auto off is enabled
+        conditions:
+        - condition: template
+          value_template: '{{ include_bypass_auto_off == ''bypass_auto_off_enabled''
+            }}'
+        sequence:
+        - alias: Wait for the by-pass auto off time delay
+          delay:
+            minutes: !input bypass_auto_off_delay
+        - alias: Turn off the by-pass
+          service: homeassistant.turn_off
+          entity_id: !input bypass_fan_off
+    - stop: Stop the automation
+  - alias: By-pass is turned on & check by-pass option - keep the current fan state
+    conditions:
+    - condition: trigger
+      id: t3
+    - condition: template
+      value_template: '{{ include_bypass == ''bypass_enabled_stop'' }}'
+    sequence:
+    - choose:
+      - alias: Check if the by-pass auto off is enabled
+        conditions:
+        - condition: template
+          value_template: '{{ include_bypass_auto_off == ''bypass_auto_off_enabled''
+            }}'
+        sequence:
+        - alias: Wait the number of minutes set in the by-pass auto off time delay
+          delay:
+            minutes: !input bypass_auto_off_delay
+        - alias: Turn off the by-pass
+          service: homeassistant.turn_off
+          entity_id: !input bypass_fan_off
+    - stop: Stop the automation
+  - alias: By-pass is turned off & check if the sensor is below set value
+    conditions:
+    - condition: trigger
+      id: t4
+    - condition: numeric_state
+      entity_id: !input trigger_sensor
+      below: !input falling_temp
+    sequence:
+    - choose:
+      - alias: Check if the trigger is on fan mode
+        conditions:
+        - '{{ fan_mode == ''fan'' }}'
+        - '{{ fan_control_mode in [''basic_mode'', ''maximum_run_time'', ''economy_mode'']
+          }}'
+        - condition: numeric_state
+          entity_id: !input trigger_sensor
+          below: !input falling_temp
+        sequence:
+        - alias: Turn off the entity
+          service: homeassistant.turn_off
+          target:
+            entity_id: '{{ fan_switch_target }}'
+        - choose:
+          - alias: Check if the fan speed off is enabled
+            conditions:
+            - '{{ include_fan_speed_options == ''fan_speed_off_enabled'' }}'
+            sequence:
+            - alias: Fan speed off option
+              service: homeassistant.turn_on
+              entity_id: !input fan_speed_off
+      - alias: 3 Speed Ceiling Fan
+        conditions:
+        - '{{ fan_mode == ''ceiling_fan'' }}'
+        - '{{ ceiling_fan_control_mode == ''three_speed'' }}'
+        - condition: numeric_state
+          entity_id: !input trigger_sensor
+          below: !input falling_temp
+        sequence:
+        - alias: Safeguard turn off high speed
+          service: homeassistant.turn_off
+          entity_id: !input fan_high_speed
+        - alias: Safeguard turn off medium speed
+          service: homeassistant.turn_off
+          entity_id: !input fan_medium_speed
+        - alias: Safeguard turn off low speed
+          service: homeassistant.turn_off
+          entity_id: !input fan_low_speed
+        - alias: Turn on the fan off
+          service: homeassistant.turn_on
+          entity_id: !input fan_off
+      - alias: Preset Mode Ceiling Fan
+        conditions:
+        - '{{ fan_mode == ''ceiling_fan'' }}'
+        - '{{ ceiling_fan_control_mode == ''fan_preset'' }}'
+        - condition: numeric_state
+          entity_id: !input trigger_sensor
+          below: !input falling_temp
+        sequence:
+        - alias: Turn preset fan off
+          service: fan.set_preset_mode
+          target:
+            entity_id: '{{ preset_control_ceiling_fan }}'
+          data:
+            preset_mode: '{{ preset_off }}'
+      - alias: Percentage Controled Ceiling Fan
+        conditions:
+        - '{{ fan_mode == ''ceiling_fan'' }}'
+        - '{{ ceiling_fan_control_mode == ''fan_percentage'' }}'
+        - condition: numeric_state
+          entity_id: !input trigger_sensor
+          below: !input falling_temp
+        sequence:
+        - alias: Turn off the fan
+          service: fan.turn_off
+          target:
+            entity_id: '{{ pct_control_ceiling_fan }}'
+    - stop: Stop the automation
+- choose:
+  - alias: By-pass is enabled & check by-pass option - turn fan on
+    conditions:
+    - condition: trigger
+      id: t3
+    - condition: template
+      value_template: '{{ include_bypass == ''bypass_enabled_turn_on'' }}'
+    sequence:
+    - choose:
+      - alias: Check if the trigger is on fan mode
+        conditions:
+        - '{{ fan_mode == ''fan'' }}'
+        - '{{ fan_control_mode in [''basic_mode'', ''maximum_run_time'', ''economy_mode'']
+          }}'
+        sequence:
+        - alias: Turn on the entity
+          service: homeassistant.turn_on
+          target:
+            entity_id: '{{ fan_switch_target }}'
+      - alias: 3 Speed Ceiling Fan
+        conditions:
+        - '{{ fan_mode == ''ceiling_fan'' }}'
+        - '{{ ceiling_fan_control_mode == ''three_speed'' }}'
+        sequence:
+        - alias: Fan on the fan speed as per settings
+          service: homeassistant.turn_on
+          data:
+            entity_id: !input fan_high_speed
+      - alias: Preset Mode Ceiling Fan
+        conditions:
+        - '{{ fan_mode == ''ceiling_fan'' }}'
+        - '{{ ceiling_fan_control_mode == ''fan_preset'' }}'
+        sequence:
+        - alias: Turn preset fan off
+          service: fan.set_preset_mode
+          target:
+            entity_id: '{{ preset_control_ceiling_fan }}'
+          data:
+            preset_mode: '{{ preset_high_speed }}'
+      - alias: Percentage Controled Ceiling Fan
+        conditions:
+        - '{{ fan_mode == ''ceiling_fan'' }}'
+        - '{{ ceiling_fan_control_mode == ''fan_percentage'' }}'
+        sequence:
+        - service: fan.set_percentage
+          target:
+            entity_id: '{{ pct_control_ceiling_fan }}'
+          data:
+            percentage: !input ceiling_fan_max_pct
+    - choose:
+      - alias: Check if the by-pass auto off is enabled
+        conditions:
+        - condition: template
+          value_template: '{{ include_bypass_auto_off == ''bypass_auto_off_enabled''
+            }}'
+        sequence:
+        - alias: Wait the number of minutes set in the by-pass auto off time delay
+          delay:
+            minutes: !input bypass_auto_off_delay
+        - alias: Turn off the by-pass
+          service: homeassistant.turn_off
+          entity_id: !input bypass_fan_off
+    - stop: Stop the automation
+  - alias: Safe Guard when HA restarts
+    conditions:
+    - condition: trigger
+      id: t7
+    sequence:
+    - choose:
+      - alias: Check if the by-pass is enabled, by-pass is ON and auto off is enabled
+        conditions:
+        - condition: template
+          value_template: '{{ (include_bypass == ''bypass_enabled'') or (include_bypass
+            == ''bypass_enabled_stop'') or (include_bypass == ''bypass_enabled_turn_on'')
+            }}'
+        - condition: template
+          value_template: '{{ (include_bypass_auto_off == ''bypass_auto_off_enabled'')
+            and (states[bypass_fan_off].state == ''on'') }}'
+        sequence:
+        - alias: Wait the number of minutes set in the by-pass auto off time delay
+          delay:
+            minutes: !input bypass_auto_off_delay
+        - alias: Turn off the by-pass
+          service: homeassistant.turn_off
+          entity_id: !input bypass_fan_off
+        - stop: Stop the automation
+      - alias: Check if the by-pass is enabled, by-pass is ON
+        conditions:
+        - condition: template
+          value_template: '{{ (include_bypass == ''bypass_enabled'') or (include_bypass
+            == ''bypass_enabled_stop'') or (include_bypass == ''bypass_enabled_turn_on'')
+            }}'
+        - condition: template
+          value_template: '{{ states[bypass_fan_off].state == ''on'' }}'
+        sequence:
+        - stop: Stop the automation
+      - alias: Check if the trigger sensor is off
+        conditions:
+        - condition: numeric_state
+          entity_id: !input trigger_sensor
+          below: !input falling_temp
+        sequence:
+        - choose:
+          - alias: Check if the trigger is on fan mode
+            conditions:
+            - '{{ fan_mode == ''fan'' }}'
+            - '{{ fan_control_mode in [''basic_mode'', ''maximum_run_time'', ''economy_mode'']
+              }}'
+            sequence:
+            - alias: Turn off the entity
+              service: homeassistant.turn_off
+              target:
+                entity_id: '{{ fan_switch_target }}'
+            - choose:
+              - alias: Check if the fan speed off is enabled
+                conditions:
+                - '{{ include_fan_speed_options == ''fan_speed_off_enabled'' }}'
+                sequence:
+                - alias: Fan speed off option
+                  service: homeassistant.turn_on
+                  entity_id: !input fan_speed_off
+          - alias: 3 Speed Ceiling Fan
+            conditions:
+            - '{{ fan_mode == ''ceiling_fan'' }}'
+            - '{{ ceiling_fan_control_mode == ''three_speed'' }}'
+            sequence:
+            - alias: Safeguard turn off high speed
+              service: homeassistant.turn_off
+              entity_id: !input fan_high_speed
+            - alias: Safeguard turn off medium speed
+              service: homeassistant.turn_off
+              entity_id: !input fan_medium_speed
+            - alias: Safeguard turn off low speed
+              service: homeassistant.turn_off
+              entity_id: !input fan_low_speed
+            - alias: Turn on the fan off
+              service: homeassistant.turn_on
+              entity_id: !input fan_off
+          - alias: Preset Mode Ceiling Fan
+            conditions:
+            - '{{ fan_mode == ''ceiling_fan'' }}'
+            - '{{ ceiling_fan_control_mode == ''fan_preset'' }}'
+            sequence:
+            - alias: Turn preset fan off
+              service: fan.set_preset_mode
+              target:
+                entity_id: '{{ preset_control_ceiling_fan }}'
+              data:
+                preset_mode: '{{ preset_off }}'
+          - alias: Percentage Controled Ceiling Fan
+            conditions:
+            - '{{ fan_mode == ''ceiling_fan'' }}'
+            - '{{ ceiling_fan_control_mode == ''fan_percentage'' }}'
+            sequence:
+            - alias: Turn off the fan
+              service: fan.turn_off
+              target:
+                entity_id: '{{ pct_control_ceiling_fan }}'
+        - stop: Stop the automation
+- choose:
+  - alias: Check if the trigger is on basic mode
+    conditions:
+    - '{{ fan_mode == ''fan'' }}'
+    - '{{ fan_control_mode == ''basic_mode'' }}'
+    - condition: numeric_state
+      entity_id: !input trigger_sensor
+      above: !input rising_temp
+    sequence:
+    - alias: Turn on the entity
+      service: homeassistant.turn_on
+      target:
+        entity_id: '{{ fan_switch_target }}'
+    - alias: Wait until sensor is below set value
+      wait_for_trigger:
+        platform: numeric_state
+        entity_id: !input trigger_sensor
+        below: !input falling_temp
+    - alias: Turn off the entity
+      service: homeassistant.turn_off
+      target:
+        entity_id: '{{ fan_switch_target }}'
+    - choose:
+      - alias: Check if the fan speed off is enabled
+        conditions:
+        - '{{ include_fan_speed_options == ''fan_speed_off_enabled'' }}'
+        sequence:
+        - alias: Fan speed off option
+          service: homeassistant.turn_on
+          entity_id: !input fan_speed_off
+  - alias: Check if the trigger is on maximum run time
+    conditions:
+    - '{{ fan_mode == ''fan'' }}'
+    - '{{ fan_control_mode == ''maximum_run_time'' }}'
+    - condition: numeric_state
+      entity_id: !input trigger_sensor
+      above: !input rising_temp
+    sequence:
+    - alias: Turn on the entity
+      service: homeassistant.turn_on
+      target:
+        entity_id: '{{ fan_switch_target }}'
+    - alias: Wait until sensor is below set value
+      wait_for_trigger:
+        platform: numeric_state
+        entity_id: !input trigger_sensor
+        below: !input falling_temp
+      timeout: !input maximum_run_time
+    - alias: Turn off the entity
+      service: homeassistant.turn_off
+      target:
+        entity_id: '{{ fan_switch_target }}'
+    - choose:
+      - alias: Check if the fan speed off is enabled
+        conditions:
+        - '{{ include_fan_speed_options == ''fan_speed_off_enabled'' }}'
+        sequence:
+        - alias: Fan speed off option
+          service: homeassistant.turn_on
+          entity_id: !input fan_speed_off
+  - alias: Check if the trigger is on differential temp
+    conditions:
+    - '{{ fan_mode == ''fan'' }}'
+    - '{{ fan_control_mode == ''heat_transfer_mode'' }}'
+    - condition: numeric_state
+      entity_id: !input trigger_sensor
+      above: !input rising_temp
+    sequence:
+    - repeat:
+        while:
+        - condition: numeric_state
+          entity_id: !input trigger_sensor
+          above: !input falling_temp
+        sequence:
+        - choose:
+          - conditions:
+            - condition: template
+              value_template: '{{ (states(trigger_sensor) | float) - (states(secondary_sensor)
+                | float) >= differential_value }}
+
+                '
+            - condition: template
+              value_template: '{{ (states(secondary_sensor) | float) < secondary_sensor_setpoint
+                }}
+
+                '
+            - condition: template
+              value_template: '{{ expand(fan_switch_target) | selectattr(''state'',
+                ''equalto'', ''off'') | list | length > 0 }}
+
+                '
+            sequence:
+            - alias: Turn on the entity
+              service: homeassistant.turn_on
+              target:
+                entity_id: '{{ fan_switch_target }}'
+          - conditions:
+            - condition: template
+              value_template: '{{ expand(fan_switch_target) | selectattr(''state'',
+                ''equalto'', ''on'') | list | length > 0 }}
+
+                '
+            - condition: or
+              conditions:
+              - condition: template
+                value_template: '{{ (states(trigger_sensor) | float) - (states(secondary_sensor)
+                  | float) < differential_value }}
+
+                  '
+              - condition: template
+                value_template: '{{ (states(secondary_sensor) | float) >= secondary_sensor_setpoint
+                  }}
+
+                  '
+            sequence:
+            - alias: Turn off the entity
+              service: homeassistant.turn_off
+              target:
+                entity_id: '{{ fan_switch_target }}'
+            - choose:
+              - conditions:
+                - condition: template
+                  value_template: '{{ include_fan_speed_options == ''fan_speed_off_enabled''
+                    }}'
+                sequence:
+                - alias: Fan speed off option
+                  service: homeassistant.turn_on
+                  entity_id: !input fan_speed_off
+        - delay:
+            minutes: !input fan_heartbeat
+    - alias: Turn off the entity
+      service: homeassistant.turn_off
+      target:
+        entity_id: '{{ fan_switch_target }}'
+    - choose:
+      - alias: Check if the fan speed off is enabled
+        conditions:
+        - '{{ include_fan_speed_options == ''fan_speed_off_enabled'' }}'
+        sequence:
+        - alias: Fan speed off option
+          service: homeassistant.turn_on
+          entity_id: !input fan_speed_off
+  - alias: Check if the trigger is on differential temp
+    conditions:
+    - '{{ fan_mode == ''fan'' }}'
+    - '{{ fan_control_mode == ''economy_mode'' }}'
+    - condition: numeric_state
+      entity_id: !input trigger_sensor
+      above: !input rising_temp
+    sequence:
+    - repeat:
+        while:
+        - condition: numeric_state
+          entity_id: !input trigger_sensor
+          above: !input falling_temp
+        sequence:
+        - choose:
+          - conditions:
+            - condition: template
+              value_template: '{{ (states(trigger_sensor) | float) - (states(secondary_sensor)
+                | float) >= differential_value }}
+
+                '
+            sequence:
+            - alias: Turn on the entity
+              service: homeassistant.turn_on
+              target:
+                entity_id: '{{ fan_switch_target }}'
+          - conditions:
+            - condition: template
+              value_template: '{{ (states(trigger_sensor) | float) - (states(secondary_sensor)
+                | float) < differential_value }}
+
+                '
+            sequence:
+            - alias: Turn off the entity
+              service: homeassistant.turn_off
+              target:
+                entity_id: '{{ fan_switch_target }}'
+            - choose:
+              - conditions:
+                - condition: template
+                  value_template: '{{ include_fan_speed_options == ''fan_speed_off_enabled''
+                    }}'
+                sequence:
+                - alias: Fan speed off option
+                  service: homeassistant.turn_on
+                  entity_id: !input fan_speed_off
+        - delay:
+            minutes: !input fan_heartbeat
+    - alias: Turn off the entity
+      service: homeassistant.turn_off
+      target:
+        entity_id: '{{ fan_switch_target }}'
+    - choose:
+      - alias: Check if the fan speed off is enabled
+        conditions:
+        - '{{ include_fan_speed_options == ''fan_speed_off_enabled'' }}'
+        sequence:
+        - alias: Fan speed off option
+          service: homeassistant.turn_on
+          entity_id: !input fan_speed_off
+- choose:
+  - alias: 3 Speed Ceiling Fan
+    conditions:
+    - '{{ fan_mode == ''ceiling_fan'' }}'
+    - '{{ ceiling_fan_control_mode == ''three_speed'' }}'
+    - condition: numeric_state
+      entity_id: !input trigger_sensor
+      above: !input rising_temp
+    sequence:
+    - alias: Repeat while trigger is above falling temp
+      repeat:
+        while:
+        - condition: numeric_state
+          entity_id: !input trigger_sensor
+          above: !input falling_temp
+        sequence:
+        - variables:
+            all_fan_speeds_off: '{% set low_speed = (expand([fan_low_speed]) | selectattr(''state'',
+              ''equalto'', ''off'') | list) %} {% set medium_speed = (expand([fan_medium_speed])
+              | selectattr(''state'', ''equalto'', ''off'') | list) %} {% set high_speed
+              = (expand([fan_high_speed]) | selectattr(''state'', ''equalto'', ''off'')
+              | list) %} {{ (low_speed | length > 0) and (medium_speed | length >
+              0) and (high_speed | length > 0) }}
+
+              '
+            fan_speed_off: "{% set current_temp = states(trigger_sensor) | float %}
+              {% if current_temp >= rising_temp and current_temp < medium_speed_temp
+              %}\n  {{ fan_low_speed }}\n{% elif current_temp >= medium_speed_temp
+              and current_temp < high_speed_temp %}\n  {{ fan_medium_speed }}\n{%
+              elif current_temp >= high_speed_temp %}\n  {{ fan_high_speed }}\n{%
+              else %}\n  {{ fan_off }}\n{% endif %}\n"
+            fan_speed_on: "{% set current_temp = states(trigger_sensor) | float %}
+              {% if current_temp <= falling_temp %}\n  {{ fan_off }}\n{% elif current_temp
+              >= falling_temp and current_temp <= (medium_speed_temp - dead_zone_three_speed)
+              %}\n  {{ fan_low_speed }}\n{% elif current_temp >= (medium_speed_temp
+              + dead_zone_three_speed) and current_temp <= (high_speed_temp - dead_zone_three_speed)
+              %}\n  {{ fan_medium_speed }}\n{% elif current_temp >= (high_speed_temp
+              + dead_zone_three_speed) %}\n  {{ fan_high_speed }}\n{% else %}\n  in_dead_zone\n{%
+              endif %}\n"
+            safeguard_fan_speeds: "{% if fan_speed == fan_low_speed %}\n  {{ (expand([fan_medium_speed,
+              fan_high_speed]) | map(attribute='entity_id') | list) }}\n{% elif fan_speed
+              == fan_medium_speed %}\n  {{ (expand([fan_low_speed, fan_high_speed])
+              | map(attribute='entity_id') | list) }}\n{% elif fan_speed == fan_high_speed
+              %}\n  {{ (expand([fan_low_speed, fan_medium_speed]) | map(attribute='entity_id')
+              | list) }}\n{% else %}\n  {{ (expand([fan_low_speed, fan_medium_speed,
+              fan_high_speed]) | map(attribute='entity_id') | list) }}\n{% endif %}\n"
+        - choose:
+          - alias: Set fan speed the first time the fan is turned on with no dead
+              zone
+            conditions:
+            - condition: template
+              value_template: '{{ all_fan_speeds_off }}'
+            sequence:
+            - alias: Safeguard make sure other speeds are off
+              service: homeassistant.turn_off
+              data:
+                entity_id: '{{ safeguard_fan_speeds }}'
+            - alias: Fan on the fan speed as per settings
+              service: homeassistant.turn_on
+              data:
+                entity_id: '{{ fan_speed_off }}'
+            - alias: The three speed heartbeat
+              delay:
+                minutes: !input three_speed_heartbeat
+          - alias: If the fan speed is the same as last repeat just run heartbeat
+            conditions:
+            - condition: or
+              conditions:
+              - condition: template
+                value_template: '{{ fan_speed_on == ''in_dead_zone'' }}'
+              - condition: template
+                value_template: '{{ (expand(fan_speed_on) | selectattr(''state'',
+                  ''equalto'', ''on'') | list | length) == (expand(fan_speed_on) |
+                  list | length) }}
+
+                  '
+            sequence:
+            - alias: The three speed heartbeat
+              delay:
+                minutes: !input three_speed_heartbeat
+          - alias: Set fan speed as per settings
+            conditions:
+            - condition: template
+              value_template: '{{ ceiling_fan_control_mode == ''three_speed'' }}'
+            sequence:
+            - alias: Safeguard make sure other speeds are off
+              service: homeassistant.turn_off
+              data:
+                entity_id: '{{ safeguard_fan_speeds }}'
+            - alias: Fan on the fan speed as per settings
+              service: homeassistant.turn_on
+              data:
+                entity_id: '{{ fan_speed_on }}'
+            - alias: The three speed heartbeat
+              delay:
+                minutes: !input three_speed_heartbeat
+    - alias: Safeguard turn off high speed
+      service: homeassistant.turn_off
+      entity_id: !input fan_high_speed
+    - alias: Safeguard turn off medium speed
+      service: homeassistant.turn_off
+      entity_id: !input fan_medium_speed
+    - alias: Safeguard turn off low speed
+      service: homeassistant.turn_off
+      entity_id: !input fan_low_speed
+    - alias: Turn on the fan off
+      service: homeassistant.turn_on
+      entity_id: !input fan_off
+  - alias: Preset Controled Ceiling Fan
+    conditions:
+    - '{{ fan_mode == ''ceiling_fan'' }}'
+    - '{{ ceiling_fan_control_mode == ''fan_preset'' }}'
+    - condition: numeric_state
+      entity_id: !input trigger_sensor
+      above: !input rising_temp
+    sequence:
+    - alias: Repeat while trigger is above falling temp
+      repeat:
+        while:
+        - condition: numeric_state
+          entity_id: !input trigger_sensor
+          above: !input falling_temp
+        sequence:
+        - variables:
+            preset_speed_off: "{% set current_temp = states(trigger_sensor) | float
+              %} {% if current_temp >= rising_temp and current_temp < preset_medium_speed_temp
+              %}\n  {{ preset_low_speed }}\n{% elif current_temp >= preset_medium_speed_temp
+              and current_temp < preset_high_speed_temp %}\n  {{ preset_medium_speed
+              }}\n{% elif current_temp >= preset_high_speed_temp %}\n  {{ preset_high_speed
+              }}\n{% else %}\n  {{ preset_off }}\n{% endif %}\n"
+            preset_speed_on: "{% set current_temp = states(trigger_sensor) | float
+              %} {% if current_temp <= falling_temp %}\n  {{ preset_off }}\n{% elif
+              current_temp >= falling_temp and current_temp <= (preset_medium_speed_temp
+              - dead_zone_preset) %}\n  {{ preset_low_speed }}\n{% elif current_temp
+              >= (preset_medium_speed_temp + dead_zone_preset) and current_temp <=
+              (preset_high_speed_temp - dead_zone_preset) %}\n  {{ preset_medium_speed
+              }}\n{% elif current_temp >= (preset_high_speed_temp + dead_zone_preset)
+              %}\n  {{ preset_high_speed }}\n{% else %}\n  in_dead_zone\n{% endif
+              %}\n"
+        - choose:
+          - alias: Set fan preset the first time the fan is turned on with no dead
+              zone
+            conditions:
+            - condition: template
+              value_template: '{{ expand(preset_control_ceiling_fan) | selectattr(''attributes.preset_mode'',
+                ''eq'', preset_off) | list | length == expand(preset_control_ceiling_fan)
+                | list | length }}'
+            sequence:
+            - alias: Turn on the fan preset as per settings
+              service: fan.set_preset_mode
+              target:
+                entity_id: '{{ preset_control_ceiling_fan }}'
+              data:
+                preset_mode: '{{ preset_speed_off }}'
+            - alias: The preset heartbeat
+              delay:
+                minutes: !input preset_heartbeat
+          - alias: If the fan preset is the same as last repeat just run heartbeat
+            conditions:
+            - condition: or
+              conditions:
+              - condition: template
+                value_template: '{{ preset_speed_on == ''in_dead_zone'' }}'
+            sequence:
+            - alias: The preset heartbeat
+              delay:
+                minutes: !input preset_heartbeat
+          - alias: Set fan preset as per settings
+            conditions:
+            - condition: template
+              value_template: '{{ ceiling_fan_control_mode == ''fan_preset'' }}'
+            sequence:
+            - alias: Fan on the fan preset as per settings
+              service: fan.set_preset_mode
+              target:
+                entity_id: '{{ preset_control_ceiling_fan }}'
+              data:
+                preset_mode: '{{ preset_speed_on }}'
+            - alias: The preset heartbeat
+              delay:
+                minutes: !input preset_heartbeat
+    - alias: Turn preset fan off
+      service: fan.set_preset_mode
+      target:
+        entity_id: '{{ preset_control_ceiling_fan }}'
+      data:
+        preset_mode: '{{ preset_off }}'
+  - alias: Percentage Controled Ceiling Fan
+    conditions:
+    - '{{ fan_mode == ''ceiling_fan'' }}'
+    - '{{ ceiling_fan_control_mode == ''fan_percentage'' }}'
+    - condition: numeric_state
+      entity_id: !input trigger_sensor
+      above: !input rising_temp
+    sequence:
+    - alias: Repeat while trigger is above falling temp
+      repeat:
+        while:
+        - condition: numeric_state
+          entity_id: !input trigger_sensor
+          above: !input falling_temp
+        sequence:
+        - variables:
+            fan_percentage: "{% set tts = states(trigger_sensor) | float %} {% set
+              slope = (ceiling_fan_min_pct - ceiling_fan_max_pct) / (rising_temp -
+              ceiling_fan_max_temp) %} {% set ak = ((slope * rising_temp) * -1) +
+              ceiling_fan_min_pct %} {% set fe = pct_control_ceiling_fan %} {% set
+              fec = expand(fe) | map(attribute='entity_id') | list | length %} {%
+              set fp = (expand(fe) | map(attribute='attributes.percentage') | reject('equalto',
+              None) | sum | float(default=100) / fec) | round(0) %} {% if tts <= rising_temp
+              %}\n  {% set tps = ceiling_fan_min_pct %}\n{% elif tts >= ceiling_fan_max_temp
+              %}\n  {% set tps = ceiling_fan_max_pct %}\n{% else %}\n  {% set tps
+              = ((slope * tts) + ak) | round(1) %}\n{% endif %} {% if fp <= 0 %}\n
+              \ {% set tps = tps %}\n{% elif (tps > fp) and (ceiling_fan_max_pct -
+              fp) <= ceiling_fan_dead_zone %}\n  {% set tps = ceiling_fan_max_pct
+              %}\n{% elif (fp > tps) and (fp - ceiling_fan_min_pct) <= ceiling_fan_dead_zone
+              %}\n  {% set tps = ceiling_fan_min_pct %}\n{% elif (tps > fp) and (tps
+              - fp) <= ceiling_fan_dead_zone %}\n  {% set tps = fp %}\n{% elif (fp
+              > tps) and (fp - tps) <= ceiling_fan_dead_zone %}\n  {% set tps = fp
+              %}\n{% elif tps > (fp + ceiling_fan_step_value) %}\n  {% set tps = fp
+              + ceiling_fan_step_value %}\n{% elif tps < (fp - ceiling_fan_step_value)
+              %}\n  {% set tps = fp - ceiling_fan_step_value %}\n{% endif %} {{ tps
+              | round(0) }}\n"
+            in_dead_zone: "{% set tts = states(trigger_sensor) | float %} {% set slope
+              = (ceiling_fan_min_pct - ceiling_fan_max_pct) / (rising_temp - ceiling_fan_max_temp)
+              %} {% set ak = ((slope * rising_temp) * -1) + ceiling_fan_min_pct %}
+              {% set fe = pct_control_ceiling_fan %} {% set fec = expand(fe) | map(attribute='entity_id')
+              | list | length %} {% set fp = (expand(fe) | map(attribute='attributes.percentage')
+              | reject('equalto', None) | sum | float(default=100) / fec) | round(0)
+              %} {% set tps = ((slope * tts) + ak) | round(1) %} {% if (tps >= fp)
+              and (ceiling_fan_max_pct - fp) <= ceiling_fan_dead_zone %}\n  false\n{%
+              elif (fp >= tps) and (fp - ceiling_fan_min_pct) <= ceiling_fan_dead_zone
+              %}\n  false\n{% elif (tps > fp) and (tps - fp) <= ceiling_fan_dead_zone
+              %}\n  true\n{% elif (fp >= tps) and (fp - tps) <= ceiling_fan_dead_zone
+              %}\n  true\n{% else %}\n  false\n{% endif %}\n"
+        - choose:
+          - alias: Set fan percentage when first turn ON
+            conditions:
+            - condition: template
+              value_template: '{{ (expand(pct_control_ceiling_fan) | selectattr(''state'',
+                ''equalto'', ''off'') | list | length) == (expand(pct_control_ceiling_fan)
+                | list | length) }}'
+            sequence:
+            - service: fan.set_percentage
+              target:
+                entity_id: '{{ pct_control_ceiling_fan }}'
+              data:
+                percentage: '{{ ceiling_fan_min_pct }}'
+            - alias: Fan heartbeat
+              delay:
+                minutes: !input ceiling_fan_heartbeat
+          - alias: If fan percentage is in the dead zone
+            conditions: '{{ in_dead_zone }}'
+            sequence:
+            - alias: Fan heartbeat
+              delay:
+                minutes: !input ceiling_fan_heartbeat
+          - alias: Set fan percentage
+            conditions:
+            - condition: template
+              value_template: '{{ ceiling_fan_control_mode == ''fan_percentage'' }}'
+            sequence:
+            - service: fan.set_percentage
+              target:
+                entity_id: '{{ pct_control_ceiling_fan }}'
+              data:
+                percentage: '{{ fan_percentage }}'
+            - alias: Fan heartbeat
+              delay:
+                minutes: !input ceiling_fan_heartbeat
+    - alias: Turn off the fan
+      service: fan.set_percentage
+      target:
+        entity_id: '{{ pct_control_ceiling_fan }}'
+      data:
+        percentage: 0

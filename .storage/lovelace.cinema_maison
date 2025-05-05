@@ -1,0 +1,603 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.cinema_maison",
+  "data": {
+    "config": {
+      "views": [
+        {
+          "title": "Living Room",
+          "path": "living-room",
+          "type": "sections",
+          "max_columns": 4,
+          "icon": "mdi:sofa",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "New section"
+                },
+                {
+                  "type": "custom:flower-card",
+                  "entity": "plant.ficus",
+                  "battery_sensor": "sensor.plant_sensor_1_battery",
+                  "show_bars": [
+                    "moisture",
+                    "temperature",
+                    "humidity"
+                  ],
+                  "display_type": "full"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Cinéma-maison",
+          "path": "cinema-maison",
+          "icon": "mdi:theater",
+          "type": "sections",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Ambiance"
+                },
+                {
+                  "type": "tile",
+                  "entity": "scene.ht_lights_playing"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "media_player.ht_tv",
+                  "tap_action": {
+                    "action": "toggle"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "media_player.ht_appletv"
+                },
+                {
+                  "type": "heading",
+                  "heading": "Media"
+                },
+                {
+                  "type": "media-control",
+                  "entity": "media_player.ht_tv"
+                },
+                {
+                  "type": "media-control",
+                  "entity": "media_player.ht_appletv"
+                },
+                {
+                  "type": "media-control",
+                  "entity": "media_player.ht_avr"
+                }
+              ]
+            }
+          ],
+          "badges": [
+            {
+              "type": "entity",
+              "show_name": false,
+              "show_state": false,
+              "show_icon": true,
+              "entity": "cover.ht_blind",
+              "color": ""
+            },
+            {
+              "type": "entity",
+              "show_name": false,
+              "show_state": true,
+              "show_icon": true,
+              "entity": "light.ht_torchiere",
+              "color": ""
+            },
+            {
+              "type": "entity",
+              "entity": "media_player.ht_appletv",
+              "icon": "mdi:apple"
+            },
+            {
+              "type": "entity",
+              "entity": "media_player.xbox_series_s_de_z",
+              "icon": "mdi:microsoft-xbox"
+            }
+          ]
+        },
+        {
+          "type": "sections",
+          "path": "maison",
+          "max_columns": 4,
+          "title": "Maison",
+          "icon": "mdi:home",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": []
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Robotron"
+                },
+                {
+                  "type": "custom:mushroom-vacuum-card",
+                  "entity": "vacuum.robotron",
+                  "name": "Robotron",
+                  "icon_animation": true,
+                  "fill_container": true,
+                  "commands": [
+                    "start_pause",
+                    "stop",
+                    "locate",
+                    "return_home"
+                  ]
+                }
+              ],
+              "column_span": 1
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Robotron"
+                },
+                {
+                  "type": "tile",
+                  "entity": "vacuum.robotron"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Robotron"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.robotron_bin_full"
+                }
+              ]
+            }
+          ],
+          "badges": [
+            {
+              "type": "entity",
+              "show_name": false,
+              "show_state": true,
+              "show_icon": true,
+              "entity": "sensor.hydroqc_maison_next_or_current_outage",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "sensor.hydroqc_maison_next_or_current_outage",
+                  "state_not": "unavailable"
+                }
+              ],
+              "color": "red"
+            },
+            {
+              "type": "entity",
+              "show_name": false,
+              "show_state": true,
+              "show_icon": true,
+              "entity": "sensor.chelsea_advisory",
+              "visibility": [
+                {
+                  "condition": "and",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "sensor.chelsea_advisory",
+                      "state_not": "unavailable"
+                    },
+                    {
+                      "condition": "state",
+                      "entity": "sensor.chelsea_advisory",
+                      "state": "unknown"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "entity",
+              "show_name": false,
+              "show_state": true,
+              "show_icon": true,
+              "entity": "sensor.chelsea_statements",
+              "visibility": [
+                {
+                  "condition": "and",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "sensor.chelsea_statements",
+                      "state_not": "unavailable"
+                    },
+                    {
+                      "condition": "state",
+                      "entity": "sensor.chelsea_statements",
+                      "state_not": "unknown"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "sections",
+          "max_columns": 4,
+          "title": "Plants",
+          "path": "plants",
+          "icon": "mdi:watering-can",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "New section"
+                },
+                {
+                  "type": "tile",
+                  "entity": "plant.ficus"
+                },
+                {
+                  "type": "plant-status",
+                  "entity": "plant.ficus"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Aquarium",
+          "path": "aquarium",
+          "icon": "mdi:fishbowl",
+          "type": "sections",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "light.apex_light1"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.aquarium_light_hue_light"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.apex_moonlight"
+                },
+                {
+                  "type": "tile",
+                  "entity": "valve.apex_co2"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "sections",
+          "max_columns": 4,
+          "title": "Chauffage",
+          "path": "HVAC",
+          "icon": "mdi:fan",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Temperature",
+                  "heading_style": "title",
+                  "icon": "mdi:thermometer"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.lr_ecobeesensor_temperature",
+                  "name": "Living Room"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.diningroom_ecobeesensor_temperature",
+                  "name": "Dining Room"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.toilet_ecobee_sensor_temperature",
+                  "name": "Toilet"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.mbr_ecobeesensor_temperature",
+                  "name": "Master Bedroom"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.zbr_ecobeesensor_temperature",
+                  "name": "Zachary's Bedroom"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.office_ecobeesensor_temperature",
+                  "name": "Office"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.ht_ecobeesensor_temperature",
+                  "name": "Home Theatre"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.understairscloset_climatesensor_temperature",
+                  "name": "Understairs Closet"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.garage_climatesensor_temperature",
+                  "name": "Garage"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.coldroom_climatesensor_temperature",
+                  "name": "Cold Room"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.patio_sensor_temperature",
+                  "name": "Outdoor"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Humidity",
+                  "heading_style": "title",
+                  "icon": "mdi:water-percent"
+                },
+                {
+                  "type": "humidifier",
+                  "entity": "humidifier.humidifier_setpoint",
+                  "features": [
+                    {
+                      "type": "humidifier-toggle"
+                    }
+                  ],
+                  "show_current_as_primary": true
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.condensation_resistance_limit",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": 1
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.hvac_thermostat_ecobee_current_humidity",
+                  "name": "First Floor"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.ht_airqualitysensor_humidity",
+                  "name": "Basement"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.coldroom_climatesensor_humidity",
+                  "name": "Cold Room"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.garage_climatesensor_humidity",
+                  "name": "Garage"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.understairscloset_climatesensor_humidity",
+                  "name": "Understairs Closet"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.chelsea_humidity",
+                  "name": "Outdoor"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "HVAC Settings",
+                  "heading_style": "title"
+                },
+                {
+                  "type": "tile",
+                  "entity": "fan.hvac_hrv"
+                },
+                {
+                  "type": "thermostat",
+                  "entity": "climate.hvac_thermostat",
+                  "show_current_as_primary": false,
+                  "features": [
+                    {
+                      "type": "climate-hvac-modes"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "select.hvac_away_mode"
+                },
+                {
+                  "type": "tile",
+                  "entity": "select.hvac_active_schedule"
+                },
+                {
+                  "type": "tile",
+                  "entity": "number.hvac_away_temperature_minimum"
+                },
+                {
+                  "type": "tile",
+                  "entity": "number.hvac_away_temperature_maximum"
+                },
+                {
+                  "type": "tile",
+                  "entity": "select.hvac_home_away"
+                },
+                {
+                  "type": "tile",
+                  "entity": "select.hvac_system_mode"
+                },
+                {
+                  "type": "tile",
+                  "entity": "automation.hvac_home_away"
+                }
+              ]
+            }
+          ],
+          "cards": []
+        },
+        {
+          "title": "IAQ Dashboard",
+          "path": "iaq",
+          "icon": "mdi:air-filter",
+          "layout": {
+            "type": "sections"
+          },
+          "badges": [],
+          "cards": [
+            {
+              "type": "section",
+              "label": "Radon"
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "sensor.ht_airqualitysensor_radon_1_day_average"
+                },
+                {
+                  "entity": "sensor.ht_airqualitysensor_radon_1_day_level"
+                },
+                {
+                  "entity": "sensor.ht_airqualitysensor_radon_longterm_average"
+                },
+                {
+                  "entity": "sensor.ht_airqualitysensor_radon_longterm_level"
+                }
+              ]
+            },
+            {
+              "type": "section",
+              "label": "VOC"
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "sensor.ht_airqualitysensor_vocs"
+                },
+                {
+                  "entity": "sensor.apollo_air1_voc_quality"
+                },
+                {
+                  "entity": "sensor.apollo_air1_voc_sensirion_index"
+                },
+                {
+                  "entity": "sensor.iaq_sensor_3_vocs"
+                }
+              ]
+            },
+            {
+              "type": "section",
+              "label": "CO₂"
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "sensor.apollo_air1_co2"
+                },
+                {
+                  "entity": "sensor.iaq_sensor_3_carbon_dioxide"
+                }
+              ]
+            },
+            {
+              "type": "section",
+              "label": "Formaldehyde"
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "sensor.iaq_sensor_3_formaldehyde_concentration"
+                }
+              ]
+            },
+            {
+              "type": "section",
+              "label": "NOx"
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "sensor.apollo_air1_nox_sensirion_index"
+                }
+              ]
+            },
+            {
+              "type": "section",
+              "label": "Particulate Matter"
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "sensor.apollo_air1_pm_1_m_weight_concentration"
+                },
+                {
+                  "entity": "sensor.apollo_air1_pm_2_5_m_weight_concentration"
+                },
+                {
+                  "entity": "sensor.apollo_air1_pm_4_m_weight_concentration"
+                },
+                {
+                  "entity": "sensor.apollo_air1_pm_10_m_weight_concentration"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
