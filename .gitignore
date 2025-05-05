@@ -8,7 +8,20 @@
 
 # Exclude secrets, SSH artifacts, databases, logs
 secrets.yaml
+.cloud/
+.google.token
 .homeassistant_ssh
 *.db
 home-assistant.log*
 *.log
+
+# Ignore SQLite journal files
+*.db-shm
+*.db-wal
+
+# Whitelist
+!*.yaml
+!.gitignore
+!*.md
+!*.sh
+!*.js*
