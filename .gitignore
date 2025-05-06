@@ -18,6 +18,7 @@ secrets.yaml
 *.db
 home-assistant.log*
 *.log
+.ssh/
 
 # Ignore SQLite journal files
 *.db-shm
