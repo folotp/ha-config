@@ -1,0 +1,71 @@
+###############################################################################
+# TVOC Baseline Watchdog Package for Home Assistant
+#
+# This package detects when the Airthings Wave Plus VOC sensor's 7-day baseline
+# has likely drifted upward and notifies the user to recalibrate by exposing it
+# to fresh air for ~10 minutes.
+###############################################################################
+
+###############################################################################
+# 1. 8‑day rolling minimum of Airthings Wave Plus TVOC Index
+###############################################################################
+# statistics:
+#   - name: iaq_airthings_wave_plus_tvoc_index_8d_min
+#     entity_id: sensor.iaq_airthings_wave_plus_tvoc_index
+#     state_characteristic: value_min
+#     max_age:
+#       days: 8 # covers the whole 7‑day baseline period
+#     sampling_size: 2000 # ~5‑min sampling ⇒ ≈2304 pts / 8 d → 2000 is OK
+sensor:
+  - platform: statistics
+    name: "Airthings Wave Plus TVOC Index 8d Min"
+    unique_id: iaq_airthings_wave_plus_tvoc_index_8d_min
+    entity_id: sensor.iaq_airthings_wave_plus_tvoc_index
+    state_characteristic: value_min
+    max_age:
+      days: 8 # covers the full 7-day baseline period + margin
+    sampling_size: 2000 # ~5-min sampling ⇒ ≈2304 pts / 8 days; 2000 is OK
+
+###############################################################################
+# 2. Binary sensor with hysteresis (uses Threshold helper)
+###############################################################################
+binary_sensor:
+  - platform: threshold
+    name: "Airthings Wave Plus TVOC Baseline Drifted"
+    entity_id: sensor.iaq_airthings_wave_plus_tvoc_index_8d_min
+    device_class: problem
+    upper: 100 # “clean air” upper limit in ppb‑eq
+    hysteresis: 20 # turns ON >120 ; OFF <80 (ppb‑eq)
+
+###############################################################################
+# 3. Automation – alert until the problem is cleared
+###############################################################################
+automation:
+  - id: iaq_airthings_wave_plus_tvoc_notify_baseline_drift
+    alias: "Alert: Airthings Wave Plus VOC baseline drift"
+    description: >
+      Notifies when VOC baseline drifts upward; prompts a 10-minute
+      fresh‑air exposure to reset the sensor.
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted
+        to: "on"
+      - trigger: time_pattern
+        hours: "9"
+        minutes: "0"
+        seconds: "0"
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted
+        state: "on"
+    actions:
+      - action: notify.mobile_app_your_phone # change to your notifier
+        data:
+          title: "Airthings Wave Plus VOC baseline likely drifted"
+          message: >
+            TVOC Index minimum has stayed above 100 ppb-eq for 7 days.
+            Move the monitor near an open window for ~10 minutes, then
+            return it to its room to reset the baseline.
+          data:
+            url: "https://help.airthings.com/en/articles/6009752-wave-about-sensor-calibration"
