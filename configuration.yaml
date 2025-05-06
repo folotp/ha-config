@@ -29,6 +29,14 @@ zha:
         - type: z2m
           url: https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/index.json
 
+# Notify
+notify:
+  - name: "Mobile Apps PA"
+    platform: group
+    services:
+      - action: mobile_app_iphone_de_pa
+      - action: mobile_app_ipad_de_pa
+
 # Home Assistant settings
 homeassistant:
   packages: !include_dir_named packages
