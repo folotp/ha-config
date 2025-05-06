@@ -31,7 +31,7 @@ zha:
 
 # Home Assistant settings
 homeassistant:
-  # … other homeassistant settings 
+  # … other homeassistant settings
 
   # Customizations
   customize:
