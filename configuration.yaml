@@ -31,7 +31,7 @@ zha:
 
 # Home Assistant settings
 homeassistant:
-  # … other homeassistant settings
+  packages: !include_dir_named packages
 
   # Customizations
   customize:
