@@ -1,0 +1,6 @@
+sensor:
+  - platform: rest
+    name: Pollen Level
+    resource: https://www.theweathernetwork.com/api/data/LOCATION_CODE
+    value_template: "{{ value_json.forecast.pollen }}"
+    scan_interval: 3600
