@@ -932,7 +932,7 @@
       device_id: b9eb539922bf38d44a82cc0de21f3c07
   mode: single
 - id: '1736197975831'
-  alias: Humidifier - Watchdog
+  alias: HVAC Watchdog - Humidifier
   description: ''
   use_blueprint:
     path: Blackshome/notifications-and-announcements.yaml
@@ -1020,52 +1020,52 @@
       above_state: 100
       include_notify: enable_mobile_app_notify
 - id: '1737210877920'
-  alias: HRV - HVAC Fan Control
+  alias: HVAC Fan Control
   description: ''
   triggers:
-  - type: turned_on
+  - type: changed_states
     device_id: 498e396176a0d7c38288bb0762e85da4
     entity_id: 91f217b8f50f4e485fc2397b220eca0c
     domain: fan
     trigger: device
-    id: HRV ON
-  - type: turned_off
-    device_id: 498e396176a0d7c38288bb0762e85da4
-    entity_id: 91f217b8f50f4e485fc2397b220eca0c
-    domain: fan
-    trigger: device
-    id: HRV OFF
+  - trigger: state
+    entity_id:
+    - input_boolean.hvac_fan_force_on
+  - trigger: state
+    entity_id:
+    - climate.hvac_thermostat_ecobee
+    attribute: fan_mode
+  - trigger: homeassistant
+    event: start
   conditions: []
   actions:
-  - alias: While HRV is ON
-    repeat:
-      sequence:
-      - sequence:
-        - action: climate.set_fan_mode
-          metadata: {}
-          data:
-            fan_mode: 'on'
-          target:
-            device_id: 74b2e490499eba29d6e6edcb89e9f9e6
-          alias: Turn HVAC Fan ON
-        - delay:
-            hours: 0
-            minutes: 2
-            seconds: 0
-            milliseconds: 0
-      while:
+  - if:
+    - condition: or
+      conditions:
       - condition: device
         device_id: 498e396176a0d7c38288bb0762e85da4
         domain: fan
         entity_id: 91f217b8f50f4e485fc2397b220eca0c
         type: is_on
-  - alias: Return HVAC Fan to Auto mode
-    action: climate.set_fan_mode
-    metadata: {}
-    data:
-      fan_mode: auto
-    target:
-      device_id: 74b2e490499eba29d6e6edcb89e9f9e6
+      - condition: state
+        entity_id: input_boolean.hvac_fan_force_on
+        state: 'on'
+    then:
+    - action: climate.set_fan_mode
+      metadata: {}
+      data:
+        fan_mode: 'on'
+      target:
+        device_id: 74b2e490499eba29d6e6edcb89e9f9e6
+      alias: Turn HVAC Fan ON
+    else:
+    - alias: Return HVAC Fan to Auto mode
+      action: climate.set_fan_mode
+      metadata: {}
+      data:
+        fan_mode: auto
+      target:
+        device_id: 74b2e490499eba29d6e6edcb89e9f9e6
   mode: restart
 - id: '1737211996448'
   alias: HRV - Air Quality
@@ -1354,8 +1354,8 @@
     data: {}
   mode: restart
 - id: '1743166090883'
-  alias: HVAC - Watchdog (watch for Off)
-  description: Will send a notification if HVAC is turned Off.
+  alias: HVAC Watchdog - Thermostat Off
+  description: Will send a notification if Ecobee thermostat is turned Off.
   use_blueprint:
     path: Blackshome/notifications-and-announcements.yaml
     input:
@@ -1367,12 +1367,12 @@
       - 232b7db24acc398ca60c12a9daad9eb7
       - e0b8985c9b0860395d782cf988cac146
       - f7c878894e69f0542c739bff9676f65a
-      notify_title: HVAC
-      notify_message: HVAC is Off
+      notify_title: HVAC Alert!
+      notify_message: Ecobee thermostat is Off
       notify_interruption_level: critical
       include_persistent_notification: enable_persistent_notification
-      persistent_title: HVAC
-      persistent_message: HVAC is Off!
+      persistent_title: HVAC Alert!
+      persistent_message: Ecobee thermostat is Off!
 - id: '1743370416927'
   alias: Family Room Lights Automation
   description: ''
@@ -1392,7 +1392,7 @@
       light_transition_on: 0
       bypass_auto_off_delay: 1
 - id: '1743547361556'
-  alias: HRV - Control NEW
+  alias: HVAC HRV Control NEW
   description: Combined HRV Automation using IAQ Template and Natural Cooling
   triggers:
   - trigger: homeassistant
@@ -1401,17 +1401,21 @@
   - entity_id:
     - binary_sensor.hvac_hrv_air_quality_trigger
     trigger: state
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
   - entity_id:
     - binary_sensor.hvac_natural_cooling_useful
     trigger: state
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
   - trigger: state
     entity_id:
     - climate.hvac_thermostat_ecobee
     attribute: hvac_action
-  - trigger: state
-    entity_id:
-    - climate.hvac_thermostat_ecobee
-    attribute: fan_mode
   - trigger: state
     entity_id:
     - sensor.hvac_hrv_last_2_hour_runtime
@@ -1419,13 +1423,18 @@
   - trigger: state
     entity_id:
     - input_boolean.hrv_force_on
+  - trigger: state
+    entity_id:
+    - climate.hvac_thermostat_ecobee
+    attribute: fan_mode
+    enabled: false
   conditions:
   - condition: or
     conditions:
     - condition: and
       conditions:
       - condition: numeric_state
-        entity_id: sensor.u_s_air_quality_index
+        entity_id: sensor.outdoor_airvisual_air_quality_index_us
         below: 150
       - condition: or
         conditions:
@@ -1501,6 +1510,7 @@
         target:
           device_id: 74b2e490499eba29d6e6edcb89e9f9e6
         alias: Turn HVAC Fan ON
+        enabled: false
       alias: Run HRV
     default:
     - action: fan.turn_off
@@ -1515,6 +1525,7 @@
         fan_mode: auto
       target:
         device_id: 74b2e490499eba29d6e6edcb89e9f9e6
+      enabled: false
   mode: restart
 - id: '1744569094629'
   alias: HT Light Automation - Xbox
@@ -1834,52 +1845,6 @@
       - use_transition
       light_brightness: 25
       light_transition_off: 2
-- id: '1745962206673'
-  alias: Window-safe roller blind
-  description: ''
-  triggers:
-  - alias: Cover Position Changes
-    trigger: numeric_state
-    entity_id:
-    - cover.bathroom_blind
-    attribute: current_position
-    id: Cover_Position_Change
-    below: 100
-  - trigger: state
-    entity_id: binary_sensor.bathroom_window
-    to: 'on'
-  - trigger: homeassistant
-    event: start
-  conditions:
-  - condition: state
-    entity_id: binary_sensor.bathroom_window
-    state: 'on'
-  actions:
-  - choose:
-    - conditions:
-      - condition: template
-        value_template: "{{ trigger.entity_id == cover\n   and (trigger.to_state.attributes.current_position
-          | int) <= open_pos }}\n"
-      sequence:
-      - action: cover.close_cover
-        target:
-          entity_id: '{{ cover }}'
-      - delay:
-          seconds: '{{ bump_dur }}'
-      - action: cover.open_cover
-        target:
-          entity_id: '{{ cover }}'
-    default:
-    - action: cover.open_cover
-      target:
-        entity_id: '{{ cover }}'
-  mode: restart
-  max_exceeded: silent
-  variables:
-    cover: cover.bathroom_blind
-    window: binary_sensor.bathroom_window
-    open_pos: 100
-    bump_dur: 1
 - id: '1746043278796'
   alias: Window-Safe Blind - Bathroom
   description: ''
@@ -1920,3 +1885,70 @@
     input:
       cover_entity: cover.ht_blind
       window_sensor: binary_sensor.bathroom_window
+- id: '1746711411024'
+  alias: HVAC Watchdog - Flair system mode
+  description: ''
+  triggers:
+  - device_id: fb9ae35f77be16649bc913ff71258e38
+    domain: select
+    entity_id: 9a5e06e191ad087b7e8ba8cf8ca6c3d9
+    type: current_option_changed
+    trigger: device
+    to: Manual
+  conditions: []
+  actions:
+  - action: notify.mobile_apps_pa
+    metadata: {}
+    data:
+      title: HVAC Alert!
+      message: Flair system mode is Manual
+      data:
+        push:
+          interruption-level: critical
+  - action: notify.notify
+    metadata: {}
+    data: {}
+  - action: notify.persistent_notification
+    metadata: {}
+    data: {}
+  - action: notify.send_message
+    metadata: {}
+    data: {}
+  - action: notify.mobile_app_iphone_de_pa
+    metadata: {}
+    data: {}
+  mode: single
+- id: '1746727528237'
+  alias: Set Flair minimum temperature to 16 at night
+  description: Sets the away temperature lower at night to increase the likelihood
+    of smart vents in bedrooms remain open during the night minimizing noise. Also,
+    this should minimize smart vents opening/closing to accommodate enhanced ventilation
+    where they open up when the fan is running.
+  triggers: []
+  conditions: []
+  actions:
+  - device_id: fb9ae35f77be16649bc913ff71258e38
+    domain: number
+    entity_id: 8b2367de8b83f1fb5358a722d702c7f3
+    type: set_value
+    value: 16
+  mode: single
+- id: '1746728027311'
+  alias: Turn OFF Automations with labels [STUB, DELETE]
+  description: ''
+  triggers:
+  - trigger: homeassistant
+    event: start
+  - trigger: time_pattern
+    hours: /1
+  conditions: []
+  actions:
+  - action: automation.turn_off
+    metadata: {}
+    data:
+      stop_actions: true
+    target:
+      label_id:
+      - delete
+      - stub
+  mode: single
