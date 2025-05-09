@@ -1,0 +1,259 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dev_iaq",
+  "data": {
+    "config": {
+      "views": [
+        {
+          "title": "Indoor Air Quality",
+          "path": "indoor_air_quality",
+          "icon": "mdi:air-filter",
+          "type": "sections",
+          "max_sections_wide": 2,
+          "dense_section_placement": true,
+          "badges": [
+            "binary_sensor.hvac_hrv_air_quality_trigger",
+            "binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted"
+          ],
+          "sections": [
+            {
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Apollo AIR-1"
+                },
+                {
+                  "type": "sensor",
+                  "entity": "sensor.iaq_apollo_air1_co2",
+                  "name": "CO₂ (ppm)",
+                  "graph": "line",
+                  "detail": 2,
+                  "hours_to_show": 24
+                },
+                {
+                  "type": "custom:apexcharts-card",
+                  "header": {
+                    "show": true,
+                    "title": "CO₂ (10 min avg)",
+                    "show_states": true,
+                    "colorize_states": true
+                  },
+                  "graph_span": "24h",
+                  "experimental": {
+                    "color_threshold": true
+                  },
+                  "span": {
+                    "start": "day"
+                  },
+                  "now": {
+                    "show": true,
+                    "label": "now",
+                    "color": "red"
+                  },
+                  "series": [
+                    {
+                      "entity": "sensor.iaq_apollo_air1_co2",
+                      "name": "CO₂",
+                      "stroke_width": 3,
+                      "fill_raw": "last",
+                      "extend_to": "now",
+                      "group_by": {
+                        "func": "avg",
+                        "duration": "10min"
+                      },
+                      "color_threshold": [
+                        {
+                          "value": 0,
+                          "color": "#008000"
+                        },
+                        {
+                          "value": 500,
+                          "color": "#008055"
+                        },
+                        {
+                          "value": 650,
+                          "color": "#FFA500"
+                        },
+                        {
+                          "value": 850,
+                          "color": "#DE2349"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "gauge",
+                  "entity": "sensor.iaq_apollo_air1_co2",
+                  "name": "CO₂",
+                  "needle": true,
+                  "unit": "ppm",
+                  "min": 0,
+                  "max": 3000,
+                  "severity": {
+                    "green": 0,
+                    "yellow": 1000,
+                    "red": 2000
+                  }
+                },
+                {
+                  "type": "sensor",
+                  "entity": "sensor.iaq_apollo_air1_tvoc_sensirion_index",
+                  "name": "VOC Index",
+                  "graph": "line",
+                  "detail": 2,
+                  "hours_to_show": 24
+                },
+                {
+                  "type": "gauge",
+                  "entity": "sensor.iaq_apollo_air1_tvoc_sensirion_index",
+                  "name": "VOC Index",
+                  "needle": true,
+                  "unit": "index",
+                  "min": 0,
+                  "max": 500,
+                  "severity": {
+                    "green": 0,
+                    "yellow": 150,
+                    "red": 350
+                  }
+                }
+              ]
+            },
+            {
+              "cards": [
+                {
+                  "type": "heading",
+                  "icon": "mdi:molecule-co2",
+                  "heading_style": "title",
+                  "heading": "CO2"
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "gauge",
+                      "entity": "sensor.iaq_apollo_air1_co2",
+                      "name": "{{ area_name('sensor.iaq_apollo_air1_co2') | default('Apollo‑Air‑1') }}",
+                      "unit": "ppm",
+                      "min": 400,
+                      "max": 2000,
+                      "severity": {
+                        "green": 400,
+                        "yellow": 1000,
+                        "red": 1500
+                      }
+                    },
+                    {
+                      "type": "gauge",
+                      "entity": "sensor.iaq_airthings_wave_plus_co2",
+                      "name": "{{ area_name('sensor.iaq_airthings_wave_plus_co2') | default('Wave Plus') }}",
+                      "unit": "ppm",
+                      "min": 400,
+                      "max": 2000,
+                      "severity": {
+                        "green": 400,
+                        "yellow": 1000,
+                        "red": 1500
+                      }
+                    },
+                    {
+                      "type": "gauge",
+                      "entity": "sensor.iaq_tuya_sensor_co2",
+                      "name": "{{ area_name('sensor.iaq_tuya_sensor_co2') | default('Tuya') }}",
+                      "unit": "ppm",
+                      "min": 400,
+                      "max": 2000,
+                      "severity": {
+                        "green": 400,
+                        "yellow": 1000,
+                        "red": 1500
+                      }
+                    }
+                  ]
+                },
+                {
+                  "chart_type": "line",
+                  "period": "hour",
+                  "type": "statistics-graph",
+                  "title": "CO₂ — last 24 h",
+                  "stat_types": [
+                    "max",
+                    "min"
+                  ],
+                  "entities": [
+                    {
+                      "entity": "sensor.iaq_apollo_air1_co2",
+                      "name": "[[[ const a=hass.areas[hass.entities['sensor.iaq_apollo_air1_co2']?.area_id]; return a ? a.name : 'Apollo‑Air‑1'; ]]]"
+                    },
+                    {
+                      "entity": "sensor.iaq_airthings_wave_plus_co2",
+                      "name": "{{ area_name('sensor.iaq_airthings_wave_plus_co2') | default('Wave Plus') }}"
+                    },
+                    {
+                      "entity": "sensor.iaq_tuya_sensor_co2",
+                      "name": "{{ area_name('sensor.iaq_tuya_sensor_co2') | default('Tuya') }}"
+                    }
+                  ],
+                  "logarithmic_scale": false,
+                  "days_to_show": 2,
+                  "hide_legend": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "sections",
+          "max_columns": 4,
+          "title": "test",
+          "path": "test",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "New section"
+                },
+                {
+                  "type": "custom:apexcharts-card",
+                  "graph_span": "24h",
+                  "header": {
+                    "show": true,
+                    "title": "CO₂ (Last 24 h)",
+                    "show_states": true
+                  },
+                  "series": [
+                    {
+                      "entity": "sensor.iaq_airthings_wave_plus_co2",
+                      "name": "CO₂ (ppm)",
+                      "unit": "ppm",
+                      "stroke_width": 2,
+                      "curve": "smooth",
+                      "group_by": {
+                        "duration": "15min",
+                        "func": "avg"
+                      }
+                    }
+                  ],
+                  "apex_config": {
+                    "chart": {
+                      "toolbar": {
+                        "show": false
+                      }
+                    },
+                    "yaxis": {
+                      "decimalsInFloat": 0
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
