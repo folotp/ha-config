@@ -631,8 +631,7 @@
           type: select_option
           option: Heating
       alias: Cooling Mode
-  mode: queued
-  max: 10
+  mode: restart
 - id: '1733714466587'
   alias: When TV turns ON or OFF
   description: ''
@@ -930,7 +929,7 @@
         '
     target:
       device_id: b9eb539922bf38d44a82cc0de21f3c07
-  mode: single
+  mode: restart
 - id: '1736197975831'
   alias: HVAC Watchdog - Humidifier
   description: ''
@@ -1932,7 +1931,7 @@
     entity_id: 8b2367de8b83f1fb5358a722d702c7f3
     type: set_value
     value: 16
-  mode: single
+  mode: restart
 - id: '1746728027311'
   alias: Turn OFF Automations with labels [STUB, DELETE]
   description: ''

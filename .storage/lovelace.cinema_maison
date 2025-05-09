@@ -13,252 +13,240 @@
           "max_sections_wide": 2,
           "dense_section_placement": true,
           "badges": [
-            {
-              "type": "entity",
-              "show_name": true,
-              "show_state": true,
-              "show_icon": true,
-              "entity": "binary_sensor.hvac_hrv_air_quality_trigger"
-            },
-            {
-              "type": "entity",
-              "show_name": true,
-              "show_state": true,
-              "show_icon": true,
-              "entity": "binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted",
-              "show_entity_picture": false
-            }
+            "binary_sensor.hvac_hrv_air_quality_trigger",
+            "binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted"
           ],
           "sections": [
             {
               "cards": [
                 {
                   "type": "heading",
-                  "heading": "Indoor IAQ Sensors"
+                  "heading": "Apollo AIR-1"
                 },
                 {
-                  "type": "grid",
-                  "columns": 4,
-                  "square": false,
+                  "type": "sensor",
+                  "entity": "sensor.iaq_apollo_air1_co2",
+                  "name": "CO₂ (ppm)",
+                  "graph": "line",
+                  "detail": 2,
+                  "hours_to_show": 24
+                },
+                {
+                  "type": "custom:apexcharts-card",
+                  "header": {
+                    "show": true,
+                    "title": "CO₂ (10 min avg)",
+                    "show_states": true,
+                    "colorize_states": true
+                  },
+                  "graph_span": "24h",
+                  "experimental": {
+                    "color_threshold": true
+                  },
+                  "span": {
+                    "start": "day"
+                  },
+                  "now": {
+                    "show": true,
+                    "label": "now",
+                    "color": "red"
+                  },
+                  "series": [
+                    {
+                      "entity": "sensor.iaq_apollo_air1_co2",
+                      "name": "CO₂",
+                      "stroke_width": 3,
+                      "fill_raw": "last",
+                      "extend_to": "now",
+                      "group_by": {
+                        "func": "avg",
+                        "duration": "10min"
+                      },
+                      "color_threshold": [
+                        {
+                          "value": 0,
+                          "color": "#008000"
+                        },
+                        {
+                          "value": 500,
+                          "color": "#008055"
+                        },
+                        {
+                          "value": 650,
+                          "color": "#FFA500"
+                        },
+                        {
+                          "value": 850,
+                          "color": "#DE2349"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "gauge",
+                  "entity": "sensor.iaq_apollo_air1_co2",
+                  "name": "CO₂",
+                  "needle": true,
+                  "unit": "ppm",
+                  "min": 0,
+                  "max": 3000,
+                  "severity": {
+                    "green": 0,
+                    "yellow": 1000,
+                    "red": 2000
+                  }
+                },
+                {
+                  "type": "sensor",
+                  "entity": "sensor.iaq_apollo_air1_tvoc_sensirion_index",
+                  "name": "VOC Index",
+                  "graph": "line",
+                  "detail": 2,
+                  "hours_to_show": 24
+                },
+                {
+                  "type": "gauge",
+                  "entity": "sensor.iaq_apollo_air1_tvoc_sensirion_index",
+                  "name": "VOC Index",
+                  "needle": true,
+                  "unit": "index",
+                  "min": 0,
+                  "max": 500,
+                  "severity": {
+                    "green": 0,
+                    "yellow": 150,
+                    "red": 350
+                  }
+                }
+              ]
+            },
+            {
+              "cards": [
+                {
+                  "type": "heading",
+                  "icon": "mdi:molecule-co2",
+                  "heading_style": "title",
+                  "heading": "CO2"
+                },
+                {
+                  "type": "horizontal-stack",
                   "cards": [
                     {
-                      "type": "sensor",
-                      "entity": "sensor.iaq_airthings_wave_plus_radon_1_day_average",
-                      "name": "Radon 1-day Avg",
-                      "graph": "line"
-                    },
-                    {
-                      "type": "sensor",
-                      "entity": "sensor.iaq_airthings_wave_plus_radon_1_day_level",
-                      "name": "Radon 1-day Level",
-                      "graph": "line"
-                    },
-                    {
-                      "type": "sensor",
-                      "entity": "sensor.iaq_airthings_wave_plus_radon_longterm_average",
-                      "name": "Radon Long-term Avg",
-                      "graph": "line"
-                    },
-                    {
-                      "type": "sensor",
-                      "entity": "sensor.iaq_airthings_wave_plus_radon_longterm_level",
-                      "name": "Radon Long-term Level",
-                      "graph": "line"
-                    },
-                    {
-                      "type": "sensor",
-                      "entity": "sensor.iaq_airthings_wave_plus_tvoc_index",
-                      "name": "TVOC Index",
-                      "graph": "line"
-                    },
-                    {
-                      "type": "sensor",
-                      "entity": "sensor.iaq_apollo_air1_tvoc_sensirion_index",
-                      "name": "TVOC Sensirion",
-                      "graph": "line"
-                    },
-                    {
-                      "type": "sensor",
-                      "entity": "sensor.iaq_tuya_sensor_tvoc",
-                      "name": "TVOC (µg/m³)",
-                      "graph": "line"
-                    },
-                    {
-                      "type": "sensor",
-                      "entity": "sensor.iaq_apollo_air1_voc_quality",
-                      "name": "TVOC Quality",
-                      "graph": "line"
-                    },
-                    {
-                      "type": "sensor",
+                      "type": "gauge",
                       "entity": "sensor.iaq_apollo_air1_co2",
-                      "name": "CO₂ Sensirion (ppm)",
-                      "graph": "line"
+                      "name": "{{ area_name('sensor.iaq_apollo_air1_co2') | default('Apollo‑Air‑1') }}",
+                      "unit": "ppm",
+                      "min": 400,
+                      "max": 2000,
+                      "severity": {
+                        "green": 400,
+                        "yellow": 1000,
+                        "red": 1500
+                      }
                     },
                     {
-                      "type": "sensor",
+                      "type": "gauge",
                       "entity": "sensor.iaq_airthings_wave_plus_co2",
-                      "name": "CO₂ Airthings (ppm)",
-                      "graph": "line"
+                      "name": "{{ area_name('sensor.iaq_airthings_wave_plus_co2') | default('Wave Plus') }}",
+                      "unit": "ppm",
+                      "min": 400,
+                      "max": 2000,
+                      "severity": {
+                        "green": 400,
+                        "yellow": 1000,
+                        "red": 1500
+                      }
                     },
                     {
-                      "type": "sensor",
-                      "entity": "sensor.iaq_tuya_sensor_carbon_dioxide",
-                      "name": "CO₂ Tuya (ppm)",
-                      "graph": "line"
-                    },
-                    {
-                      "type": "sensor",
-                      "entity": "sensor.iaq_tuya_sensor_formaldehyde_concentration",
-                      "name": "Formaldehyde (µg/m³)",
-                      "graph": "line"
-                    },
-                    {
-                      "type": "sensor",
-                      "entity": "sensor.iaq_apollo_air1_nox_sensirion_index",
-                      "name": "NOx Index",
-                      "graph": "line"
-                    },
-                    {
-                      "type": "sensor",
-                      "entity": "sensor.iaq_apollo_air1_pm1",
-                      "name": "PM1 (µg/m³)",
-                      "graph": "line"
-                    },
-                    {
-                      "type": "sensor",
-                      "entity": "sensor.iaq_apollo_air1_pm2_5",
-                      "name": "PM2.5 (µg/m³)",
-                      "graph": "line"
-                    },
-                    {
-                      "type": "sensor",
-                      "entity": "sensor.iaq_apollo_air1_pm4",
-                      "name": "PM4 (µg/m³)",
-                      "graph": "line"
-                    },
-                    {
-                      "type": "sensor",
-                      "entity": "sensor.iaq_apollo_air1_pm10",
-                      "name": "PM10 (µg/m³)",
-                      "graph": "line"
+                      "type": "gauge",
+                      "entity": "sensor.iaq_tuya_sensor_co2",
+                      "name": "{{ area_name('sensor.iaq_tuya_sensor_co2') | default('Tuya') }}",
+                      "unit": "ppm",
+                      "min": 400,
+                      "max": 2000,
+                      "severity": {
+                        "green": 400,
+                        "yellow": 1000,
+                        "red": 1500
+                      }
                     }
                   ]
-                }
-              ]
-            },
-            {
-              "cards": [
-                {
-                  "type": "heading",
-                  "heading": "HRV Thresholds"
                 },
                 {
-                  "type": "entities",
+                  "chart_type": "line",
+                  "period": "hour",
+                  "type": "statistics-graph",
+                  "title": "CO₂ — last 24 h",
+                  "stat_types": [
+                    "max",
+                    "min"
+                  ],
                   "entities": [
                     {
-                      "entity": "input_number.hvac_hrv_tvoc_threshold",
-                      "name": "TVOC Trigger Threshold"
+                      "entity": "sensor.iaq_apollo_air1_co2",
+                      "name": "[[[ const a=hass.areas[hass.entities['sensor.iaq_apollo_air1_co2']?.area_id]; return a ? a.name : 'Apollo‑Air‑1'; ]]]"
                     },
                     {
-                      "entity": "input_number.hvac_hrv_co2_threshold",
-                      "name": "CO₂ Trigger Threshold"
+                      "entity": "sensor.iaq_airthings_wave_plus_co2",
+                      "name": "{{ area_name('sensor.iaq_airthings_wave_plus_co2') | default('Wave Plus') }}"
+                    },
+                    {
+                      "entity": "sensor.iaq_tuya_sensor_co2",
+                      "name": "{{ area_name('sensor.iaq_tuya_sensor_co2') | default('Tuya') }}"
                     }
-                  ]
+                  ],
+                  "logarithmic_scale": false,
+                  "days_to_show": 2,
+                  "hide_legend": false
                 }
               ]
-            },
+            }
+          ]
+        },
+        {
+          "type": "sections",
+          "max_columns": 4,
+          "title": "test",
+          "path": "test",
+          "sections": [
             {
+              "type": "grid",
               "cards": [
                 {
                   "type": "heading",
-                  "heading": "Drift Monitoring"
+                  "heading": "New section"
                 },
                 {
-                  "graph": "line",
-                  "type": "sensor",
-                  "entity": "sensor.iaq_airthings_wave_plus_tvoc_index_8d_min",
-                  "name": "8-Day Min TVOC",
-                  "detail": 1,
-                  "hours_to_show": 192,
-                  "limits": {}
-                },
-                {
-                  "type": "entity",
-                  "entity": "binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted",
-                  "name": "TVOC Baseline Drifted",
-                  "state_color": true
-                }
-              ]
-            },
-            {
-              "cards": [
-                {
-                  "type": "heading",
-                  "heading": "Outdoor Air Quality"
-                },
-                {
-                  "type": "sensor",
-                  "entity": "sensor.weather_ec_aqhi",
-                  "name": "AQHI (CA)"
-                },
-                {
-                  "type": "sensor",
-                  "entity": "sensor.outdoor_airvisual_air_quality_index_us",
-                  "name": "AQI (US)"
-                },
-                {
-                  "type": "sensor",
-                  "entity": "sensor.outdoor_airvisual_air_pollution_level",
-                  "name": "Pollution Level (US AQI)"
-                },
-                {
-                  "type": "sensor",
-                  "entity": "sensor.outdoor_airvisual_main_pollutant",
-                  "name": "Main Pollutant"
-                }
-              ]
-            },
-            {
-              "cards": [
-                {
-                  "type": "heading",
-                  "heading": "Pollen Forecast"
-                },
-                {
-                  "type": "gauge",
-                  "entity": "sensor.outdoor_google_pollen_tree",
-                  "name": "Tree Pollen",
-                  "min": 0,
-                  "max": 5,
-                  "severity": {
-                    "green": 2,
-                    "yellow": 3,
-                    "red": 4
-                  }
-                },
-                {
-                  "type": "gauge",
-                  "entity": "sensor.outdoor_google_pollen_grasses",
-                  "name": "Grass Pollen",
-                  "min": 0,
-                  "max": 5,
-                  "severity": {
-                    "green": 2,
-                    "yellow": 3,
-                    "red": 4
-                  }
-                },
-                {
-                  "type": "gauge",
-                  "entity": "sensor.outdoor_google_pollen_weeds",
-                  "name": "Weed Pollen",
-                  "min": 0,
-                  "max": 5,
-                  "severity": {
-                    "green": 2,
-                    "yellow": 3,
-                    "red": 4
+                  "type": "custom:apexcharts-card",
+                  "graph_span": "24h",
+                  "header": {
+                    "show": true,
+                    "title": "CO₂ (Last 24 h)",
+                    "show_states": true
+                  },
+                  "series": [
+                    {
+                      "entity": "sensor.iaq_airthings_wave_plus_co2",
+                      "name": "CO₂ (ppm)",
+                      "unit": "ppm",
+                      "stroke_width": 2,
+                      "curve": "smooth",
+                      "group_by": {
+                        "duration": "15min",
+                        "func": "avg"
+                      }
+                    }
+                  ],
+                  "apex_config": {
+                    "chart": {
+                      "toolbar": {
+                        "show": false
+                      }
+                    },
+                    "yaxis": {
+                      "decimalsInFloat": 0
+                    }
                   }
                 }
               ]
