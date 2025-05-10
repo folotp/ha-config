@@ -212,8 +212,321 @@
                   "title": "NOx Sensirion Index"
                 }
               ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading_style": "title",
+                  "heading": "Particulate Matter",
+                  "icon": "mdi:molecule"
+                },
+                {
+                  "type": "custom:apexcharts-card",
+                  "graph_span": "7d",
+                  "update_interval": "1min",
+                  "experimental": {
+                    "color_threshold": true
+                  },
+                  "header": {
+                    "show": true,
+                    "title": "PM₂ ᳝᩿₅ (Last 7 days)",
+                    "show_states": true,
+                    "colorize_states": true
+                  },
+                  "yaxis": [
+                    {
+                      "max": "~12"
+                    }
+                  ],
+                  "series": [
+                    {
+                      "entity": "sensor.iaq_apollo_air1_pm2_5",
+                      "name": "PM₂ ᳝᩿₅",
+                      "type": "area",
+                      "stroke_width": 0,
+                      "group_by": {
+                        "func": "median",
+                        "duration": "1h"
+                      },
+                      "show": {
+                        "legend_value": false,
+                        "header_color_threshold": true
+                      },
+                      "color_threshold": [
+                        {
+                          "value": 35,
+                          "color": "red"
+                        },
+                        {
+                          "value": 12,
+                          "color": "#FFD700"
+                        },
+                        {
+                          "value": 0,
+                          "color": "green"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "gauge",
+                      "entity": "sensor.iaq_apollo_air1_pm_1_m_weight_concentration",
+                      "severity": {
+                        "green": 0,
+                        "yellow": 12,
+                        "red": 35
+                      },
+                      "min": 0,
+                      "needle": false,
+                      "max": 47
+                    },
+                    {
+                      "type": "gauge",
+                      "min": 0,
+                      "severity": {
+                        "green": 0,
+                        "yellow": 55,
+                        "red": 155
+                      },
+                      "needle": false,
+                      "entity": "sensor.iaq_apollo_air1_pm_4_m_weight_concentration",
+                      "max": 210
+                    },
+                    {
+                      "type": "gauge",
+                      "entity": "sensor.iaq_apollo_air1_pm_10_m_weight_concentration",
+                      "min": 0,
+                      "severity": {
+                        "green": 0,
+                        "yellow": 55,
+                        "red": 155
+                      },
+                      "max": 210,
+                      "needle": false
+                    }
+                  ]
+                }
+              ]
             }
           ]
+        },
+        {
+          "type": "sections",
+          "max_columns": 4,
+          "title": "Outdoor Air Quality",
+          "path": "outdoor-air-quality",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Pollen",
+                  "heading_style": "title",
+                  "icon": "mdi:flower-pollen"
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "secondary": "{{ state_attr(entity, 'category') }}",
+                      "icon": "mdi:tree-outline",
+                      "entity": "sensor.outdoor_google_pollen_tree",
+                      "fill_container": true,
+                      "tap_action": {
+                        "action": "more-info"
+                      },
+                      "hold_action": {
+                        "action": "none"
+                      },
+                      "double_tap_action": {
+                        "action": "none"
+                      },
+                      "icon_color": "{% if states(entity) != \"unknown\" %}\n  {% set level = state_attr(entity, 'index_value') | int %}\n  {% set color = {0: 'grey', 1:'green', 2: '#FFD700', 3:'orange', 4:'#FF6C71', 5:'red'} %}\n  {% set level_color = color[level] %}\n  {{ level_color }}\n{% endif %}",
+                      "badge_icon": "{% if states(entity) != \"unknown\" %}\n  {% if (state_attr(entity, 'tomorrow') | int < state_attr(entity, 'index_value') | int) %}\nmdi:arrow-down\n  {% elif (state_attr(entity, 'tomorrow') | int > state_attr(entity, 'index_value') | int) %}\nmdi:arrow-up\n  {% else %}\nmdi:minus\n  {% endif %}\n{% endif %}",
+                      "badge_color": "{% if states(entity) != \"unknown\" %}\n  {% if (state_attr(entity, 'tomorrow') | int < state_attr(entity, 'index_value') | int) %}\ngreen\n  {% elif (state_attr(entity, 'tomorrow') | int > state_attr(entity, 'index_value') | int) %}\nred\n  {% endif %}\n{% endif %}",
+                      "primary": "{{ state_attr(entity, 'friendly_name') }}",
+                      "multiline_secondary": false,
+                      "layout": "vertical"
+                    },
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "primary": "{{ state_attr(entity, 'friendly_name') }}",
+                      "secondary": "{% if states(entity) != \"unknown\" %}\n  {% set level = state_attr(entity, 'index_value') | int %}\n    {% set names = {0: 'None', 1:'Low', 2: 'Low +', 3:'Medium', 4:'High', 5:'Extreme'} %}\n  {% set name = names[level] %} \n  {{ name }}\n{% endif %}",
+                      "icon": "mdi:grass",
+                      "entity": "sensor.outdoor_google_pollen_grasses",
+                      "layout": "vertical",
+                      "fill_container": true,
+                      "tap_action": {
+                        "action": "more-info"
+                      },
+                      "hold_action": {
+                        "action": "none"
+                      },
+                      "double_tap_action": {
+                        "action": "none"
+                      },
+                      "icon_color": "{% if states(entity) != \"unknown\" %}\n  {% set level = state_attr(entity, 'index_value') | int %}\n  {% set color = {0: 'grey', 1:'green', 2: '#FFD700', 3:'orange', 4:'#FF6C71', 5:'red'} %}\n  {% set level_color = color[level] %}\n  {{ level_color }}\n{% endif %}",
+                      "badge_icon": "{% if states(entity) != \"unknown\" %}\n  {% if (state_attr(entity, 'tomorrow') | int < state_attr(entity, 'index_value') | int) %}\nmdi:arrow-down\n  {% elif (state_attr(entity, 'tomorrow') | int > state_attr(entity, 'index_value') | int) %}\nmdi:arrow-up\n  {% else %}\nmdi:minus\n  {% endif %}\n{% endif %}",
+                      "badge_color": "{% if states(entity) != \"unknown\" %}\n  {% if (state_attr(entity, 'tomorrow') | int < state_attr(entity, 'index_value') | int) %}\ngreen\n  {% elif (state_attr(entity, 'tomorrow') | int > state_attr(entity, 'index_value') | int) %}\nred\n  {% endif %}\n{% endif %}"
+                    },
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "primary": "{{ state_attr(entity, 'friendly_name') }}",
+                      "secondary": "{% if states(entity) != \"unknown\" %}\n  {% set level = state_attr(entity, 'index_value') | int %}\n    {% set names = {0: 'None', 1:'Low', 2: 'Low +', 3:'Medium', 4:'High', 5:'Extreme'} %}\n  {% set name = names[level] %} \n  {{ name }}\n{% endif %}",
+                      "entity": "sensor.outdoor_google_pollen_weeds",
+                      "layout": "vertical",
+                      "fill_container": true,
+                      "tap_action": {
+                        "action": "more-info"
+                      },
+                      "hold_action": {
+                        "action": "none"
+                      },
+                      "double_tap_action": {
+                        "action": "none"
+                      },
+                      "icon_color": "{% if states(entity) != \"unknown\" %}\n  {% set level = state_attr(entity, 'index_value') | int %}\n  {% set color = {0: 'grey', 1:'green', 2: '#FFD700', 3:'orange', 4:'#FF6C71', 5:'red'} %}\n  {% set level_color = color[level] %}\n  {{ level_color }}\n{% endif %}",
+                      "badge_icon": "{% if states(entity) != \"unknown\" %}\n  {% if (state_attr(entity, 'tomorrow') | int < state_attr(entity, 'index_value') | int) %}\nmdi:arrow-down\n  {% elif (state_attr(entity, 'tomorrow') | int > state_attr(entity, 'index_value') | int) %}\nmdi:arrow-up\n  {% else %}\nmdi:minus\n  {% endif %}\n{% endif %}",
+                      "badge_color": "{% if states(entity) != \"unknown\" %}\n  {% if (state_attr(entity, 'tomorrow') | int < state_attr(entity, 'index_value') | int) %}\ngreen\n  {% elif (state_attr(entity, 'tomorrow') | int > state_attr(entity, 'index_value') | int) %}\nred\n  {% endif %}\n{% endif %}",
+                      "icon": "mdi:sprout-outline"
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:apexcharts-card",
+                  "header": {
+                    "show": true,
+                    "title": "Pollen 3-Day Forecast",
+                    "show_states": false,
+                    "colorize_states": true
+                  },
+                  "now": {
+                    "show": false
+                  },
+                  "graph_span": "3d",
+                  "span": {
+                    "start": "day"
+                  },
+                  "yaxis": [
+                    {
+                      "decimals": 0,
+                      "min": 0,
+                      "max": 5,
+                      "apex_config": {
+                        "tickAmount": 5
+                      }
+                    }
+                  ],
+                  "series": [
+                    {
+                      "entity": "sensor.outdoor_google_pollen_tree",
+                      "type": "column",
+                      "attribute": "index_value",
+                      "color": "brown",
+                      "data_generator": "let data = []; \nconst today = moment().startOf('day'); \ndata.push([today.clone().add(1, 'days').valueOf(), entity.attributes.tomorrow]);  data.push([today.clone().add(2, 'days').valueOf(), entity.attributes[\"day 3\"]]);  data.push([today.clone().add(3, 'days').valueOf(), entity.attributes[\"day 4\"]]); data.push([today.valueOf(), entity.attributes.index_value]);\nreturn data;\n"
+                    },
+                    {
+                      "entity": "sensor.outdoor_google_pollen_grasses",
+                      "type": "column",
+                      "attribute": "index_value",
+                      "color": "orange",
+                      "data_generator": "let data = []; \nconst today = moment().startOf('day'); \ndata.push([today.clone().add(1, 'days').valueOf(), entity.attributes.tomorrow]);  data.push([today.clone().add(2, 'days').valueOf(), entity.attributes[\"day 3\"]]);  data.push([today.clone().add(3, 'days').valueOf(), entity.attributes[\"day 4\"]]); data.push([today.valueOf(), entity.attributes.index_value]);\nreturn data;\n"
+                    },
+                    {
+                      "entity": "sensor.outdoor_google_pollen_weeds",
+                      "type": "column",
+                      "attribute": "index_value",
+                      "color": "blue",
+                      "data_generator": "let data = []; \nconst today = moment().startOf('day'); \ndata.push([today.clone().add(1, 'days').valueOf(), entity.attributes.tomorrow]);  data.push([today.clone().add(2, 'days').valueOf(), entity.attributes[\"day 3\"]]);  data.push([today.clone().add(3, 'days').valueOf(), entity.attributes[\"day 4\"]]); data.push([today.valueOf(), entity.attributes.index_value]);\nreturn data;\n"
+                    }
+                  ],
+                  "apex_config": {
+                    "plotOptions": {
+                      "bar": {
+                        "columnWidth": "40%"
+                      }
+                    },
+                    "tooltip": {
+                      "enabled": true
+                    },
+                    "legend": {
+                      "show": true,
+                      "position": "bottom"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "New section"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.outdoor_airvisual_air_pollution_level"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.outdoor_airvisual_air_quality_index_us"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.outdoor_airvisual_main_pollutant"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.weather_ec_aqhi"
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": []
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "secondary": "{{ states('sensor.outdoor_airvisual_air_pollution_level') }}",
+                      "icon": "{% set level = states('sensor.outdoor_airvisual_air_pollution_level') %}\n  {% if level == 'good' %}\n    mdi:emoticon-happy-outline\n  {% elif level == 'moderate' %}\n    mdi:emoticon-neutral-outline\n  {% elif level == 'unhealthy_sensitive' %}\n    mdi:emoticon-sad-outline\n  {% elif level == 'unhealthy' %}\n    mdi:face-mask-outline\n  {% elif level == 'very_unhealthy' %}\n    mdi:biohazard\n  {% elif level == 'hazardous' %}\n    mdi:biohazard\n  {% else %}\n    mdi:help-circle-outline\n  {% endif %}",
+                      "fill_container": true,
+                      "tap_action": {
+                        "action": "more-info"
+                      },
+                      "hold_action": {
+                        "action": "none"
+                      },
+                      "double_tap_action": {
+                        "action": "none"
+                      },
+                      "icon_color": "{% set level = states('sensor.outdoor_airvisual_air_pollution_level') %}\n{% if level == \"good\" %}\n  green\n{% elif level == \"moderate\" %}\n  #FFD700\n{% elif level == \"unhealthy_sensitive\" %}\n  orange\n{% elif level == \"unhealthy\" %}\n  red\n{% elif level == \"very_unhealthy\" %}\n  purple\n{% elif level == \"hazardous\" %}\n  #7E0023\n{% endif %}\n",
+                      "badge_icon": "{% if states(entity) != \"unknown\" %}\n  {% if (state_attr(entity, 'tomorrow') | int < state_attr(entity, 'index_value') | int) %}\nmdi:arrow-down\n  {% elif (state_attr(entity, 'tomorrow') | int > state_attr(entity, 'index_value') | int) %}\nmdi:arrow-up\n  {% else %}\nmdi:minus\n  {% endif %}\n{% endif %}",
+                      "badge_color": "{% if states(entity) != \"unknown\" %}\n  {% if (state_attr(entity, 'tomorrow') | int < state_attr(entity, 'index_value') | int) %}\ngreen\n  {% elif (state_attr(entity, 'tomorrow') | int > state_attr(entity, 'index_value') | int) %}\nred\n  {% endif %}\n{% endif %}",
+                      "primary": "{{ states(entity) }}",
+                      "multiline_secondary": false,
+                      "layout": "vertical",
+                      "entity": "sensor.outdoor_airvisual_air_quality_index_us"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "header": {
+            "layout": "responsive",
+            "badges_position": "bottom",
+            "badges_wrap": "wrap"
+          }
         }
       ]
     }
