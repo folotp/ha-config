@@ -313,6 +313,24 @@
                   ]
                 }
               ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "New section"
+                },
+                {
+                  "type": "history-graph",
+                  "entities": [
+                    {
+                      "entity": "sensor.hvac_thermostat_ecobee_hvac_action"
+                    }
+                  ],
+                  "hours_to_show": 24
+                }
+              ]
             }
           ]
         },
