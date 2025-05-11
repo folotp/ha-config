@@ -45,6 +45,8 @@ homeassistant:
   customize:
     sensor.plant_sensor_1_soil_moisture:
       device_class: moisture
+    sensor.garden_raspberries_soil_moisture:
+      device_class: moisture
     sensor.apex_total_power:
       device_class: power
       state_class: measurement
