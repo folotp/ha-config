@@ -1,4 +1,4 @@
-# Loads default set of integrations. Do not remove.
+# Loads default set of integrations. Do not remove. 1
 default_config:
 bluetooth:
 
