@@ -1,7 +1,6 @@
 # Ignore all .storage files by default
 .storage/*
 # But keep UI-configured files:
-!.storage/core.config_entries
 !.storage/core.entity_registry
 !.storage/lovelace.*
 !.storage/input_*.*
@@ -17,6 +16,7 @@ secrets.yaml
 .homeassistant_ssh
 *.db
 *.db* # such as a db backup *.dbbak
+*.db.* # such as db.bak2025
 home-assistant.log*
 *.log
 .ssh/
