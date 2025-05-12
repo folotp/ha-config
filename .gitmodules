@@ -4,3 +4,4 @@
 [submodule "notebooks/home-assistant"]
 	path = notebooks/home-assistant
 	url = https://github.com/home-assistant/home-assistant-notebooks.git
+    branch = main
