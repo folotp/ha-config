@@ -1,14 +1,13 @@
 # Ignore all .storage files by default
 .storage/*
 # But keep UI-configured files:
-!.storage/core.config_entries
-!.storage/core.entity_registry
-!.storage/lovelace.*
-!.storage/input_*.*
-!*.yaml
-!*.md
-!*.sh
-!*.js*
+#!.storage/core.entity_registry
+#!.storage/lovelace.*
+#!.storage/input_*.*
+#!*.yaml
+#!*.md
+#!*.sh
+#!*.js*
 
 # Exclude secrets, SSH artifacts, databases, logs
 secrets.yaml
@@ -16,6 +15,8 @@ secrets.yaml
 .google.token
 .homeassistant_ssh
 *.db
+*.db* # such as a db backup *.dbbak
+*.db.* # such as db.bak2025
 home-assistant.log*
 *.log
 .ssh/
@@ -23,3 +24,5 @@ home-assistant.log*
 # Ignore SQLite journal files
 *.db-shm
 *.db-wal
+*.bak*
+.storage/
