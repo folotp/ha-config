@@ -24,3 +24,4 @@ home-assistant.log*
 # Ignore SQLite journal files
 *.db-shm
 *.db-wal
+*.bak*
