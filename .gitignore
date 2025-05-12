@@ -24,3 +24,5 @@ home-assistant.log*
 # Ignore SQLite journal files
 *.db-shm
 *.db-wal
+.storage/core.entity_registry
+.gitignore
