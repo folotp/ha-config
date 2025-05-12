@@ -92,8 +92,8 @@ blueprint:
                 value: numeric_state_below
               - label: 10 - Numeric State - Above & Below
                 value: numeric_state_above_below
-              sort: false
               multiple: false
+              sort: false
         trigger_state_entity:
           name: State Entities
           description: '**Used in options 1, 2, 3, 4, 5, 6 or 7**. Enter the entities
@@ -174,8 +174,8 @@ blueprint:
               - label: Disable Mobile App Notify Options
                 value: disable_mobile_app_notify
               custom_value: false
-              sort: false
               multiple: false
+              sort: false
         notify_device:
           name: Devices Notified
           description: 'Select the devices to be notified when the automation is triggered.
@@ -230,8 +230,8 @@ blueprint:
               - label: Quiet Notifications Without Waking Screen
                 value: passive
               custom_value: false
-              sort: false
               multiple: false
+              sort: false
         notify_sound:
           name: Notification Sound - iOS Only
           description: 'The Home Assistant app for iOS includes built-in notification
@@ -316,8 +316,8 @@ blueprint:
               - label: Disable the zone option
                 value: zone_disabled
               custom_value: false
-              sort: false
               multiple: false
+              sort: false
         notify_zone:
           name: Notify Zone
           description: 'Choose the notify zone for your notifications.
@@ -348,8 +348,8 @@ blueprint:
               - label: Disable UI Notifications
                 value: disabled_persistent_notification
               custom_value: false
-              sort: false
               multiple: false
+              sort: false
         persistent_title:
           name: Title
           description: 'Enter in the title of your UI notification.
@@ -386,8 +386,8 @@ blueprint:
               - label: Disable Text-to-Speech Announcements
                 value: disable_tts_announcement
               custom_value: false
-              sort: false
               multiple: false
+              sort: false
         text_to_speech_engine:
           name: Text-to-Speech Service Provider
           description: 'Select the Text-to-Speech service provider.
@@ -445,8 +445,8 @@ blueprint:
               - label: Disable Custom Actions
                 value: disable_custom_actions
               custom_value: false
-              sort: false
               multiple: false
+              sort: false
         custom_actions:
           name: Custom Actions
           description: 'Enter the custom actions you would like to run.
@@ -479,8 +479,8 @@ blueprint:
               - label: Disable the time options
                 value: time_disabled
               custom_value: false
-              sort: false
               multiple: false
+              sort: false
         after_time:
           name: Start Time
           description: 'Set the start time.

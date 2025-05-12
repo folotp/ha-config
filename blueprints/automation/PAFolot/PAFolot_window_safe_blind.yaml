@@ -30,6 +30,20 @@ mode: restart # restart overlapping runs
 max_exceeded: silent # suppress overflow warnings
 
 triggers:
+  - trigger: event
+    event_type: call_service
+    event_data:
+      domain: cover
+      service: set_cover_position
+      service_data:
+        entity_id: !input cover_entity
+  - trigger: event
+    event_type: call_service
+    event_data:
+      domain: cover
+      service: cover_close
+      service_data:
+        entity_id: !input cover_entity
   - trigger: state
     entity_id:
       - !input cover_entity
@@ -62,16 +76,16 @@ actions:
               - Cover_Position_Changed
         sequence:
           - sequence:
-            - action: cover.stop_cover
-              metadata: {}
-              data: {}
-              target:
-                entity_id: !input cover_entity
-            - action: cover.open_cover # snap back open
-              metadata: {}
-              data: {}
-              target:
-                entity_id: !input cover_entity
+              - action: cover.stop_cover
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: !input cover_entity
+              - action: cover.open_cover # snap back open
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: !input cover_entity
     default:
       - action: cover.open_cover
         target:
