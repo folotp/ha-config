@@ -1,0 +1,95 @@
+###############################################################################
+# TVOC Baseline Watchdog Package for Home Assistant
+# Filename: airthings_wave_plus_tvoc_baseline_drift.yaml
+# Detects when the Airthings Wave Plus VOC sensor's 7-day baseline
+# has likely drifted upward and notifies for a fresh-air reset.
+###############################################################################
+
+###############################################################################
+# 1. 8-day rolling minimum of Airthings Wave Plus TVOC Index (Statistics Platform)
+###############################################################################
+sensor:
+  - platform: statistics
+    entity_id: sensor.iaq_airthings_wave_plus_tvoc_index
+    name: "IAQ Airthings Wave Plus TVOC Index 8d Min"
+    state_characteristic: value_min
+    max_age:
+      days: 8 # covers the full 7-day baseline period + margin
+    sampling_size: 2000 # ~5-min sampling ⇒ ≈2304 pts / 8 days; 2000 is OK
+    unique_id: "c13b8438-1992-4f71-8720-81935b5548e5"
+
+###############################################################################
+# 2. Binary sensor with hysteresis (Threshold Platform)
+###############################################################################
+binary_sensor:
+  - platform: threshold
+    name: "IAQ Airthings Wave Plus TVOC Baseline Drifted"
+    entity_id: sensor.iaq_airthings_wave_plus_tvoc_index_8d_min
+    device_class: problem
+    upper: 100 # “clean air” upper limit in ppb-eq
+    hysteresis: 20 # ON if >120   ; OFF if <80  (ppb-eq)
+
+###############################################################################
+# 3. Automation – Alert until recalibration
+###############################################################################
+automation:
+  - id: iaq_airthings_wave_plus_tvoc_notify_baseline_drift
+    alias: "IAQ Airthings Wave Plus TVOC baseline drift notification"
+    description: >
+      Notifies when the TVOC Index minimum stays above 100 ppb-eq for 7 days,
+      prompting a 10-minute fresh-air exposure to reset the baseline.
+    mode: single
+    trigger:
+      - id: tvoc_on
+        platform: state
+        entity_id: binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted
+        to: "on"
+      - id: tvoc_off
+        platform: state
+        entity_id: binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted
+        to: "off"
+      - id: daily
+        platform: time_pattern
+        hours: "9"
+        minutes: "0"
+        seconds: "0"
+    action:
+      - choose:
+          - conditions:
+              - condition: or
+                conditions:
+                  - condition: template
+                    value_template: "{{ trigger.id == 'tvoc_on' or trigger.id == 'daily' }}"
+              - condition: state
+                entity_id: binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted
+                state: "on"
+            sequence:
+              - service: persistent_notification.create
+                data:
+                  notification_id: tvoc_baseline_drift
+                  title: "Airthings Wave Plus VOC Baseline Drifted"
+                  message: >
+                    The TVOC Index minimum has remained above 100 ppb-eq for 7 days.
+                    Please place the monitor near fresh indoor air (e.g., open window)
+                    for ~10 minutes to reset its baseline, then return it.
+              - service: notify.mobile_apps_pa # change to your notifier
+                data:
+                  title: "Airthings Wave Plus VOC Baseline Drifted"
+                  message: >
+                    TVOC Index ≥100 ppb-eq for 7 days. Expose sensor to fresh air ~10 min
+                    to reset baseline.
+                  data:
+                    tag: "tvoc_baseline_drift"
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.id == 'tvoc_off' }}"
+            sequence:
+              - service: persistent_notification.dismiss
+                data:
+                  notification_id: tvoc_baseline_drift
+              - service: notify.mobile_apps_pa # change to your notifier
+                data:
+                  message: "clear_notification"
+                  data:
+                    tag: "tvoc_baseline_drift"
+        default: []

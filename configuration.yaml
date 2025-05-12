@@ -29,13 +29,23 @@ zha:
         - type: z2m
           url: https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/index.json
 
+# Notify
+notify:
+  - name: "Mobile Apps PA"
+    platform: group
+    services:
+      - action: mobile_app_iphone_de_pa
+      - action: mobile_app_ipad_de_pa
+
 # Home Assistant settings
 homeassistant:
-  # … other homeassistant settings
+  packages: !include_dir_named packages
 
   # Customizations
   customize:
     sensor.plant_sensor_1_soil_moisture:
+      device_class: moisture
+    sensor.garden_raspberries_soil_moisture:
       device_class: moisture
     sensor.apex_total_power:
       device_class: power
