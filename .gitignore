@@ -26,3 +26,6 @@ home-assistant.log*
 *.db-wal
 *.bak*
 .storage/
+
+# Ignore TEMP folder
+TEMP-git-exclude
