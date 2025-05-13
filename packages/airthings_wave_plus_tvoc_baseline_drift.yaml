@@ -64,15 +64,15 @@ automation:
                 entity_id: binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted
                 state: "on"
             sequence:
-              - service: persistent_notification.create
-                data:
-                  notification_id: tvoc_baseline_drift
-                  title: "Airthings Wave Plus VOC Baseline Drifted"
-                  message: >
-                    The TVOC Index minimum has remained above 100 ppb-eq for 7 days.
-                    Please place the monitor near fresh indoor air (e.g., open window)
-                    for ~10 minutes to reset its baseline, then return it.
-              - service: notify.mobile_apps_pa # change to your notifier
+              # - service: persistent_notification.create
+              #   data:
+              #     notification_id: tvoc_baseline_drift
+              #     title: "Airthings Wave Plus VOC Baseline Drifted"
+              #     message: >
+              #       The TVOC Index minimum has remained above 100 ppb-eq for 7 days.
+              #       Please place the monitor near fresh indoor air (e.g., open window)
+              #       for ~10 minutes to reset its baseline, then return it.
+              - service: notify.group_ha_notifications # change to your notifier
                 data:
                   title: "Airthings Wave Plus VOC Baseline Drifted"
                   message: >
@@ -80,16 +80,19 @@ automation:
                     to reset baseline.
                   data:
                     tag: "tvoc_baseline_drift"
+                    notification_id: tvoc_baseline_drift"
+
           - conditions:
               - condition: template
                 value_template: "{{ trigger.id == 'tvoc_off' }}"
             sequence:
-              - service: persistent_notification.dismiss
-                data:
-                  notification_id: tvoc_baseline_drift
-              - service: notify.mobile_apps_pa # change to your notifier
+              # - service: persistent_notification.dismiss
+              #   data:
+              #     notification_id: tvoc_baseline_drift
+              - service: notify.group_ha_notifications # change to your notifier
                 data:
                   message: "clear_notification"
                   data:
                     tag: "tvoc_baseline_drift"
+                    notification_id: tvoc_baseline_drift"
         default: []

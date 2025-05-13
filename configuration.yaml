@@ -11,11 +11,16 @@ http:
   ssl_certificate: /ssl/fullchain.pem
   ssl_key: /ssl/privkey.pem
 
-# Recorder settings - use MariaDB
+#==============================================================================
+# Recorder settings
+# Use MariaDB
+#==============================================================================
 recorder:
   db_url: !secret recorder_db_url
 
+#==============================================================================
 # Logger settings
+#==============================================================================
 logger:
   # The next line sets the default logging level, for all python modules.
   # It seems "recommended" to set it to avoid too much logging.
@@ -23,11 +28,15 @@ logger:
   logs:
     zigpy: debug
 
-# Enable Prometheus monitoring
+#==============================================================================
+# Enable Prometheus integration
+#==============================================================================
 prometheus:
-  port: 9221
+  requires_auth: false
 
+#==============================================================================
 # ZHA Configuration
+#==============================================================================
 zha:
   zigpy_config:
     ota:
@@ -37,15 +46,69 @@ zha:
         - type: z2m
           url: https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/index.json
 
-# Notify
+#==============================================================================
+# Notify Groups
+# https://www.home-assistant.io/integrations/group/#notify-groups
+#==============================================================================
 notify:
-  - name: "Mobile Apps PA"
+  # All PA's devices
+  - name: mobile_app_pa_all
     platform: group
     services:
       - action: mobile_app_iphone_de_pa
       - action: mobile_app_ipad_de_pa
 
+  # All Zachary's devices
+  - name: mobile_app_zachary_all
+    platform: group
+    services:
+      - action: mobile_app_iphone_de_zachary
+
+  # Garage door notification group
+  - name: notify_group_garage
+    platform: group
+    services:
+      - action: mobile_app_pa_all
+
+  # HA System Notifications
+  - name: group_ha_notifications
+    platform: group
+    services:
+      - action: mobile_app_pa_all
+        data:
+          data:
+            group: "ha-notifications"
+      - action: persistent_notification
+
+#==============================================================================
+# Alerts
+# https://www.home-assistant.io/integrations/alert
+#==============================================================================
+alert:
+  # Garage door alert
+  garage_door:
+    name: "Garage is open"
+    message: "The garage door is still open"
+    done_message: "The garage door is closed"
+    entity_id: cover.garage_door
+    state: "open"
+    repeat:
+      - 15
+      - 30
+      - 60
+    can_acknowledge: false
+    skip_first: false
+    data:
+      data:
+        title: "Domicile"
+        group: "garage-door-group"
+        tag: "garage-door"
+    notifiers:
+      - notify_group_garage
+
+#==============================================================================
 # Home Assistant settings
+#==============================================================================
 homeassistant:
   packages: !include_dir_named packages
 

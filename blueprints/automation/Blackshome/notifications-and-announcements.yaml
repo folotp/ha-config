@@ -92,8 +92,8 @@ blueprint:
                 value: numeric_state_below
               - label: 10 - Numeric State - Above & Below
                 value: numeric_state_above_below
-              multiple: false
               sort: false
+              multiple: false
         trigger_state_entity:
           name: State Entities
           description: '**Used in options 1, 2, 3, 4, 5, 6 or 7**. Enter the entities
@@ -173,9 +173,9 @@ blueprint:
                 value: enable_mobile_app_notify
               - label: Disable Mobile App Notify Options
                 value: disable_mobile_app_notify
+              sort: false
               custom_value: false
               multiple: false
-              sort: false
         notify_device:
           name: Devices Notified
           description: 'Select the devices to be notified when the automation is triggered.
@@ -229,9 +229,9 @@ blueprint:
                 value: time-sensitive
               - label: Quiet Notifications Without Waking Screen
                 value: passive
+              sort: false
               custom_value: false
               multiple: false
-              sort: false
         notify_sound:
           name: Notification Sound - iOS Only
           description: 'The Home Assistant app for iOS includes built-in notification
@@ -277,8 +277,8 @@ blueprint:
                 value: sticky
               - label: Notification Channel
                 value: channel
-              custom_value: false
               sort: false
+              custom_value: false
         notify_channel:
           name: Notification Channel - Android Only
           description: 'If you have chosen to use a notification channel, simply enter
@@ -315,9 +315,9 @@ blueprint:
                 value: zone_enabled
               - label: Disable the zone option
                 value: zone_disabled
+              sort: false
               custom_value: false
               multiple: false
-              sort: false
         notify_zone:
           name: Notify Zone
           description: 'Choose the notify zone for your notifications.
@@ -347,9 +347,9 @@ blueprint:
                 value: enable_persistent_notification
               - label: Disable UI Notifications
                 value: disabled_persistent_notification
+              sort: false
               custom_value: false
               multiple: false
-              sort: false
         persistent_title:
           name: Title
           description: 'Enter in the title of your UI notification.
@@ -385,9 +385,9 @@ blueprint:
                 value: enable_tts_announcement
               - label: Disable Text-to-Speech Announcements
                 value: disable_tts_announcement
+              sort: false
               custom_value: false
               multiple: false
-              sort: false
         text_to_speech_engine:
           name: Text-to-Speech Service Provider
           description: 'Select the Text-to-Speech service provider.
@@ -444,9 +444,9 @@ blueprint:
                 value: enable_custom_actions
               - label: Disable Custom Actions
                 value: disable_custom_actions
+              sort: false
               custom_value: false
               multiple: false
-              sort: false
         custom_actions:
           name: Custom Actions
           description: 'Enter the custom actions you would like to run.
@@ -478,9 +478,9 @@ blueprint:
                 value: time_enabled
               - label: Disable the time options
                 value: time_disabled
+              sort: false
               custom_value: false
               multiple: false
-              sort: false
         after_time:
           name: Start Time
           description: 'Set the start time.
@@ -531,8 +531,8 @@ blueprint:
                 value: sat
               - label: Sunday
                 value: sun
-              custom_value: false
               sort: false
+              custom_value: false
     global_conditions_settings:
       name: Global Conditions
       icon: mdi:earth

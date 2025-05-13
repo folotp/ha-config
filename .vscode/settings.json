@@ -4,5 +4,7 @@
         "**/.hg": false,
         "**/.svn": false,
         "**/*.crswap": false
-    }
+    },
+    "vscode-home-assistant.longLivedAccessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI1Mzg0ZGZlYTM2YTA0YWRjODhhNDJkZjJmMjIzNDQ5NyIsImlhdCI6MTc0NzE1MzU4MCwiZXhwIjoyMDYyNTEzNTgwfQ.xbCvX3qeCbCh3nK6suMbJRWypml2jYd1srNVrGMBLus",
+    "vscode-home-assistant.hostUrl": "https://ha.home.folot.net:8123/"
 }

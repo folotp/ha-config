@@ -203,13 +203,6 @@
     type: select_option
     option: Away
     alias: Set Flair to Away
-  - device_id: 74b2e490499eba29d6e6edcb89e9f9e6
-    domain: select
-    entity_id: ac6a2f0522cb82f3be47a767fd266785
-    type: select_option
-    option: away
-    alias: Set Ecobee to Away
-    enabled: false
   mode: single
 - id: '1725384344519'
   alias: HT Light Automation - Watching TV
@@ -298,13 +291,6 @@
       target:
         label_id: adaptive_cover_reset_buttons
     alias: Reset all blinds to their adaptive position
-  - device_id: 74b2e490499eba29d6e6edcb89e9f9e6
-    domain: select
-    entity_id: ac6a2f0522cb82f3be47a767fd266785
-    type: select_option
-    option: home
-    alias: Set Ecobee to Home
-    enabled: false
   - device_id: fb9ae35f77be16649bc913ff71258e38
     domain: select
     entity_id: 7a919670c81e5ae6f393446e5704c35b
@@ -558,27 +544,17 @@
     id: Zachary Away
   - trigger: state
     entity_id:
-    - climate.hvac_thermostat
+    - climate.hvac_flair_structure
     to:
+  - trigger: homeassistant
+    event: start
   conditions: []
   actions:
   - choose:
     - conditions:
-      - condition: or
-        conditions:
-        - condition: state
-          entity_id: climate.hvac_thermostat
-          state: heat
-        - condition: and
-          conditions:
-          - condition: state
-            entity_id: climate.hvac_thermostat
-            state: heat_cool
-          - condition: numeric_state
-            entity_id: climate.hvac_thermostat
-            attribute: temperature
-            below: 22
-          alias: Heat/Cool AND Target < 22
+      - condition: state
+        entity_id: climate.hvac_flair_structure
+        state: heat
       sequence:
       - if:
         - condition: zone
@@ -598,21 +574,9 @@
           option: Heating
       alias: Heating Mode
     - conditions:
-      - condition: or
-        conditions:
-        - condition: state
-          entity_id: climate.hvac_thermostat
-          state: cool
-        - alias: Heat/Cool AND Target < 22
-          condition: and
-          conditions:
-          - condition: state
-            entity_id: climate.hvac_thermostat
-            state: heat_cool
-          - condition: numeric_state
-            entity_id: climate.hvac_thermostat
-            attribute: temperature
-            above: 22
+      - condition: state
+        entity_id: climate.hvac_flair_structure
+        state: cool
       sequence:
       - if:
         - condition: zone
@@ -630,6 +594,7 @@
           entity_id: 149bc03b88fc32ae6d2e0a3dba3317dd
           type: select_option
           option: Heating
+        enabled: false
       alias: Cooling Mode
   mode: restart
 - id: '1733714466587'
@@ -931,7 +896,7 @@
       device_id: b9eb539922bf38d44a82cc0de21f3c07
   mode: restart
 - id: '1736197975831'
-  alias: HVAC Watchdog - Humidifier
+  alias: Humidifier Watchdog
   description: ''
   use_blueprint:
     path: Blackshome/notifications-and-announcements.yaml
@@ -1391,8 +1356,8 @@
       light_transition_on: 0
       bypass_auto_off_delay: 1
 - id: '1743547361556'
-  alias: HVAC HRV Control NEW
-  description: Combined HRV Automation using IAQ Template and Natural Cooling
+  alias: HRV Control NEW
+  description: HRV Automation using IAQ, Natural Cooling, min runtime... triggers.
   triggers:
   - trigger: homeassistant
     event: start
@@ -1888,12 +1853,35 @@
   alias: HVAC Watchdog - Flair system mode
   description: ''
   triggers:
-  - device_id: fb9ae35f77be16649bc913ff71258e38
+  - alias: Flair Structure System Mode = Manual
+    device_id: fb9ae35f77be16649bc913ff71258e38
     domain: select
     entity_id: 9a5e06e191ad087b7e8ba8cf8ca6c3d9
     type: current_option_changed
     trigger: device
     to: Manual
+  - device_id: 74b2e490499eba29d6e6edcb89e9f9e6
+    domain: climate
+    entity_id: 23f42ac88dcc48a36fd94988383b7bef
+    type: hvac_mode_changed
+    trigger: device
+    to: heat
+  - alias: Flair Structure HVAC Mode = Manual
+    device_id: fb9ae35f77be16649bc913ff71258e38
+    domain: climate
+    entity_id: 37f5674d14f8838aad0fe391457020cf
+    type: hvac_mode_changed
+    trigger: device
+    to: 'off'
+  - trigger: state
+    entity_id:
+    - climate.hvac_thermostat_ecobee
+    - climate.hvac_flair_structure
+    to:
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 10
   conditions: []
   actions:
   - action: notify.mobile_apps_pa
@@ -1918,7 +1906,7 @@
     data: {}
   mode: single
 - id: '1746727528237'
-  alias: Set Flair minimum temperature to 16 at night
+  alias: HVAC Set Flair minimum temperature to 16 at night
   description: Sets the away temperature lower at night to increase the likelihood
     of smart vents in bedrooms remain open during the night minimizing noise. Also,
     this should minimize smart vents opening/closing to accommodate enhanced ventilation
@@ -1951,3 +1939,58 @@
       - delete
       - stub
   mode: single
+- id: '1747143468197'
+  alias: HVAC Mode Toggle from Ecobee
+  description: Enable toggling between Heat and Cool modes from the Ecobee screen.
+    Switching the HVAC mode on the Ecobee will trigger an HVAC mode chage on the Flair
+    system.
+  triggers:
+  - device_id: 74b2e490499eba29d6e6edcb89e9f9e6
+    domain: climate
+    entity_id: 23f42ac88dcc48a36fd94988383b7bef
+    type: hvac_mode_changed
+    trigger: device
+    to: heat
+  - device_id: 74b2e490499eba29d6e6edcb89e9f9e6
+    domain: climate
+    entity_id: 23f42ac88dcc48a36fd94988383b7bef
+    type: hvac_mode_changed
+    trigger: device
+    to: cool
+  - trigger: homeassistant
+    event: start
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: device
+        device_id: 74b2e490499eba29d6e6edcb89e9f9e6
+        domain: climate
+        entity_id: 23f42ac88dcc48a36fd94988383b7bef
+        type: is_hvac_mode
+        hvac_mode: heat
+      sequence:
+      - action: climate.set_hvac_mode
+        metadata: {}
+        data:
+          hvac_mode: heat
+        target:
+          device_id: fb9ae35f77be16649bc913ff71258e38
+      alias: HVAC Mode Heat
+    - conditions:
+      - condition: device
+        device_id: 74b2e490499eba29d6e6edcb89e9f9e6
+        domain: climate
+        entity_id: 23f42ac88dcc48a36fd94988383b7bef
+        type: is_hvac_mode
+        hvac_mode: cool
+      sequence:
+      - action: climate.set_hvac_mode
+        metadata: {}
+        data:
+          hvac_mode: cool
+        target:
+          device_id: fb9ae35f77be16649bc913ff71258e38
+      alias: HVAC Mode Cool
+  mode: queued
+  max: 10
