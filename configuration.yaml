@@ -23,6 +23,10 @@ logger:
   logs:
     zigpy: debug
 
+# Enable Prometheus monitoring
+prometheus:
+  port: 9221
+
 # ZHA Configuration
 zha:
   zigpy_config:
