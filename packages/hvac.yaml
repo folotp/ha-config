@@ -60,6 +60,13 @@ template:
           {{ states('climate.hvac_thermostat_ecobee') in ['off', 'heat_cool'] }}
         device_class: "problem"
 
+      # Flair Structure is in disallowed HVAC mode
+      - name: "HVAC Flair Structure In Disallowed HVAC Mode"
+        unique_id: 5459dbe3-4b18-42f1-aafc-dcf066d16e51
+        state: >-
+          {{ states('climate.hvac_flair_structure') in ['off', 'heat_cool'] }}
+        device_class: "problem"
+
       # Home room temperature threshold warning sensor
       - name: "Home Room Temperature Warning"
         unique_id: eb864082-179b-410b-99ea-4e2158148bcc
@@ -82,9 +89,9 @@ template:
 # Alerts
 #------------------------------------------------------------------------------
 alert:
-  # HVAC Thermostat Ecobee Disallowed HVAC Mode
+  # HVAC Thermostat Ecobee Disallowed HVAC Mode Alert
   hvac_thermostat_ecobee_disallowed_hvac_mode:
-    name: "Ecobee HVAC Mode is ia a disallowed HVAC mode"
+    name: "Ecobee HVAC Mode is in a disallowed HVAC mode"
     title: "Chauffage, climatisation et ventilation"
     message: >-
       Le thermostat Ecobee est en mode
@@ -111,7 +118,36 @@ alert:
       - group_home_occupants_notifications
       - tts_kitchen_fr
 
-  # HVAC Flair System Mode = Manual
+  # HVAC Flair Structure Disallowed HVAC Mode Alert
+  hvac_flair_structure_disallowed_hvac_mode:
+    name: "Flair is in a disallowed HVAC mode"
+    title: "Chauffage, climatisation et ventilation"
+    message: >-
+      Flair est en mode
+      {{ states('cclimate.hvac_flair_structure') }}.
+      Le chauffage et la climatisation sont désactivés ou ne fonctionneront pas
+      comme prévu. Seuls les modes chauffage et climatisation sont acceptés.
+    done_message: >-
+      Flair est de retour en mode
+      {{ states('climate.hvac_flair_structure') }}.
+    entity_id: binary_sensor.hvac_flair_structure_in_disallowed_hvac_mode
+    state: "on"
+    repeat:
+      - 15
+      - 30
+      - 60
+    skip_first: false
+    can_acknowledge: false
+    data:
+      push:
+        interruption-level: critical
+      group: "hvac"
+      tag: "alert_hvac_flair_structure_hvac_mode"
+    notifiers:
+      - group_home_occupants_notifications
+      - tts_kitchen_fr
+
+  # HVAC Flair System Mode = Manual Alert
   hvac_flair_structure_system_mode_manual:
     name: "Flair System Mode is Manual"
     title: "Chauffage, climatisation et ventilation"
@@ -139,7 +175,8 @@ alert:
       - group_home_occupants_notifications
       - tts_kitchen_fr
 
-  # Home temperature warning
+  #--------------------------
+  # Home temperature warning Alert
   home_temperature_warning:
     name: "Home Temperature Warning"
     title: "Chauffage, climatisation et ventilation"
@@ -163,7 +200,7 @@ alert:
     notifiers:
       - group_home_occupants_notifications
 
-  # Home temperature critical alert
+  # Home temperature critical Alert
   home_temperature_critical:
     name: "Home Temperature Critical"
     title: "Chauffage, climatisation et ventilation"
