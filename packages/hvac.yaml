@@ -162,7 +162,6 @@ alert:
       tag: "alert_home_room_temperature_warning"
     notifiers:
       - group_home_occupants_notifications
-      - tts_kitchen_fr
 
   # Home temperature critical alert
   home_temperature_critical:
