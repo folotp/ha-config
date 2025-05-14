@@ -72,7 +72,7 @@ automation:
               #       The TVOC Index minimum has remained above 100 ppb-eq for 7 days.
               #       Please place the monitor near fresh indoor air (e.g., open window)
               #       for ~10 minutes to reset its baseline, then return it.
-              - service: notify.group_ha_notifications # change to your notifier
+              - service: notify.group_system_administrators
                 data:
                   title: "Airthings Wave Plus VOC Baseline Drifted"
                   message: >
@@ -80,7 +80,7 @@ automation:
                     to reset baseline.
                   data:
                     tag: "tvoc_baseline_drift"
-                    notification_id: tvoc_baseline_drift"
+                    notification_id: "tvoc_baseline_drift"
 
           - conditions:
               - condition: template
@@ -89,10 +89,10 @@ automation:
               # - service: persistent_notification.dismiss
               #   data:
               #     notification_id: tvoc_baseline_drift
-              - service: notify.group_ha_notifications # change to your notifier
+              - service: notify.group_system_administrators
                 data:
                   message: "clear_notification"
                   data:
                     tag: "tvoc_baseline_drift"
-                    notification_id: tvoc_baseline_drift"
+                    notification_id: "tvoc_baseline_drift"
         default: []

@@ -1,0 +1,189 @@
+#==============================================================================
+# HVAC control and supervision
+#==============================================================================
+
+#------------------------------------------------------------------------------
+# Groups
+#------------------------------------------------------------------------------
+group:
+  # Room Temperature Sensor Group
+  home_room_temperature_sensors:
+    name: Home Room Temperature Sensors
+    entities:
+      - sensor.bathroom_ecobee_sensor_temperature
+      - sensor.master_bedroom_ecobee_sensor_temperature
+      - sensor.office_ecobee_sensor_temperature
+      - sensor.zachary_bedroom_ecobee_sensor_temperature
+      - sensor.dining_room_ecobee_sensor_temperature
+      - sensor.living_room_ecobee_sensor_temperature
+      - sensor.washroom_ecobee_sensor_temperature
+      - sensor.home_theatre_ecobee_sensor_temperature
+
+#------------------------------------------------------------------------------
+# Templates
+#------------------------------------------------------------------------------
+template:
+  - sensor:
+      # Lowest temperature in the home
+      - name: "Home Room Temperature Lowest"
+        unique_id: 7b0106c1-80eb-44fd-a687-1669444a7d3f
+        icon: mdi:thermometer-chevron-down
+        device_class: temperature
+        state_class: measurement
+        unit_of_measurement: "°C"
+        state: >
+          {% set temps = expand('group.home_room_temperature_sensors')
+             | map(attribute='state')
+             | map('float')
+             | list %}
+          {{ temps | min if temps else none }}
+
+      # Highest temperature in the home
+      - name: "Home Room Temperature Highest"
+        unique_id: 354fe009-1175-4dbb-aff3-501032948cc5
+        icon: mdi:thermometer-chevron-up
+        device_class: temperature
+        state_class: measurement
+        unit_of_measurement: "°C"
+        state: >
+          {% set temps = expand('group.home_room_temperature_sensors')
+             | map(attribute='state')
+             | map('float')
+             | list %}
+          {{ temps | max if temps else none }}
+
+  - binary_sensor:
+      # Ecobee Thermostat is in disallowed HVAC mode
+      - name: "HVAC Thermostat Ecobee In Disallowed HVAC Mode"
+        unique_id: 4e3f21b8-4e20-4d98-a691-ce48c4c64001
+        state: >-
+          {{ states('climate.hvac_thermostat_ecobee') in ['off', 'heat_cool'] }}
+        device_class: "problem"
+
+      # Home room temperature threshold warning sensor
+      - name: "Home Room Temperature Warning"
+        unique_id: eb864082-179b-410b-99ea-4e2158148bcc
+        device_class: problem
+        icon: mdi:thermometer-alert
+        state: >
+          {{ states('sensor.home_room_temperature_highest') | float >= 23
+             or states('sensor.home_room_temperature_lowest')  | float <= 16 }}
+
+      # Home room temperature threshold critical sensor
+      - name: "Home Room Temperature Critical"
+        unique_id: 54439f5b-b313-4950-a997-6be468923616
+        device_class: problem
+        icon: mdi:thermometer-alert
+        state: >
+          {{ states('sensor.home_room_temperature_highest') | float >= 24
+             or states('sensor.home_room_temperature_lowest')  | float <= 14 }}
+
+#------------------------------------------------------------------------------
+# Alerts
+#------------------------------------------------------------------------------
+alert:
+  # HVAC Thermostat Ecobee Disallowed HVAC Mode
+  hvac_thermostat_ecobee_disallowed_hvac_mode:
+    name: "Ecobee HVAC Mode is ia a disallowed HVAC mode"
+    title: "Chauffage, climatisation et ventilation"
+    message: >-
+      Le thermostat Ecobee est en mode
+      {{ states('climate.hvac_thermostat_ecobee') }}.
+      Le chauffage et la climatisation sont désactivés ou ne fonctionneront pas
+      comme prévu. Seuls les modes chauffage et climatisation sont acceptés.
+    done_message: >-
+      Le thermostat est de retour en mode
+      {{ states('climate.hvac_thermostat_ecobee') }}.
+    entity_id: binary_sensor.hvac_thermostat_ecobee_in_disallowed_hvac_mode
+    state: "on"
+    repeat:
+      - 15
+      - 30
+      - 60
+    skip_first: false
+    can_acknowledge: false
+    data:
+      push:
+        interruption-level: critical
+      group: "hvac"
+      tag: "alert_hvac_thermostat_ecobee_hvac_mode"
+    notifiers:
+      - group_home_occupants_notifications
+      - tts_kitchen_fr
+
+  # HVAC Flair System Mode = Manual
+  hvac_flair_structure_system_mode_manual:
+    name: "Flair System Mode is Manual"
+    title: "Chauffage, climatisation et ventilation"
+    message: >-
+      Flair est en mode manuel. Le thermostat Ecobee contrôle seul la
+      température et les grilles de plancher ne sont plus contrôlées
+      automatiquement.
+    done_message: >-
+      Flair est de retour en mode
+      {{ states('select.hvac_flair_structure_system_mode') }}.
+    entity_id: select.hvac_flair_structure_system_mode
+    state: "Manual"
+    repeat:
+      - 15
+      - 30
+      - 60
+    skip_first: false
+    can_acknowledge: false
+    data:
+      push:
+        interruption-level: critical
+      group: "hvac"
+      tag: "alert_hvac_flair_structure_system_mode"
+    notifiers:
+      - group_home_occupants_notifications
+      - tts_kitchen_fr
+
+  # Home temperature warning
+  home_temperature_warning:
+    name: "Home Temperature Warning"
+    title: "Chauffage, climatisation et ventilation"
+    message: >-
+      La température de la maison n'est pas dans l'interval de température
+      normal.
+    done_message: >-
+      La température de la maison est de retour à la normale.
+    entity_id: binary_sensor.home_room_temperature_warning
+    state: "on"
+    repeat:
+      - 30
+      - 60
+    skip_first: false
+    can_acknowledge: false
+    data:
+      push:
+        interruption-level: time-sensitive
+      group: "hvac"
+      tag: "alert_home_room_temperature_warning"
+    notifiers:
+      - group_home_occupants_notifications
+      - tts_kitchen_fr
+
+  # Home temperature critical alert
+  home_temperature_critical:
+    name: "Home Temperature Critical"
+    title: "Chauffage, climatisation et ventilation"
+    message: >-
+      La température de la maison est critique!
+    done_message: "clear_notification"
+    entity_id: binary_sensor.home_room_temperature_critical
+    state: "on"
+    repeat:
+      - 15
+      - 30
+      - 60
+    skip_first: false
+    can_acknowledge: false
+    data:
+      push:
+        interruption-level: critical
+      group: "hvac"
+      tag: "alert_home_room_temperature_critical"
+    notifiers:
+      - group_home_occupants_notifications
+      - tts_kitchen_fr

@@ -13,6 +13,7 @@
   services:
     - action: mobile_app_iphone_de_pa
     - action: mobile_app_ipad_de_pa
+    - action: mobile_app_mac_mini
 
 # All Zachary's devices
 - name: mobile_app_zachary_all
@@ -48,10 +49,9 @@
       data:
         data:
           group: "ha-notifications"
-    - action: persistent_notification
 
 # HA System Notifications
-- name: group_system_notifications
+- name: group_system_administrators
   platform: group
   services:
     - action: mobile_app_pa_all

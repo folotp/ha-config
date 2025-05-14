@@ -1884,24 +1884,10 @@
       seconds: 10
   conditions: []
   actions:
-  - action: notify.mobile_apps_pa
-    metadata: {}
-    data:
-      title: HVAC Alert!
-      message: Flair system mode is Manual
-      data:
-        push:
-          interruption-level: critical
-  - action: notify.notify
-    metadata: {}
-    data: {}
   - action: notify.persistent_notification
     metadata: {}
     data: {}
-  - action: notify.send_message
-    metadata: {}
-    data: {}
-  - action: notify.mobile_app_iphone_de_pa
+  - action: notify.mobile_app_pa_all
     metadata: {}
     data: {}
   mode: single
