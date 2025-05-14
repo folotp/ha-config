@@ -5,6 +5,8 @@ bluetooth:
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+notify: !include notifiers.yaml
+alert: !include alerts.yaml
 
 # Enable HTTPS
 http:
@@ -45,88 +47,6 @@ zha:
         # Use the unofficial Zigbee2MQTT OTA updates repository
         - type: z2m
           url: https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/index.json
-
-#==============================================================================
-# Notify Groups
-# https://www.home-assistant.io/integrations/group/#notify-groups
-#==============================================================================
-notify:
-  # All PA's devices
-  - name: mobile_app_pa_all
-    platform: group
-    services:
-      - action: mobile_app_iphone_de_pa
-      - action: mobile_app_ipad_de_pa
-
-  # All Zachary's devices
-  - name: mobile_app_zachary_all
-    platform: group
-    services:
-      - action: mobile_app_iphone_de_zachary
-
-  # Garage door notification group
-  - name: notify_group_garage
-    platform: group
-    services:
-      - action: mobile_app_pa_all
-
-  # Home Occupants Notifications
-  - name: group_home_occupants_notifications
-    platform: group
-    services:
-      - action: mobile_app_pa_all
-        data:
-          data:
-            group: "ha-notifications"
-      - action: persistent_notification
-
-  # HA System Notifications
-  - name: group_system_notifications
-    platform: group
-    services:
-      - action: mobile_app_pa_all
-        data:
-          data:
-            group: "ha-notifications"
-      - action: persistent_notification
-
-  # TTS Notify
-  - platform: tts
-    name: tts_kitchen_fr
-    entity_id: tts.google_translate_fr_ca
-    media_player: media_player.kitchen_homepod
-
-  # TTS Notify
-  - platform: tts
-    name: tts_kitchen_en
-    entity_id: tts.google_translate_en_ca
-    media_player: media_player.kitchen_homepod
-
-#==============================================================================
-# Alerts
-# https://www.home-assistant.io/integrations/alert
-#==============================================================================
-alert:
-  # Garage door alert
-  garage_door:
-    name: "Garage is open"
-    message: "The garage door is still open"
-    done_message: "The garage door is closed"
-    entity_id: cover.garage_door
-    state: "open"
-    repeat:
-      - 15
-      - 30
-      - 60
-    can_acknowledge: false
-    skip_first: false
-    data:
-      data:
-        title: "Domicile"
-        group: "garage-door-group"
-        tag: "garage-door"
-    notifiers:
-      - notify_group_garage
 
 #==============================================================================
 # Home Assistant settings

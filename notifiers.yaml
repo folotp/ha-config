@@ -1,0 +1,67 @@
+#==============================================================================
+# Notifiers
+# https://www.home-assistant.io/integrations/group/#notify-groups
+#==============================================================================
+
+#----------------------------------------------------------------------------
+# Mobile Device Notifiers
+#----------------------------------------------------------------------------
+
+# All PA's devices
+- name: mobile_app_pa_all
+  platform: group
+  services:
+    - action: mobile_app_iphone_de_pa
+    - action: mobile_app_ipad_de_pa
+
+# All Zachary's devices
+- name: mobile_app_zachary_all
+  platform: group
+  services:
+    - action: mobile_app_iphone_de_zachary
+
+#----------------------------------------------------------------------------
+# TTS Nofifiers
+#----------------------------------------------------------------------------
+
+# TTS Kitchen English
+- platform: tts
+  name: tts_kitchen_fr
+  entity_id: tts.google_translate_fr_ca
+  media_player: media_player.kitchen_homepod
+
+# TTS Kitchen French
+- platform: tts
+  name: tts_kitchen_fr
+  entity_id: tts.google_translate_fr_ca
+  media_player: media_player.kitchen_homepod
+
+#----------------------------------------------------------------------------
+# Nofifier Groups
+#----------------------------------------------------------------------------
+
+# Home Occupants Notifications
+- name: group_home_occupants_notifications
+  platform: group
+  services:
+    - action: mobile_app_pa_all
+      data:
+        data:
+          group: "ha-notifications"
+    - action: persistent_notification
+
+# HA System Notifications
+- name: group_system_notifications
+  platform: group
+  services:
+    - action: mobile_app_pa_all
+      data:
+        data:
+          group: "ha-notifications"
+    - action: persistent_notification
+
+# Garage door notification group
+- name: notify_group_garage
+  platform: group
+  services:
+    - action: mobile_app_pa_all
