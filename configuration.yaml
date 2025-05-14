@@ -70,8 +70,8 @@ notify:
     services:
       - action: mobile_app_pa_all
 
-  # HA System Notifications
-  - name: group_ha_notifications
+  # Home Occupants Notifications
+  - name: group_home_occupants_notifications
     platform: group
     services:
       - action: mobile_app_pa_all
@@ -79,6 +79,28 @@ notify:
           data:
             group: "ha-notifications"
       - action: persistent_notification
+
+  # HA System Notifications
+  - name: group_system_notifications
+    platform: group
+    services:
+      - action: mobile_app_pa_all
+        data:
+          data:
+            group: "ha-notifications"
+      - action: persistent_notification
+
+  # TTS Notify
+  - platform: tts
+    name: tts_kitchen_fr
+    entity_id: tts.google_translate_fr_ca
+    media_player: media_player.kitchen_homepod
+
+  # TTS Notify
+  - platform: tts
+    name: tts_kitchen_en
+    entity_id: tts.google_translate_en_ca
+    media_player: media_player.kitchen_homepod
 
 #==============================================================================
 # Alerts
