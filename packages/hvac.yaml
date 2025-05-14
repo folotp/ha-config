@@ -66,7 +66,7 @@ template:
         device_class: problem
         icon: mdi:thermometer-alert
         state: >
-          {{ states('sensor.home_room_temperature_highest') | float >= 23
+          {{ states('sensor.home_room_temperature_highest') | float >= 27
              or states('sensor.home_room_temperature_lowest')  | float <= 16 }}
 
       # Home room temperature threshold critical sensor
@@ -75,8 +75,8 @@ template:
         device_class: problem
         icon: mdi:thermometer-alert
         state: >
-          {{ states('sensor.home_room_temperature_highest') | float >= 24
-             or states('sensor.home_room_temperature_lowest')  | float <= 14 }}
+          {{ states('sensor.home_room_temperature_highest') | float >= 29
+             or states('sensor.home_room_temperature_lowest')  | float <= 12 }}
 
 #------------------------------------------------------------------------------
 # Alerts
