@@ -26,14 +26,14 @@
 #----------------------------------------------------------------------------
 
 # TTS Kitchen English
-- platform: tts
-  name: tts_kitchen_fr
+- name: tts_kitchen_fr
+  platform: tts
   entity_id: tts.google_translate_fr_ca
   media_player: media_player.kitchen_homepod
 
 # TTS Kitchen French
-- platform: tts
-  name: tts_kitchen_fr
+- name: tts_kitchen_fr
+  platform: tts
   entity_id: tts.google_translate_fr_ca
   media_player: media_player.kitchen_homepod
 

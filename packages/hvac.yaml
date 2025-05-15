@@ -223,3 +223,59 @@ alert:
     notifiers:
       - group_home_occupants_notifications
       - tts_kitchen_fr
+
+#------------------------------------------------------------------------------
+# Customization
+#------------------------------------------------------------------------------
+homeassistant:
+  customize:
+    # Disable changing HVAC Mode from the ROOM thermostats
+    climate.bathroom_thermostat:
+      hvac_modes:
+        - "N/A"
+      supported_features: 1
+    climate.dining_room_thermostat:
+      hvac_modes:
+        - "N/A"
+      supported_features: 1
+    climate.home_theatre_thermostat:
+      hvac_modes:
+        - "N/A"
+      supported_features: 1
+    climate.living_room_thermostat:
+      hvac_modes:
+        - "N/A"
+      supported_features: 1
+    climate.master_bedroom_thermostat:
+      hvac_modes:
+        - "N/A"
+      supported_features: 1
+    climate.office_thermostat:
+      hvac_modes:
+        - "N/A"
+      supported_features: 1
+    climate.washroom_thermostat:
+      hvac_modes:
+        - "N/A"
+      supported_features: 1
+    climate.zachary_bedroom_thermostat:
+      hvac_modes:
+        - "N/A"
+      supported_features: 1
+    # Disable HVAC modes other than heat and cool. Others should set using the
+    # Flair app
+    climate.hvac_flair_structure:
+      hvac_modes:
+        #- "off"
+        - "heat"
+        - "cool"
+        #- "heat_cool" disabled
+    # Disable HVAC modes other than heat or cool. Others shoul dbe set on the
+    # Ecobee thermostat or its app.
+    climate.hvac_thermostat_ecobee:
+      hvac_modes:
+        #- "off"
+        - "heat"
+        - "cool"
+        #- "heat_cool" disabled
+      supported_features: 137 # TARGET_TEMPERATURE (1), FAN_MODE (8), TURN_OFF (128)

@@ -529,7 +529,7 @@
   mode: queued
   max: 10
 - id: '1732578412731'
-  alias: HVAC - Flair Schedule Automation
+  alias: HVAC Flair Schedule Automation
   description: Changes Flair SmartVent schedule
   triggers:
   - trigger: zone
@@ -710,54 +710,6 @@
           transition: 2
         target:
           entity_id: scene.mbr_before_bed
-- id: '1734658118790'
-  alias: Home Ventilation
-  description: Automates the HRV
-  triggers:
-  - trigger: time_pattern
-    hours: /2
-  conditions:
-  - condition: and
-    conditions:
-    - condition: numeric_state
-      entity_id: sensor.chelsea_dew_point
-      below: 14
-    - condition: device
-      device_id: 3e3a04862972c9de2c4ae4d675cdf83f
-      domain: media_player
-      entity_id: eff01c7754491d49954d2db5fc75936f
-      type: is_off
-    - type: is_temperature
-      condition: device
-      device_id: 27ce292095211b77b34576b6a4349d86
-      entity_id: 33adb820f449fde31e63fa4e1355c5b9
-      domain: sensor
-      above: -15
-      alias: Outdoor temperature above -15°C
-    - condition: device
-      device_id: 498e396176a0d7c38288bb0762e85da4
-      domain: fan
-      entity_id: 91f217b8f50f4e485fc2397b220eca0c
-      type: is_off
-  actions:
-  - action: script.hrv
-    metadata: {}
-    data: {}
-  - action: fan.turn_on
-    metadata: {}
-    data: {}
-    target:
-      device_id: 498e396176a0d7c38288bb0762e85da4
-  - delay:
-      hours: 0
-      minutes: 15
-      seconds: 0
-  - action: fan.turn_off
-    metadata: {}
-    data: {}
-    target:
-      device_id: 498e396176a0d7c38288bb0762e85da4
-  mode: single
 - id: '1734748548281'
   alias: MBR Bedside Remote Left
   description: ''
@@ -896,7 +848,7 @@
       device_id: b9eb539922bf38d44a82cc0de21f3c07
   mode: restart
 - id: '1736197975831'
-  alias: Humidifier Watchdog
+  alias: Humidifier - Watchdog
   description: ''
   use_blueprint:
     path: Blackshome/notifications-and-announcements.yaml
@@ -1014,6 +966,7 @@
       - condition: state
         entity_id: input_boolean.hvac_fan_force_on
         state: 'on'
+      alias: HRV On OR HVAC Fan Force is On
     then:
     - action: climate.set_fan_mode
       metadata: {}
@@ -1031,108 +984,6 @@
       target:
         device_id: 74b2e490499eba29d6e6edcb89e9f9e6
   mode: restart
-- id: '1737211996448'
-  alias: HRV - Air Quality
-  description: ''
-  triggers:
-  - type: volatile_organic_compounds_parts
-    device_id: 8f15a427c3182bd9512313943ce3fcf6
-    entity_id: e0064f39daed5acffee3f86ea7247f2b
-    domain: sensor
-    trigger: device
-    above: 250
-    alias: VOCs are a or 250 ppb
-  - alias: CO2 is above 800 ppm
-    type: carbon_dioxide
-    device_id: 8f15a427c3182bd9512313943ce3fcf6
-    entity_id: 7567147ed292e788966bb32a5cff4572
-    domain: sensor
-    trigger: device
-    above: 800
-  conditions: []
-  actions:
-  - action: fan.turn_on
-    metadata: {}
-    data: {}
-    target:
-      device_id: 498e396176a0d7c38288bb0762e85da4
-    alias: Turn ON HRV
-  - alias: Wait for CO2 to drop
-    wait_for_trigger:
-    - type: carbon_dioxide
-      device_id: 8f15a427c3182bd9512313943ce3fcf6
-      entity_id: 7567147ed292e788966bb32a5cff4572
-      domain: sensor
-      trigger: device
-      below: 750
-      for:
-        hours: 0
-        minutes: 0
-        seconds: 0
-    timeout:
-      hours: 1
-      minutes: 0
-      seconds: 0
-  - alias: Wait for VOCs to drop
-    wait_for_trigger:
-    - type: volatile_organic_compounds_parts
-      device_id: 8f15a427c3182bd9512313943ce3fcf6
-      entity_id: e0064f39daed5acffee3f86ea7247f2b
-      domain: sensor
-      trigger: device
-      below: 240
-    continue_on_timeout: true
-    timeout:
-      hours: 1
-      minutes: 0
-      seconds: 0
-  - action: fan.turn_off
-    metadata: {}
-    data: {}
-    target:
-      device_id: 498e396176a0d7c38288bb0762e85da4
-    alias: Turn OFF HRV
-  mode: single
-- id: '1737212708696'
-  alias: HRV - Cool using ventilation
-  description: If outside air is cool and dry, ventilate to cool house.
-  triggers:
-  - type: turned_on
-    device_id: 498e396176a0d7c38288bb0762e85da4
-    entity_id: 9b236aa86b3fbe16594a16499006a495
-    domain: binary_sensor
-    trigger: device
-    id: Natural Cooling ON
-  - type: turned_off
-    device_id: 498e396176a0d7c38288bb0762e85da4
-    entity_id: 9b236aa86b3fbe16594a16499006a495
-    domain: binary_sensor
-    trigger: device
-    id: Natural Cooling OFF
-  conditions: []
-  actions:
-  - choose:
-    - conditions:
-      - condition: trigger
-        id:
-        - Natural Cooling ON
-      sequence:
-      - action: fan.turn_on
-        metadata: {}
-        data: {}
-        target:
-          device_id: 498e396176a0d7c38288bb0762e85da4
-    - conditions:
-      - condition: trigger
-        id:
-        - Natural Cooling OFF
-      sequence:
-      - action: fan.turn_off
-        metadata: {}
-        data: {}
-        target:
-          device_id: 498e396176a0d7c38288bb0762e85da4
-  mode: single
 - id: '1737290269101'
   alias: Living Room - Sensor Lights without brightness
   description: ''
@@ -1253,90 +1104,6 @@
       light_transition_off: 3
       include_light_colour_control: use_colour_temperature
       light_colour_temperature: 2300
-- id: '1743121995709'
-  alias: HRV - Control
-  description: Combined HRV Automation using IAQ Template and Natural Cooling
-  triggers:
-  - entity_id:
-    - binary_sensor.hvac_hrv_air_quality_trigger
-    to: 'on'
-    trigger: state
-  - entity_id: binary_sensor.hvac_natural_cooling_useful
-    to: 'on'
-    trigger: state
-  - trigger: template
-    value_template: "{{ (trigger.to_state.attributes.hvac_action in ['heating', 'cooling'])
-      and\n   (states('sensor.hvac_hrv_last_hour_runtime') | float < 15) }}"
-    alias: When heating or cooling and HRV last hour runtime is less than 15 minutes
-    enabled: true
-  - trigger: state
-    entity_id:
-    - binary_sensor.hvac_hrv_minimum_runtime_trigger
-    to: 'on'
-  - trigger: homeassistant
-    event: start
-    enabled: false
-  conditions:
-  - condition: and
-    conditions:
-    - condition: numeric_state
-      entity_id: sensor.u_s_air_quality_index
-      below: 150
-    - condition: or
-      conditions:
-      - alias: Outdoor Temp above -15
-        type: is_temperature
-        condition: device
-        device_id: 27ce292095211b77b34576b6a4349d86
-        entity_id: 33adb820f449fde31e63fa4e1355c5b9
-        domain: sensor
-        above: -15
-      - condition: state
-        entity_id: binary_sensor.hvac_hrv_air_quality_trigger
-        state: 'on'
-      alias: Outdoor temp above -15°C unless IAQ unsafe
-  actions:
-  - if: []
-    then: []
-    enabled: false
-  - target:
-      entity_id: fan.hvac_hrv
-    action: fan.turn_on
-    data: {}
-  - delay:
-      hours: 0
-      minutes: 15
-      seconds: 0
-      milliseconds: 0
-  - wait_template: '{{ is_state(''binary_sensor.hvac_hrv_air_quality_trigger'', ''off'')
-      and is_state(''binary_sensor.hvac_natural_cooling_useful'', ''off'') }}
-
-      '
-  - target:
-      entity_id: fan.hvac_hrv
-    action: fan.turn_off
-    data: {}
-  mode: restart
-- id: '1743166090883'
-  alias: HVAC Watchdog - Thermostat Off
-  description: Will send a notification if Ecobee thermostat is turned Off.
-  use_blueprint:
-    path: Blackshome/notifications-and-announcements.yaml
-    input:
-      trigger_state_entity:
-      - climate.hvac_thermostat_ecobee
-      trigger_state: 'off'
-      include_notify: enable_mobile_app_notify
-      notify_device:
-      - 232b7db24acc398ca60c12a9daad9eb7
-      - e0b8985c9b0860395d782cf988cac146
-      - f7c878894e69f0542c739bff9676f65a
-      notify_title: HVAC Alert!
-      notify_message: Ecobee thermostat is Off
-      notify_interruption_level: critical
-      include_persistent_notification: enable_persistent_notification
-      persistent_title: HVAC Alert!
-      persistent_message: Ecobee thermostat is Off!
 - id: '1743370416927'
   alias: Family Room Lights Automation
   description: ''
@@ -1849,48 +1616,6 @@
     input:
       cover_entity: cover.ht_blind
       window_sensor: binary_sensor.bathroom_window
-- id: '1746711411024'
-  alias: HVAC Watchdog - Flair system mode
-  description: ''
-  triggers:
-  - alias: Flair Structure System Mode = Manual
-    device_id: fb9ae35f77be16649bc913ff71258e38
-    domain: select
-    entity_id: 9a5e06e191ad087b7e8ba8cf8ca6c3d9
-    type: current_option_changed
-    trigger: device
-    to: Manual
-  - device_id: 74b2e490499eba29d6e6edcb89e9f9e6
-    domain: climate
-    entity_id: 23f42ac88dcc48a36fd94988383b7bef
-    type: hvac_mode_changed
-    trigger: device
-    to: heat
-  - alias: Flair Structure HVAC Mode = Manual
-    device_id: fb9ae35f77be16649bc913ff71258e38
-    domain: climate
-    entity_id: 37f5674d14f8838aad0fe391457020cf
-    type: hvac_mode_changed
-    trigger: device
-    to: 'off'
-  - trigger: state
-    entity_id:
-    - climate.hvac_thermostat_ecobee
-    - climate.hvac_flair_structure
-    to:
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 10
-  conditions: []
-  actions:
-  - action: notify.persistent_notification
-    metadata: {}
-    data: {}
-  - action: notify.mobile_app_pa_all
-    metadata: {}
-    data: {}
-  mode: single
 - id: '1746727528237'
   alias: HVAC Set Flair minimum temperature to 16 at night
   description: Sets the away temperature lower at night to increase the likelihood
