@@ -947,34 +947,37 @@
   - trigger: state
     entity_id:
     - input_boolean.hvac_fan_force_on
+  - trigger: homeassistant
+    event: start
   - trigger: state
     entity_id:
     - climate.hvac_thermostat_ecobee
     attribute: fan_mode
-  - trigger: homeassistant
-    event: start
   conditions: []
   actions:
   - if:
-    - condition: or
+    - alias: HRV On OR HVAC Fan Force is On
+      condition: or
       conditions:
+      - condition: state
+        entity_id: input_boolean.hvac_fan_force_on
+        state: 'on'
       - condition: device
         device_id: 498e396176a0d7c38288bb0762e85da4
         domain: fan
         entity_id: 91f217b8f50f4e485fc2397b220eca0c
         type: is_on
       - condition: state
-        entity_id: input_boolean.hvac_fan_force_on
+        entity_id: fan.hvac_hrv
         state: 'on'
-      alias: HRV On OR HVAC Fan Force is On
     then:
-    - action: climate.set_fan_mode
+    - alias: Turn HVAC Fan ON
+      action: climate.set_fan_mode
       metadata: {}
       data:
         fan_mode: 'on'
       target:
-        device_id: 74b2e490499eba29d6e6edcb89e9f9e6
-      alias: Turn HVAC Fan ON
+        entity_id: climate.hvac_thermostat_ecobee
     else:
     - alias: Return HVAC Fan to Auto mode
       action: climate.set_fan_mode
@@ -982,7 +985,7 @@
       data:
         fan_mode: auto
       target:
-        device_id: 74b2e490499eba29d6e6edcb89e9f9e6
+        entity_id: climate.hvac_thermostat_ecobee
   mode: restart
 - id: '1737290269101'
   alias: Living Room - Sensor Lights without brightness

@@ -15,10 +15,13 @@ http:
 
 #==============================================================================
 # Recorder settings
-# Use MariaDB
+#   - Use MariaDB
 #==============================================================================
 recorder:
   db_url: !secret recorder_db_url
+  purge_keep_days: 91 # 3 months (default 10 days)
+  purge_interval: 1 # daily purge
+  auto_purge: true
 
 #==============================================================================
 # Logger settings
