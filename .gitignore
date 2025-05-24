@@ -6,6 +6,9 @@ home-assistant_v2.db*
 .cache/
 tts/
 
+# Ignore custom_components which holds custom integrations from HACS
+custom_components/
+
 # Exclude secrets, SSH artifacts, logs
 secrets.yaml
 .cloud/
