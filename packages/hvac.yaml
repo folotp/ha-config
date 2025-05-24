@@ -10,14 +10,14 @@ group:
   home_room_temperature_sensors:
     name: Home Room Temperature Sensors
     entities:
-      - sensor.bathroom_ecobee_sensor_temperature
-      - sensor.master_bedroom_ecobee_sensor_temperature
-      - sensor.office_ecobee_sensor_temperature
-      - sensor.zachary_bedroom_ecobee_sensor_temperature
-      - sensor.dining_room_ecobee_sensor_temperature
-      - sensor.living_room_ecobee_sensor_temperature
-      - sensor.washroom_ecobee_sensor_temperature
-      - sensor.home_theatre_ecobee_sensor_temperature
+      - sensor.bathroom_temperature
+      - sensor.master_bedroom_temperature
+      - sensor.office_temperature
+      - sensor.zachary_bedroom_temperature
+      - sensor.dining_room_temperature
+      - sensor.living_room_temperature
+      - sensor.washroom_temperature
+      - sensor.home_theatre_temperature
 
 #------------------------------------------------------------------------------
 # Templates
@@ -52,20 +52,58 @@ template:
              | list %}
           {{ temps | max if temps else none }}
 
+      # Average temperature in the home
+      - name: "Home Room Temperature Average"
+        unique_id: 392255fb-628a-4e09-ab89-0269ca80c8dc
+        icon: mdi:thermometer-lines
+        device_class: temperature
+        state_class: measurement
+        unit_of_measurement: "°C"
+        state: >
+          {% set temps = expand('group.home_room_temperature_sensors')
+             | map(attribute='state')
+             | map('float')
+             | list %}
+          {{ (temps | average) | round(2) if temps else none }}
+
+      # Median temperature in the home
+      - name: "Home Room Temperature Median"
+        unique_id: b11a900d-da0d-42dd-a259-2e9a51999226
+        icon: mdi:thermometer-lines
+        device_class: temperature
+        state_class: measurement
+        unit_of_measurement: "°C"
+        state: >
+          {% set temps = expand('group.home_room_temperature_sensors')
+             | map(attribute='state')
+             | map('float')
+             | list
+             | sort %}
+          {% set n = temps | count %}
+          {% if n == 0 %}
+            none
+          {% elif n is odd %}
+            {{ temps[n // 2] }}
+          {% else %}
+            {{ ((temps[n // 2 - 1] + temps[n // 2]) / 2) | round(2) }}
+          {% endif %}
+
   - binary_sensor:
       # Ecobee Thermostat is in disallowed HVAC mode
       - name: "HVAC Thermostat Ecobee In Disallowed HVAC Mode"
         unique_id: 4e3f21b8-4e20-4d98-a691-ce48c4c64001
+        device_class: "problem"
+        icon: mdi:alert
         state: >-
           {{ states('climate.hvac_thermostat_ecobee') in ['off', 'heat_cool'] }}
-        device_class: "problem"
 
       # Flair Structure is in disallowed HVAC mode
       - name: "HVAC Flair Structure In Disallowed HVAC Mode"
         unique_id: 5459dbe3-4b18-42f1-aafc-dcf066d16e51
+        device_class: "problem"
+        icon: mdi:alert
         state: >-
           {{ states('climate.hvac_flair_structure') in ['off', 'heat_cool'] }}
-        device_class: "problem"
 
       # Home room temperature threshold warning sensor
       - name: "Home Room Temperature Warning"
@@ -73,7 +111,7 @@ template:
         device_class: problem
         icon: mdi:thermometer-alert
         state: >
-          {{ states('sensor.home_room_temperature_highest') | float >= 27
+          {{ states('sensor.home_room_temperature_highest') | float >= 26
              or states('sensor.home_room_temperature_lowest')  | float <= 16 }}
 
       # Home room temperature threshold critical sensor
@@ -82,7 +120,7 @@ template:
         device_class: problem
         icon: mdi:thermometer-alert
         state: >
-          {{ states('sensor.home_room_temperature_highest') | float >= 29
+          {{ states('sensor.home_room_temperature_highest') | float >= 27
              or states('sensor.home_room_temperature_lowest')  | float <= 12 }}
 
 #------------------------------------------------------------------------------
@@ -101,7 +139,7 @@ alert:
     done_message: >-
       Le thermostat est de retour en mode
       {{ states('climate.hvac_thermostat_ecobee') }}.
-    entity_id: binary_sensor.hvac_thermostat_ecobee_in_disallowed_hvac_mode
+    entity_id: binary_sensor.hvac_thermostat_ecobee_disallowed_hvac_mode
     state: "on"
     repeat:
       - 15

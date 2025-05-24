@@ -65,3 +65,4 @@
   platform: group
   services:
     - action: mobile_app_pa_all
+    - action: persistent_notification

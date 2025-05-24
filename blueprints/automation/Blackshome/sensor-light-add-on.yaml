@@ -195,9 +195,9 @@ blueprint:
                 value: enable_start_turn_off
               - label: Disable the start turn OFF options
                 value: disable_start_turn_off
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         off_light_switch:
           name: Start Turn OFF - Lights - Switches
           description: 'Enter the lights and switches to turn OFF when the automation
@@ -229,8 +229,8 @@ blueprint:
               options:
               - label: Use transition
                 value: use_transition
-              sort: false
               custom_value: false
+              sort: false
         off_light_transition_off:
           name: Start Turn OFF - Transition - OFF
           description: 'The transition setting for the lights when they are turned
@@ -308,8 +308,8 @@ blueprint:
                 value: use_brightness
               - label: Use Transition
                 value: use_transition
-              sort: false
               custom_value: false
+              sort: false
         light_brightness:
           name: Brightness
           description: 'The brightness setting for the lights when they are turned
@@ -374,9 +374,9 @@ blueprint:
                 value: use_rgbww_colour
               - label: Disable Colour Control
                 value: disable_colour_control
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         light_colour_temperature:
           name: Colour Temperature
           description: 'The colour temperature setting for the lights when they are
@@ -456,9 +456,9 @@ blueprint:
                 value: intermission_enable
               - label: Disable intermission option
                 value: intermission_disable
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         intermission_state:
           name: Intermission - Trigger State
           description: 'Choose the state that triggers intermission mode from the
@@ -540,8 +540,8 @@ blueprint:
                 value: use_brightness
               - label: Use Transition
                 value: use_transition
-              sort: false
               custom_value: false
+              sort: false
         intermission_light_brightness:
           name: Brightness
           description: 'The brightness setting for the lights when they are turned
@@ -606,9 +606,9 @@ blueprint:
                 value: use_rgbww_colour
               - label: Disable Colour Control
                 value: disable_colour_control
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         intermission_light_colour_temperature:
           name: Colour Temperature
           description: 'The colour temperature setting for the lights when they are
@@ -694,9 +694,9 @@ blueprint:
                 value: enable_end_turn_on
               - label: Disable, end turn ON options
                 value: disable_end_turn_on
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         end_snapshot_name:
           name: End Turn ON - Snapshot Name
           description: 'If you''ve opted to create a snapshot of your lights and switches,
@@ -766,8 +766,8 @@ blueprint:
                 value: use_brightness
               - label: Use Transition
                 value: use_transition
-              sort: false
               custom_value: false
+              sort: false
         end_light_brightness:
           name: Brightness
           description: 'The brightness setting for the lights when they are turned
@@ -818,9 +818,9 @@ blueprint:
                 value: use_rgbww_colour
               - label: Disable Colour Control
                 value: disable_colour_control
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         end_light_colour_temperature:
           name: Colour Temperature
           description: 'The colour temperature setting for the lights when they are
@@ -901,9 +901,9 @@ blueprint:
                 value: enable_automation_link
               - label: Disable automation link
                 value: disable_automation_link
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         automation_link:
           name: Automation Link - By-pass Control
           description: 'To disable other automations when this automation is ON, enter
@@ -939,9 +939,9 @@ blueprint:
                 value: enable_time_delay
               - label: Disable time delay
                 value: disable_time_delay
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         automation_link_time_delay:
           name: Time Delay
           description: 'Specify the time delay before turning off the automation link.
@@ -975,9 +975,9 @@ blueprint:
                 value: sun_enabled
               - label: Disable the sun option
                 value: sun_disabled
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         sun_elevation:
           name: Sun Elevation Falling
           description: 'The sun elevation falling refers to the angle between the
@@ -1030,9 +1030,9 @@ blueprint:
                 value: ambient_enabled
               - label: Disable the ambient options
                 value: ambient_disabled
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         ambient_light_sensor:
           name: Ambient Light Sensor
           description: 'Select the ambient sensor to be used.
@@ -1066,9 +1066,9 @@ blueprint:
                 value: ambient_light_option_enabled
               - label: NO - My Ambient Light Sensor is not affected by the Lights
                 value: ambient_light_option_disabled
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         ambient_light_value:
           name: Ambient Light - Low Lux Value
           description: 'Set the Ambient Light Low Lux Value. The light will turn ON
@@ -1144,9 +1144,9 @@ blueprint:
                 value: bypass_enabled_pause_automation
               - label: Disable the By-pass option
                 value: bypass_disabled
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         trigger_bypass:
           name: By-pass - Switch
           description: 'Select a switch that will bypass (disable) the automation.

@@ -39,60 +39,45 @@ automation:
       Notifies when the TVOC Index minimum stays above 100 ppb-eq for 7 days,
       prompting a 10-minute fresh-air exposure to reset the baseline.
     mode: single
-    trigger:
+    triggers:
       - id: tvoc_on
-        platform: state
+        trigger: state
         entity_id: binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted
         to: "on"
       - id: tvoc_off
-        platform: state
+        trigger: state
         entity_id: binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted
         to: "off"
       - id: daily
-        platform: time_pattern
+        trigger: time_pattern
         hours: "9"
         minutes: "0"
         seconds: "0"
-    action:
+    actions:
       - choose:
+          # Sensor is drifted
           - conditions:
-              - condition: or
-                conditions:
-                  - condition: template
-                    value_template: "{{ trigger.id == 'tvoc_on' or trigger.id == 'daily' }}"
               - condition: state
                 entity_id: binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted
                 state: "on"
             sequence:
-              # - service: persistent_notification.create
-              #   data:
-              #     notification_id: tvoc_baseline_drift
-              #     title: "Airthings Wave Plus VOC Baseline Drifted"
-              #     message: >
-              #       The TVOC Index minimum has remained above 100 ppb-eq for 7 days.
-              #       Please place the monitor near fresh indoor air (e.g., open window)
-              #       for ~10 minutes to reset its baseline, then return it.
-              - service: notify.group_system_administrators
+              - action: notify.group_system_administrators
                 data:
                   title: "Airthings Wave Plus VOC Baseline Drifted"
                   message: >
-                    TVOC Index ≥100 ppb-eq for 7 days. Expose sensor to fresh air ~10 min
-                    to reset baseline.
-                  data:
-                    tag: "tvoc_baseline_drift"
-                    notification_id: "tvoc_baseline_drift"
-
+                    TVOC Index ≥ 100 ppb-eq for 7 days. Expose sensor to fresh air
+                    for ~10 minutes to reset baseline.
+                  tag: "tvoc_baseline_drift"
+                  notification_id: "tvoc_baseline_drift"
+          # Sensor drift cleared
           - conditions:
-              - condition: template
-                value_template: "{{ trigger.id == 'tvoc_off' }}"
+              - condition: state
+                entity_id: binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted
+                state: "off"
             sequence:
-              # - service: persistent_notification.dismiss
-              #   data:
-              #     notification_id: tvoc_baseline_drift
-              - service: notify.group_system_administrators
+              - action: notify.group_system_administrators
                 data:
                   message: "clear_notification"
-                  data:
-                    tag: "tvoc_baseline_drift"
-                    notification_id: "tvoc_baseline_drift"
+                  tag: "tvoc_baseline_drift"
+                  notification_id: "tvoc_baseline_drift"
         default: []

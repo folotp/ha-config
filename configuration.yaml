@@ -20,8 +20,14 @@ http:
 recorder:
   db_url: !secret recorder_db_url
   purge_keep_days: 91 # 3 months (default 10 days)
-  purge_interval: 1 # daily purge
   auto_purge: true
+  exclude:
+    # explicit entity exclusion using full entity_id (no wildcard)
+    # entities:
+    #   - entity_id
+    # wildcard patterns
+    entity_globs:
+      - sensor.*_battery_level
 
 #==============================================================================
 # Logger settings
@@ -31,7 +37,10 @@ logger:
   # It seems "recommended" to set it to avoid too much logging.
   default: warning
   logs:
-    zigpy: debug
+    zigpy: warning
+    zigpy.zcl: warning
+    zigpy.quirks: warning
+    homeassistant.components.zha: info
 
 #==============================================================================
 # Enable Prometheus integration

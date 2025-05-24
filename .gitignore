@@ -38,5 +38,5 @@ __pycache__/
 /custom_components/*/__pycache__/
 /appdaemon/\.storage/
 
-# Ignore TEMP folder
-TEMP-git-excluded
+# Ignore TEMP folder symbolic link
+TEMP_PA

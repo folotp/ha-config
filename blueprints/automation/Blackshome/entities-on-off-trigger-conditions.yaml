@@ -1,6 +1,6 @@
 blueprint:
   name: Smart Light
-  description: "# \U0001F506 Smart Light\n**Version: 2.9**\n\nSmart Lighting: Your
+  description: "# \U0001F506 Smart Light\n**Version: 3.0**\n\nSmart Lighting: Your
     Lights, Your Way - Take Control and Customize it to Perfection!\U0001F4A1✨\n\n**If
     you like my blueprints, and would like to show your support or just say thank
     you?** [Click Here](https://www.paypal.com/donate/?hosted_button_id=WAZS3QSDTPGA8)
@@ -54,8 +54,8 @@ blueprint:
                 value: entity_on
               - label: OFF State
                 value: entity_off
-              sort: false
               custom_value: false
+              sort: false
         entity_input:
           name: Input Entity
           description: 'Please select an entity with an ON/OFF state.
@@ -93,8 +93,8 @@ blueprint:
                 value: sun_falling
               - label: Sun Elevation Rising - OFF
                 value: sun_rising
-              sort: false
               custom_value: false
+              sort: false
         sun_elevation:
           name: Sun Elevation Falling
           description: 'The sun elevation falling refers to the angle between the
@@ -153,8 +153,8 @@ blueprint:
                 value: ambient_low
               - label: High Lux Value - OFF
                 value: ambient_high
-              sort: false
               custom_value: false
+              sort: false
         ambient_light_sensor:
           name: Ambient Light Sensor
           description: 'Select the ambient light sensor.
@@ -226,8 +226,8 @@ blueprint:
                 value: time_on
               - label: OFF Time
                 value: time_off
-              sort: false
               custom_value: false
+              sort: false
         after_time:
           name: ON Time
           description: 'Set the on time.
@@ -322,8 +322,8 @@ blueprint:
                 value: use_brightness
               - label: Use Transition
                 value: use_transition
-              sort: false
               custom_value: false
+              sort: false
         light_brightness:
           name: Brightness
           description: 'The brightness setting for the lights when they are turned
@@ -388,9 +388,9 @@ blueprint:
                 value: use_rgbww_colour
               - label: Disable Colour Control
                 value: disable_colour_control
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         light_colour_temperature:
           name: Colour Temperature
           description: 'The colour temperature setting for the lights when they are
@@ -533,9 +533,9 @@ blueprint:
                 value: enable_time_controled_brightness_inv
               - label: 13 - Time Controlled - Colour Temp + Brightness
                 value: enable_time_controled_colour_brightness
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         dynamic_lighting_lux_sensor:
           name: Dynamic Lighting - Ambient Light Sensor
           description: '**Used in options 1, 2, 8 or 9** - Enter the specific ambient
@@ -855,9 +855,9 @@ blueprint:
                 value: enable_state_control
               - label: Disable State Control Option
                 value: disable_state_control
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         dynamic_lighting_state_control_activation_state:
           name: Dynamic Lighting - State Control Activation State
           description: 'Select the state the entity must be in to activate dynamic
@@ -874,9 +874,9 @@ blueprint:
                 value: 'on'
               - label: OFF State
                 value: 'off'
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         dynamic_lighting_state_control_entity:
           name: Dynamic Lighting - State Control Entity
           description: 'If the state control option above is enabled, select the entity
@@ -909,8 +909,8 @@ blueprint:
               - label: 3 - Enable the Bypass - Keep the Lights Current State
                 value: bypass_enabled_stop
               multiple: true
-              sort: false
               custom_value: false
+              sort: false
         bypass_lights_on:
           name: Bypass Switch - Turn the Lights ON
           description: 'Select the switches that will turn your lights ON, bypass
@@ -982,8 +982,8 @@ blueprint:
                   State
                 value: bypass_auto_off_enabled_stop
               multiple: true
-              sort: false
               custom_value: false
+              sort: false
         bypass_auto_off_delay:
           name: Bypass Auto OFF - Time Delay
           description: 'Set the bypass auto OFF time delay. The time delay starts
@@ -1017,9 +1017,9 @@ blueprint:
                 value: weekday_enabled
               - label: Disable the weekday option
                 value: weekday_disabled
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         weekday_options:
           name: Weekdays
           description: 'Select the days of the week on which you want the automation
@@ -1053,8 +1053,8 @@ blueprint:
                 value: sat
               - label: Sunday
                 value: sun
-              sort: false
               custom_value: false
+              sort: false
     night_lights_trigger_settings:
       name: Night Lights Settings
       icon: mdi:weather-night
@@ -1082,9 +1082,9 @@ blueprint:
                 value: night_lights_enabled
               - label: Disable the night lights options
                 value: night_lights_disabled
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         night_lights_conditions:
           name: Night Lights Conditions (Required For Night Lights)
           description: 'Select any night light condition from the options provided.
@@ -1107,8 +1107,8 @@ blueprint:
                 value: time_enabled
               - label: Enable sun elevation option
                 value: sun_enabled
-              sort: false
               custom_value: false
+              sort: false
         night_lights_entity_state:
           name: Night Lights - Entity State
           description: 'Select an entity that will trigger the activation of night
@@ -1246,8 +1246,8 @@ blueprint:
                 value: manage_scripts_crossing_over
               - label: Use cross over time delay from night lights to normal lights
                 value: use_delay
-              sort: false
               custom_value: false
+              sort: false
         night_light_brightness:
           name: Night Lights - Brightness
           description: 'The brightness setting of the night lights when they are turned
@@ -1325,9 +1325,9 @@ blueprint:
                 value: use_rgbww_colour
               - label: Disable Colour Control
                 value: disable_colour_control
-              sort: false
               custom_value: false
               multiple: false
+              sort: false
         night_light_colour_temperature:
           name: Night Lights - Colour Temperature
           description: 'The colour temperature setting for the night lights when they
@@ -5510,7 +5510,11 @@ action:
                         delay:
                           minutes: !input dynamic_lighting_heartbeat
                     - alias: If dynamic lighting brightness is in the dead zone
-                      conditions: '{{ in_dead_zone }}'
+                      conditions:
+                      - condition: template
+                        value_template: '{{ in_dead_zone }}'
+                      - condition: template
+                        value_template: '{{ repeat.index != 1 }}'
                       sequence:
                       - alias: Dynamic lighting heartbeat
                         delay:
@@ -5654,7 +5658,11 @@ action:
                         delay:
                           minutes: !input dynamic_lighting_heartbeat
                     - alias: If dynamic lighting brightness is in the dead zone
-                      conditions: '{{ in_dead_zone }}'
+                      conditions:
+                      - condition: template
+                        value_template: '{{ in_dead_zone }}'
+                      - condition: template
+                        value_template: '{{ repeat.index != 1 }}'
                       sequence:
                       - alias: Dynamic lighting heartbeat
                         delay:
@@ -6771,7 +6779,11 @@ action:
                             delay:
                               minutes: !input dynamic_lighting_heartbeat
                         - alias: If dynamic lighting brightness is in the dead zone
-                          conditions: '{{ in_dead_zone }}'
+                          conditions:
+                          - condition: template
+                            value_template: '{{ in_dead_zone }}'
+                          - condition: template
+                            value_template: '{{ repeat.index != 1 }}'
                           sequence:
                           - alias: Dynamic lighting heartbeat
                             delay:
@@ -7144,7 +7156,11 @@ action:
                             delay:
                               minutes: !input dynamic_lighting_heartbeat
                         - alias: If dynamic lighting brightness is in the dead zone
-                          conditions: '{{ in_dead_zone }}'
+                          conditions:
+                          - condition: template
+                            value_template: '{{ in_dead_zone }}'
+                          - condition: template
+                            value_template: '{{ repeat.index != 1 }}'
                           sequence:
                           - alias: Dynamic lighting heartbeat
                             delay:

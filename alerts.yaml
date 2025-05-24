@@ -6,10 +6,11 @@
 # Garage door alert
 garage_door:
   name: "Garage is open"
+  title: "Domicile"
   message: "The garage door is still open"
   done_message: "The garage door is closed"
-  entity_id: cover.garage_door
-  state: "open"
+  entity_id: binary_sensor.garage_door_sensor
+  state: "on"
   repeat:
     - 15
     - 30
@@ -17,9 +18,9 @@ garage_door:
   can_acknowledge: false
   skip_first: false
   data:
-    data:
-      title: "Domicile"
-      group: "garage-door-group"
-      tag: "garage-door"
+    push:
+      interruption-level: time-sensitive
+    group: "garage-door-group"
+    tag: "garage-door"
   notifiers:
     - notify_group_garage
