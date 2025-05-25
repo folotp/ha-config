@@ -141,14 +141,3 @@ sensor:
       hours: 1
     sampling_size: 250 # keep plenty of samples (defaults to 20)
     precision: 2
-
-#------------------------------------------------------------------------------
-# Input select to determine the HRV speed used in the calculation
-#------------------------------------------------------------------------------
-input_select:
-  hvac_hrv_speed:
-    name: "HVAC HRV Speed"
-    options:
-      - "Low"
-      - "High"
-    icon: mdi:fan-speed

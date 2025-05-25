@@ -1,0 +1,15 @@
+#==============================================================================
+# HVR control
+#==============================================================================
+
+#------------------------------------------------------------------------------
+# Input select to store the HRV speed to use in the calculation. The HRV doesn't
+# have this attribute so this is to fake it.
+#------------------------------------------------------------------------------
+input_select:
+  hvac_hrv_speed:
+    name: "HVAC HRV Speed"
+    options:
+      - "Low"
+      - "High"
+    icon: mdi:fan-speed
