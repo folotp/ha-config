@@ -1,0 +1,90 @@
+#==============================================================================
+# Home Outdoor Conditions
+#==============================================================================
+template:
+  - triggers:
+      - trigger: time_pattern
+        hours: "/4"
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+    actions:
+      - action: weather.get_forecasts
+        target:
+          entity_id: weather.weather_ec_forecast
+        data:
+          type: hourly
+        response_variable: hourly_forecast
+      - action: weather.get_forecasts
+        target:
+          entity_id: weather.weather_ec_forecast
+        data:
+          type: daily
+        response_variable: daily_forecast
+    sensor:
+      - name: Weather EC Forecasts
+        unique_id: 7f16aa16-6975-4c2e-87be-9ea6ed143280
+        state: "{{ states('weather.weather_ec_forecast') | string }}"
+        attributes:
+          daily: >
+            {{ daily_forecast['weather.weather_ec_forecast']['forecast'] }}
+          hourly: >
+            {{ hourly_forecast['weather.weather_ec_forecast']['forecast'] }}
+          summary: >
+            {{ states('sensor.weather_ec_summary') | string }}
+          temperature_unit: >
+            {{ state_attr('weather.weather_ec_forecast', 'temperature_unit') }}
+
+#------------------------------------------------------------------------------
+# Home Weather Template
+#------------------------------------------------------------------------------
+weather:
+  - platform: template
+    name: "Home Weather"
+    unique_id: c4149342-e36a-43c8-8bf6-86414bd40183
+    condition_template: "{{ states('weather.weather_ec_forecast') | string }}"
+    temperature_template: "{{ states('sensor.patio_sensor_temperature') | float }}"
+    dew_point_template: "{{ states('sensor.weather_ec_dew_point') | float }}"
+    temperature_unit: "°C"
+    humidity_template: "{{ states('sensor.weather_ec_humidity') | float }}"
+    pressure_template: "{{ states('sensor.weather_ec_barometric_pressure') | float }}"
+    pressure_unit: "kPa"
+    wind_speed_template: "{{ states('sensor.weather_ec_wind_speed') | float }}"
+    wind_gust_speed_template: "{{ states('sensor.weather_ec_wind_gust') | float }}"
+    wind_speed_unit: "km/h"
+    wind_bearing_template: "{{ states('sensor.weather_ec_wind_bearing') | float }}"
+    #ozone_template:
+    #cloud_coverage_template:
+    visibility_template: "{{ states('sensor.weather_ec_visibility') }}"
+    visibility_unit: "km"
+    forecast_daily_template: "{{ state_attr('sensor.weather_ec_forecasts', 'daily') }}"
+    forecast_hourly_template: "{{ state_attr('sensor.weather_ec_forecasts', 'hourly') }}"
+    #forecast_twice_daily_template: "{{ state_attr('sensor.weather_ec_forecasts', 'twice_daily') }}"
+    precipitation_unit: "mm"
+    attribution_template: "Local + EC"
+    apparent_temperature_template: >-
+      {# — grab your raw values — #}
+      {% set T  = states('sensor.patio_sensor_temperature')    | float %}
+      {% set v  = states('sensor.weather_ec_wind_speed')      | float %}
+      {% set Td = states('sensor.weather_ec_dew_point')       | float %}
+      {# — calculate humidex — #}
+      {% set exponent = 5417.7530 * ((1/273.16) - (1/(Td + 273.16))) %}
+      {% set e        = 6.11 * (2.718281828459045 ** exponent) %}
+      {% set humidex  = T + 0.5555 * (e - 10) %}
+      {# — calculate wind chill — #}
+      {% set wind_kmh   = v * 3.6 %}
+      {% set wind_chill =
+          13.12
+          + 0.6215 * T
+          - 11.37 * (wind_kmh ** 0.16)
+          + 0.3965 * T * (wind_kmh ** 0.16)
+      %}
+      {# — choose which to expose — #}
+      {% if T >= 20 %}
+        {{ humidex  | round(1) }}
+      {% elif T <= 10 %}
+        {{ wind_chill | round(1) }}
+      {% else %}
+        {{ T        | round(1) }}
+      {% endif %}

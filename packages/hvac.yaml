@@ -8,7 +8,7 @@
 group:
   # Room Temperature Sensor Group
   home_room_temperature_sensors:
-    name: Home Room Temperature Sensors
+    name: Home Room Temperature Sensors Group
     entities:
       - sensor.bathroom_temperature
       - sensor.master_bedroom_temperature

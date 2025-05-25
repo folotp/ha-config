@@ -1,0 +1,19 @@
+#==============================================================================
+# Home Parameters
+#==============================================================================
+template:
+  - sensor:
+      # Conditioned (heated/) volume of the house
+      - name: "Home Param Conditioned Volume"
+        unique_id: 7c3d2b1a-9e8f-4b6a-8c5d-1e2f3a4b5c6d
+        state: "{{ 413.2 }}"
+        unit_of_measurement: "m³"
+        icon: mdi:home-edit
+        state_class: measurement
+
+# Registry-level customization to hide & categorize
+homeassistant:
+  customize:
+    sensor.home_param_conditioned_volume:
+      hidden: true
+      entity_category: config
