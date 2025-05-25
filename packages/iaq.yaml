@@ -13,7 +13,7 @@ template:
       # Natural Infiltration: uncontrolled air changes (infiltration) driven by stack & wind
       - name: "IAQ Ventilation Natural Infiltration"
         unique_id: 2f8a2ee2-4ca5-4c23-9aee-3b2dcb34f6f1
-        unit_of_measurement: "h⁻¹"
+        unit_of_measurement: "ACH"
         state_class: measurement
         device_class: frequency
         # ─────────────────────────────────────────────────────────────
@@ -130,7 +130,7 @@ sensor:
   # Cumulative air changes since last reboot
   - platform: integration
     name: "IAQ Air Changes Cumulative"
-    #unique_id: d2e3f4a5-b6c7-8d9e-0f1a-2b3c4d5e6f70
+    unique_id: d2e3f4a5-b6c7-8d9e-0f1a-2b3c4d5e6f70
     source: sensor.iaq_ventilation_total
     unit_time: h # ACH (h⁻¹) × hours → air-changes
     method: trapezoidal
@@ -140,7 +140,7 @@ sensor:
   # (only accurate one hour after restart)
   - platform: statistics
     name: "IAQ Air Changes Last Hour"
-    #unique_id: 0a1b2c3d-4e5f-6071-8293-94a5b6c7d8e9
+    unique_id: 0a1b2c3d-4e5f-6071-8293-94a5b6c7d8e9
     entity_id: sensor.iaq_air_changes_cumulative
     state_characteristic: change # difference over the window
     max_age:
@@ -157,5 +157,4 @@ input_select:
     options:
       - "Low"
       - "High"
-    initial: "Low"
     icon: mdi:fan-speed
