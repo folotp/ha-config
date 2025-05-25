@@ -132,7 +132,6 @@ template:
 # ==========================================================
 sensor:
   # Air changes in the past rolling 60 minutes
-  # (only accurate one hour after restart)
   - platform: statistics
     name: "IAQ Air Changes Last Hour"
     unique_id: 0a1b2c3d-4e5f-6071-8293-94a5b6c7d8e9
