@@ -112,6 +112,10 @@ template:
             0
           {% endif %}
 
+  - triggers:
+      - trigger: time_pattern
+        seconds: 0 # fire this at 0 seconds of every minute
+    sensor:
       # Total Ventilation
       - name: "IAQ Ventilation Total"
         unique_id: a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d
@@ -127,25 +131,16 @@ template:
 # Derived Sensors (cumulative & rolling air changes)
 # ==========================================================
 sensor:
-  # Cumulative air changes since last reboot
-  - platform: integration
-    name: "IAQ Air Changes Cumulative"
-    unique_id: d2e3f4a5-b6c7-8d9e-0f1a-2b3c4d5e6f70
-    source: sensor.iaq_ventilation_total
-    unit_time: h # ACH (h⁻¹) × hours → air-changes
-    method: trapezoidal
-    round: 3
-
   # Air changes in the past rolling 60 minutes
   # (only accurate one hour after restart)
   - platform: statistics
     name: "IAQ Air Changes Last Hour"
     unique_id: 0a1b2c3d-4e5f-6071-8293-94a5b6c7d8e9
-    entity_id: sensor.iaq_air_changes_cumulative
-    state_characteristic: change # difference over the window
+    entity_id: sensor.iaq_ventilation_total
+    state_characteristic: mean # difference over the window
     max_age:
       hours: 1
-    sampling_size: 120 # keep plenty of samples (defaults to 20)
+    sampling_size: 250 # keep plenty of samples (defaults to 20)
     precision: 2
 
 #------------------------------------------------------------------------------
