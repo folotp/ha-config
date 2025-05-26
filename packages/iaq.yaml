@@ -2,89 +2,12 @@
 # Indoor Air Quality Package
 #==============================================================================
 
-#------------------------------------------------------------------------------
-# Instantaneous air change per hour estimate
-#------------------------------------------------------------------------------
 template:
   - sensor:
-      #------------------------------------------------------------------------------
-      # Ventilation air changes per hour
-      #------------------------------------------------------------------------------
-      # Natural Infiltration: uncontrolled air changes (infiltration) driven by stack & wind
-      - name: "IAQ Ventilation Natural Infiltration"
-        unique_id: 2f8a2ee2-4ca5-4c23-9aee-3b2dcb34f6f1
-        unit_of_measurement: "ACH"
-        state_class: measurement
-        device_class: frequency
-        # ─────────────────────────────────────────────────────────────
-        # All the math lives here exactly once
-        # ─────────────────────────────────────────────────────────────
-        variables:
-          # ── House constants ───────────────────────────────
-          volume_m3: "{{ states('sensor.home_param_conditioned_volume') | float(413.2) }}"
-          leak_height_m: 3.4
-          ach50: 7.62 # Air Change per Hour at 50 Pascal from blower-door test
-          exponent: 0.70
-          pressure_coeff: 0.10
-
-          # ── Derived from blower-door ──────────────────────
-          q50_m3_s: "{{ ach50 * volume_m3 / 3600 }}"
-          leak_coeff: "{{ q50_m3_s / (50**exponent) }}"
-
-          # ── Live sensor inputs ────────────────────────────
-          tin_c: "{{ states('sensor.home_room_temperature_median') | float(20) }}"
-          tout_c: "{{ states('sensor.patio_sensor_temperature')     | float(0) }}"
-          baro_kpa: "{{ states('sensor.weather_ec_barometric_pressure') | float(101.325) }}"
-          raw_wind: "{{ states('sensor.weather_ec_wind_speed') | float(0) }}"
-          wind_uom: "{{ state_attr('sensor.weather_ec_wind_speed','unit_of_measurement') }}"
-
-          # ── Unit conversions ──────────────────────────────
-          tin_k: "{{ tin_c + 273.15 }}"
-          tout_k: "{{ tout_c + 273.15 }}"
-          baro_pa: "{{ baro_kpa * 1000 }}"
-          wind_m_s: >
-            {% if wind_uom == 'km/h' %}
-              {{ raw_wind / 3.6 }}
-            {% elif wind_uom == 'mph' %}
-              {{ raw_wind * 0.44704 }}
-            {% else %}
-              {{ raw_wind }}
-            {% endif %}
-
-          # ── Physics ───────────────────────────────────────
-          air_density: "{{ baro_pa / (287.05 * tin_k) }}"
-          delta_T: "{{ (tin_k - tout_k) | abs }}"
-          dp_stack: "{{ air_density * 9.81 * leak_height_m * delta_T / tin_k }}"
-          dp_wind: "{{ 0.5 * air_density * pressure_coeff * wind_m_s**2 }}"
-          dp_natural: "{{ (dp_stack**exponent + dp_wind**exponent)**(1/exponent) }}"
-          flow_m3_s: "{{ leak_coeff * (dp_natural**exponent) }}"
-          ach_inst: "{{ flow_m3_s * 3600 / volume_m3 }}"
-
-        # ─────────────────────────────────────────────────────────────
-        # State uses the variable computed above
-        # ─────────────────────────────────────────────────────────────
-        state: "{{ ach_inst | round(2) }}"
-
-        # ─────────────────────────────────────────────────────────────
-        # Attributes can now reference any variable directly
-        # ─────────────────────────────────────────────────────────────
-        attributes:
-          conditioned_volume_m3: "{{ volume_m3 | round(1) }}"
-          effective_leak_height_m: "{{ leak_height_m }}"
-          blower_door_ach50_h_1: "{{ ach50 }}"
-          pressure_exponent_n: "{{ exponent }}"
-          wind_pressure_coefficient_cp: "{{ pressure_coeff }}"
-          indoor_temperature_C: "{{ tin_c }}"
-          outdoor_temperature_C: "{{ tout_c }}"
-          barometric_pressure_kPa: "{{ baro_kpa }}"
-          wind_speed_m_s: "{{ wind_m_s | round(2) }}"
-          air_density_kg_m3: "{{ air_density | round(3) }}"
-          stack_pressure_Pa: "{{ dp_stack | round(3) }}"
-          wind_pressure_Pa: "{{ dp_wind  | round(3) }}"
-          combined_pressure_Pa: "{{ dp_natural | round(3) }}"
-          infiltration_flow_m3_s: "{{ flow_m3_s | round(4) }}"
-
-      # Mechanical Ventilation: controlled air changes via fans/HRV/etc.
+      #-------------------------------------------------------------------------
+      # Mechanical Ventilation Instantaneous Air Changes per Hour Estimate
+      # - controlled air changes via fans/HRV/etc.)
+      #-------------------------------------------------------------------------
       - name: "IAQ Ventilation Mechanical"
         unique_id: 8c2e7b1f-3d4a-5e6f-7a8b-9c0d1e2f3a4b
         state_class: measurement
@@ -112,11 +35,95 @@ template:
             0
           {% endif %}
 
+  #-------------------------------------------------------------------------
+  # Natural Infiltration Instantaneous Air Changes per Hour Estimate
+  # - uncontrolled air changes (infiltration) driven by stack & wind
+  #
+  # -- Note: needs a trigger because Home Assistant only auto-generates
+  #    update triggers for entities that appear directly in the state: or
+  #    attributes: blocks but it does not scan the variables: block where
+  #    all the logic is.
+  #-------------------------------------------------------------------------
+  - triggers:
+      - trigger: time_pattern
+        seconds: 0 # fire this at 0 seconds of every minute
+    variables:
+      # All the math lives here exactly once so it can be used in both the state
+      # and in the attributes section
+
+      # ── House constants ───────────────────────────────
+      volume_m3: "{{ states('sensor.home_param_conditioned_volume') | float(413.2) }}"
+      leak_height_m: 3.4
+      ach50: 7.62 # Air Change per Hour at 50 Pascal from blower-door test
+      exponent: 0.70
+      pressure_coeff: 0.10
+
+      # ── Derived from blower-door ──────────────────────
+      q50_m3_s: "{{ ach50 * volume_m3 / 3600 }}"
+      leak_coeff: "{{ q50_m3_s / (50**exponent) }}"
+
+      # ── Live sensor inputs ────────────────────────────
+      tin_c: "{{ states('sensor.home_room_temperature_median') | float(20) }}"
+      tout_c: "{{ states('sensor.patio_sensor_temperature')     | float(0) }}"
+      baro_kpa: "{{ states('sensor.weather_ec_barometric_pressure') | float(101.325) }}"
+      raw_wind: "{{ states('sensor.weather_ec_wind_speed') | float(0) }}"
+      wind_uom: "{{ state_attr('sensor.weather_ec_wind_speed','unit_of_measurement') }}"
+
+      # ── Unit conversions ──────────────────────────────
+      tin_k: "{{ tin_c + 273.15 }}"
+      tout_k: "{{ tout_c + 273.15 }}"
+      baro_pa: "{{ baro_kpa * 1000 }}"
+      wind_m_s: >
+        {% if wind_uom == 'km/h' %}
+          {{ raw_wind / 3.6 }}
+        {% elif wind_uom == 'mph' %}
+          {{ raw_wind * 0.44704 }}
+        {% else %}
+          {{ raw_wind }}
+        {% endif %}
+
+      # ── Physics ───────────────────────────────────────
+      air_density: "{{ baro_pa / (287.05 * tin_k) }}"
+      delta_T: "{{ (tin_k - tout_k) | abs }}"
+      dp_stack: "{{ air_density * 9.81 * leak_height_m * delta_T / tin_k }}"
+      dp_wind: "{{ 0.5 * air_density * pressure_coeff * wind_m_s**2 }}"
+      dp_natural: "{{ (dp_stack**exponent + dp_wind**exponent)**(1/exponent) }}"
+      flow_m3_s: "{{ leak_coeff * (dp_natural**exponent) }}"
+      ach_inst: "{{ flow_m3_s * 3600 / volume_m3 }}"
+
+    sensor:
+      - name: "IAQ Ventilation Natural Infiltration"
+        unique_id: 2f8a2ee2-4ca5-4c23-9aee-3b2dcb34f6f1
+        unit_of_measurement: "ACH"
+        state_class: measurement
+        device_class: frequency
+        #  ── State uses the variable computed above ─────────
+        state: "{{ ach_inst | round(2) }}"
+        #  ── Attributes reference the variables ─────────────
+        attributes:
+          conditioned_volume_m3: "{{ volume_m3 | round(1) }}"
+          effective_leak_height_m: "{{ leak_height_m }}"
+          blower_door_ach50_h_1: "{{ ach50 }}"
+          pressure_exponent_n: "{{ exponent }}"
+          wind_pressure_coefficient_cp: "{{ pressure_coeff }}"
+          indoor_temperature_C: "{{ tin_c }}"
+          outdoor_temperature_C: "{{ tout_c }}"
+          barometric_pressure_kPa: "{{ baro_kpa }}"
+          wind_speed_m_s: "{{ wind_m_s | round(2) }}"
+          air_density_kg_m3: "{{ air_density | round(3) }}"
+          stack_pressure_Pa: "{{ dp_stack | round(3) }}"
+          wind_pressure_Pa: "{{ dp_wind  | round(3) }}"
+          combined_pressure_Pa: "{{ dp_natural | round(3) }}"
+          infiltration_flow_m3_s: "{{ flow_m3_s | round(4) }}"
+
+  #-------------------------------------------------------------------------
+  # Total Ventilation Instantaneous Air Changes per Hour Estimate
+  # - natural infiltration + mechanical ventilation
+  #-------------------------------------------------------------------------
   - triggers:
       - trigger: time_pattern
         seconds: 0 # fire this at 0 seconds of every minute
     sensor:
-      # Total Ventilation
       - name: "IAQ Ventilation Total"
         unique_id: a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d
         state_class: measurement
