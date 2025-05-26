@@ -88,7 +88,69 @@ template:
             {{ ((temps[n // 2 - 1] + temps[n // 2]) / 2) | round(2) }}
           {% endif %}
 
+      # Condensation resistence limit
+      - name: "HVAC Window Condensation Resistance Limit"
+        unique_id: 01JGVSY4535RR42RWHBRCJGJQK
+        device_class: "humidity"
+        state_class: "measurement"
+        unit_of_measurement: "%"
+        state: >
+          {# Constants for Magnus formula #}
+          {% set a = 17.62 %}
+          {% set b = 243.12 %}
+
+          {# K is the thermal efficiency factor of the window (0 = poor insulation, 1 = perfect insulation) #}
+          {% set K = 0.08 %}
+
+          {# Get indoor and outdoor temperatures (in °C) from sensors #}
+          {% set indoor_temp = states('sensor.hvac_thermostat_ecobee_current_temperature') | float(20) %}
+          {% set outdoor_temp = states('sensor.patio_sensor_temperature') | float(0) %}
+
+          {# Estimate the inner surface temperature of the window using linear interpolation:
+             T_surface = K * T_indoor + (1 - K) * T_outdoor
+             A low K means the inside of the window is close to the cold outside temperature #}
+          {% set surface_temp = (K * indoor_temp + (1 - K) * outdoor_temp) %}
+
+          {% if indoor_temp > outdoor_temp %}
+            {# Calculate gamma terms from the Magnus formula:
+              gamma(T) = (a * T) / (b + T)
+              These are used to estimate vapor pressures and dew point #}
+            {% set gamma_surface = (a * surface_temp) / (b + surface_temp) %}
+            {% set gamma_indoor = (a * indoor_temp) / (b + indoor_temp) %}
+
+            {# Compute the maximum relative humidity (RH%) that prevents condensation:
+              RH_max = 100 * e^(gamma_surface - gamma_indoor)
+              This ensures the indoor dew point does not exceed the window surface temperature #}
+            {{ (100 * (2.71828 ** (gamma_surface - gamma_indoor))) | round(1) }}
+          {% else %}
+            {# If it's warmer outside than inside, condensation risk is negligible #}
+            100
+          {% endif %}
+        attributes:
+          indoor_temperature: "{{ states('sensor.hvac_thermostat_ecobee_current_temperature') | float }}"
+          outdoor_temperature: "{{ states('sensor.patio_sensor_temperature') | float }}"
+
   - binary_sensor:
+      # Natural cooling usefull
+      - name: "HVAC Natural Cooling Useful"
+        unique_id: 01JHX05HERKAN0VJ04AB58MV42
+        icon: mdi:sun-thermometer
+        state: >
+          {% set indoor_temp = states('sensor.hvac_thermostat_ecobee_current_temperature') | float %}
+          {% set outdoor_temp = states('sensor.patio_sensor_temperature') | float %}
+          {% set dew_point = states('sensor.weather_ec_dew_point') | float %}
+          {% set hvac_mode = states('climate.hvac_thermostat_ecobee') | string %}
+          {% set temp_delta = 4 %}
+          {{ outdoor_temp <= (indoor_temp - temp_delta)
+             and dew_point < 14
+             and hvac_mode == 'cool'
+          }}
+        attributes:
+          indoor_temperature: "{{ states('sensor.hvac_thermostat_ecobee_current_temperature') | float }}"
+          outdoor_temperature: "{{ states('sensor.patio_sensor_temperature') | float }}"
+          dew_point: "{{ states('sensor.weather_ec_dew_point') | float }}"
+          hvac_mode: "{{ states('climate.hvac_thermostat_ecobee') | string }}"
+
       # Ecobee Thermostat is in disallowed HVAC mode
       - name: "HVAC Thermostat Ecobee In Disallowed HVAC Mode"
         unique_id: 4e3f21b8-4e20-4d98-a691-ce48c4c64001

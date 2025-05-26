@@ -96,7 +96,6 @@ template:
         unique_id: 2f8a2ee2-4ca5-4c23-9aee-3b2dcb34f6f1
         unit_of_measurement: "ACH"
         state_class: measurement
-        device_class: frequency
         #  ── State uses the variable computed above ─────────
         state: "{{ ach_inst | round(2) }}"
         #  ── Attributes reference the variables ─────────────

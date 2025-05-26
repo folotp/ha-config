@@ -830,17 +830,17 @@
   triggers:
   - trigger: state
     entity_id:
-    - sensor.condensation_resistance_limit
+    - sensor.hvac_window_condensation_resistance_limit
   conditions:
   - condition: numeric_state
-    entity_id: sensor.condensation_resistance_limit
+    entity_id: sensor.hvac_window_condensation_resistance_limit
     above: 19
   actions:
   - alias: Set Humidifier Setpoint
     action: humidifier.set_humidity
     metadata: {}
     data:
-      humidity: '{% set min_humidity = 20 %} {% set max_humidity = 50 %} {{ [ [states(''sensor.condensation_resistance_limit'')
+      humidity: '{% set min_humidity = 20 %} {% set max_humidity = 50 %} {{ [ [states(''sensor.hvac_window_condensation_resistance_limit'')
         | float(max_humidity), min_humidity] | max, max_humidity ] | min }}
 
         '
@@ -1109,6 +1109,21 @@
       light_transition_off: 3
       include_light_colour_control: use_colour_temperature
       light_colour_temperature: 2300
+      include_sun: sun_enabled
+      night_lights:
+        entity_id:
+        - light.porch_light
+        - light.driveway_garagedoor_sconce
+        - light.driveway_lamppost_light
+      night_light_brightness: 100
+      night_light_transition_on: 3
+      night_light_transition_off: 3
+      night_light_colour_temperature: 2300
+      include_night_light_colour_control: use_colour_temperature
+      include_night_light_control:
+      - use_brightness
+      - use_transition
+      - if_lights_are_on_adjust_when_crossing_over
 - id: '1743370416927'
   alias: Family Room Lights Automation
   description: ''
