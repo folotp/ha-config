@@ -1,0 +1,88 @@
+#==============================================================================
+# HVAC Specifications and Variables
+#==============================================================================
+template:
+  - sensor:
+      # Ventilator Specifications
+      - name: "HVAC Fan Power Rating Low"
+        unique_id: b9de6478-50bd-4f61-bcee-8fd8f370a08d
+        state: "{{ 159 }}"
+        unit_of_measurement: "W"
+        icon: mdi:numeric
+        state_class: measurement
+        device_class: power
+
+      - name: "HVAC Fan Power Rating Med-Low"
+        unique_id: 80448845-e19f-48b2-9543-a27a96222e09
+        state: "{{ 366 }}"
+        unit_of_measurement: "W"
+        icon: mdi:numeric
+        state_class: measurement
+        device_class: power
+
+      - name: "HVAC Fan Power Rating Med-High"
+        unique_id: ae18356c-0ab7-40da-ae01-b32cf154cae7
+        state: "{{ 737 }}"
+        unit_of_measurement: "W"
+        icon: mdi:numeric
+        state_class: measurement
+        device_class: power
+
+      - name: "HVAC Fan Power Rating High"
+        unique_id: ca117260-ec3a-49b3-ba51-5425f117cf15
+        state: "{{ 920 }}"
+        unit_of_measurement: "W"
+        icon: mdi:numeric
+        state_class: measurement
+        device_class: power
+
+      # HRV Specifications
+      - name: "HVAC HRV Power Rating Low"
+        unique_id: a73d3c0c-9507-48fa-9adc-59f5e0663b39
+        state: "{{ 165 }}"
+        unit_of_measurement: "W"
+        icon: mdi:numeric
+        state_class: measurement
+        device_class: power
+
+      - name: "HVAC HRV Power Rating High"
+        unique_id: e3527542-ef15-48e3-93a9-f405f2156170
+        state: "{{ 232 }}"
+        unit_of_measurement: "W"
+        icon: mdi:numeric
+        state_class: measurement
+        device_class: power
+
+      # Air Conditioner Specifications
+      - name: "HVAC AC Power Rating"
+        unique_id: 12848f10-ee50-4750-b376-b8bec637d349
+        state: "{{ 3130 }}"
+        unit_of_measurement: "W"
+        icon: mdi:numeric
+        state_class: measurement
+        device_class: power
+
+# Registry-level customization to hide & categorize
+homeassistant:
+  customize:
+    sensor.hvac_fan_power_rating_low:
+      hidden: true
+      entity_category: config
+    sensor.hvac_fan_power_rating_med_low:
+      hidden: true
+      entity_category: config
+    sensor.hvac_fan_power_rating_med_high:
+      hidden: true
+      entity_category: config
+    sensor.hvac_fan_power_rating_high:
+      hidden: true
+      entity_category: config
+    sensor.hvac_hrv_power_rating_low:
+      hidden: true
+      entity_category: config
+    sensor.hvac_hrv_power_rating_high:
+      hidden: true
+      entity_category: config
+    sensor.hvac_ac_power_rating:
+      hidden: true
+      entity_category: config

@@ -30,54 +30,27 @@ binary_sensor:
     hysteresis: 20 # ON if >120   ; OFF if <80  (ppb-eq)
 
 ###############################################################################
-# 3. Automation – Alert until recalibration
+# 3. Alert until recalibration
 ###############################################################################
-automation:
-  - id: iaq_airthings_wave_plus_tvoc_notify_baseline_drift
-    alias: "IAQ Airthings Wave Plus TVOC baseline drift notification"
-    description: >
-      Notifies when the TVOC Index minimum stays above 100 ppb-eq for 7 days,
-      prompting a 10-minute fresh-air exposure to reset the baseline.
-    mode: single
-    triggers:
-      - id: tvoc_on
-        trigger: state
-        entity_id: binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted
-        to: "on"
-      - id: tvoc_off
-        trigger: state
-        entity_id: binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted
-        to: "off"
-      - id: daily
-        trigger: time_pattern
-        hours: "9"
-        minutes: "0"
-        seconds: "0"
-    actions:
-      - choose:
-          # Sensor is drifted
-          - conditions:
-              - condition: state
-                entity_id: binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted
-                state: "on"
-            sequence:
-              - action: notify.group_system_administrators
-                data:
-                  title: "Airthings Wave Plus VOC Baseline Drifted"
-                  message: >
-                    TVOC Index ≥ 100 ppb-eq for 7 days. Expose sensor to fresh air
-                    for ~10 minutes to reset baseline.
-                  tag: "tvoc_baseline_drift"
-                  notification_id: "tvoc_baseline_drift"
-          # Sensor drift cleared
-          - conditions:
-              - condition: state
-                entity_id: binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted
-                state: "off"
-            sequence:
-              - action: notify.group_system_administrators
-                data:
-                  message: "clear_notification"
-                  tag: "tvoc_baseline_drift"
-                  notification_id: "tvoc_baseline_drift"
-        default: []
+alert:
+  # Home temperature critical Alert
+  iaq_airthings_wave_plus_tvoc_baseline_drift:
+    name: "IAQ Airthings Wave Plus TVOC baseline drift warning"
+    title: "Airthings TVOC Sensor Drift Detected"
+    message: >-
+      TVOC Index ≥ 100 ppb-eq for 7 days. Expose sensor to fresh air
+      for ~10 minutes to reset baseline.
+    done_message: "clear_notification"
+    entity_id: binary_sensor.iaq_airthings_wave_plus_tvoc_baseline_drifted
+    state: "on"
+    repeat:
+      - 1440 # one day
+      - 1440
+      - 2880 # two days
+    skip_first: false
+    can_acknowledge: false
+    data:
+      group: "system"
+      tag: "airthings_drift_notification"
+    notifiers:
+      - group_system_administrators

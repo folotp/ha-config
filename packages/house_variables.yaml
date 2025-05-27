@@ -1,19 +1,23 @@
 #==============================================================================
-# Home Parameters
+# House Variables
+#
+# Use the var_ namespace prefix for generic parameters such as physics
+# constants. Put equipment specifications under their own namespace such as
+# hvac_hrv, hvac_ventilator.
 #==============================================================================
 template:
   - sensor:
       # Conditioned (heated/) volume of the house
-      - name: "Home Param Conditioned Volume"
+      - name: "House Conditioned Volume"
         unique_id: 7c3d2b1a-9e8f-4b6a-8c5d-1e2f3a4b5c6d
         state: "{{ 413.2 }}"
         unit_of_measurement: "m³"
-        icon: mdi:home-edit
+        icon: mdi:numeric
         state_class: measurement
 
 # Registry-level customization to hide & categorize
 homeassistant:
   customize:
-    sensor.home_param_conditioned_volume:
+    sensor.house_conditioned_volume:
       hidden: true
       entity_category: config

@@ -946,6 +946,7 @@
     entity_id: 91f217b8f50f4e485fc2397b220eca0c
     domain: fan
     trigger: device
+    enabled: false
   - trigger: state
     entity_id:
     - input_boolean.hvac_fan_force_on
@@ -969,9 +970,11 @@
         domain: fan
         entity_id: 91f217b8f50f4e485fc2397b220eca0c
         type: is_on
+        enabled: false
       - condition: state
         entity_id: fan.hvac_hrv
         state: 'on'
+        enabled: false
     then:
     - alias: Turn HVAC Fan ON
       action: climate.set_fan_mode

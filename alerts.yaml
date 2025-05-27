@@ -20,7 +20,7 @@ garage_door:
   data:
     push:
       interruption-level: time-sensitive
-    group: "garage-door-group"
+    group: "home_events"
     tag: "garage-door"
   notifiers:
     - notify_group_garage

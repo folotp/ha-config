@@ -1,0 +1,36 @@
+#==============================================================================
+# Homekit Bridge configuration
+#==============================================================================
+homekit:
+#------------------------------------------------------------------------------
+# fff
+#------------------------------------------------------------------------------
+
+  - name: "Home Assistant Downstairs"  # Bridge for main floor
+    filter:
+      include_areas:
+        - "Living Room"
+        - "Kitchen"
+      include_domains:
+        - light
+        - switch
+        - climate
+    entity_config:
+      light.kitchen_overhead:
+        name: "Kitchen Overhead Light"
+        feature_list:
+          - on_off
+          - brightness
+      climate.ecobee_thermostat:
+        name: "Main Thermostat"
+    use_auto_start: true
+
+  - name: "Home Assistant Upstairs"  # Bridge for upper floor
+    filter:
+      include_areas:
+        - "Bedroom"
+        - "Office"
+      include_domains:
+        - light
+        - fan
+    use_auto_start: true

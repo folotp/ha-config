@@ -17,7 +17,7 @@ template:
           {% set flow_low  = 70 %}
           {% set flow_high = 105 %}
           {# — get conditioned volume from sensor — #}
-          {% set V = states('sensor.home_param_conditioned_volume') | float %}
+          {% set V = states('sensor.house_conditioned_volume') | float(0.01) %}
 
           {# — only calculate when HRV is running — #}
           {% if is_state('fan.hvac_hrv', 'on') %}
@@ -52,7 +52,7 @@ template:
       # and in the attributes section
 
       # ── House constants ───────────────────────────────
-      volume_m3: "{{ states('sensor.home_param_conditioned_volume') | float(413.2) }}"
+      volume_m3: "{{ states('sensor.house_conditioned_volume') | float(0.01) }}"
       leak_height_m: 3.4
       ach50: 7.62 # Air Change per Hour at 50 Pascal from blower-door test
       exponent: 0.70
