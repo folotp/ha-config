@@ -72,6 +72,18 @@ template:
         device_class: power
         state_class: measurement
 
+      - name: "HVAC Energy"
+        unique_id: 123e4567-e89b-12d3-a456-426614174000
+        device_class: energy
+        state_class: total_increasing
+        unit_of_measurement: "kWh"
+        state: >
+          {{ 
+            (states('sensor.hvac_fan_energy') | float(0)) +
+            (states('sensor.hvac_HRV_energy') | float(0)) +
+            (states('sensor.hvac_ac_energy') | float(0))
+          }}
+
       # Lowest temperature in the home
       - name: "Home Room Temperature Lowest"
         unique_id: 7b0106c1-80eb-44fd-a687-1669444a7d3f
