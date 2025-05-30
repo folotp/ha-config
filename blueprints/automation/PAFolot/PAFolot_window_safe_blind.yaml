@@ -26,34 +26,43 @@ blueprint:
             domain: binary_sensor
             device_class: window # restrict to window sensors
 
-mode: restart # restart overlapping runs
-max_exceeded: silent # suppress overflow warnings
+mode: queued
+#max_exceeded: silent # suppress overflow warnings
 
 triggers:
+  # - trigger: event
+  #   event_type: call_service
+  #   event_data:
+  #     domain: cover
+  #     service: set_cover_position
+  #     service_data:
+  #       entity_id: !input cover_entity
+  # - trigger: event
+  #   event_type: call_service
+  #   event_data:
+  #     domain: cover
+  #     service: close_cover
+  #     service_data:
+  #       entity_id: !input cover_entity
   - trigger: event
-    event_type: call_service
+    event_type: state_changed
     event_data:
-      domain: cover
-      service: set_cover_position
-      service_data:
-        entity_id: !input cover_entity
+      entity_id: !input cover_entity
+      new_state:
+        state: "closing"
   - trigger: event
-    event_type: call_service
+    event_type: state_changed
     event_data:
-      domain: cover
-      service: cover_close
-      service_data:
-        entity_id: !input cover_entity
+      entity_id: !input cover_entity
+      new_state:
+        state: "closed"
   - trigger: state
-    entity_id:
-      - !input cover_entity
+    entity_id: !input cover_entity
     attribute: current_position # blind movement
-    alias: Cover Position Changed
     id: Cover_Position_Changed
 
   - trigger: state
-    entity_id:
-      - !input window_sensor
+    entity_id: !input window_sensor
     to: "on" # window opened
     for:
       hours: 0
@@ -87,6 +96,10 @@ actions:
                 target:
                   entity_id: !input cover_entity
     default:
+      - action: cover.close_cover
+        target:
+          entity_id: !input cover_entity
+        data: {}
       - action: cover.open_cover
         target:
           entity_id: !input cover_entity

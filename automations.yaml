@@ -427,38 +427,67 @@
           entity_id: light.aquarium_light_hue_light
   mode: single
 - id: '1729815063151'
-  alias: Aquarium Apex Light2 Switch Sync
+  alias: Aquarium Apex-HA Sync Light2
   description: ''
   triggers:
   - alias: Apex Light2 Switched ON
     trigger: state
     entity_id:
-    - light.apex_light2
+    - switch.aquarium_light2_apex
     to: 'on'
     id: Apex switched ON
     from: 'off'
   - alias: Apex Light2 Switched OFF
     trigger: state
     entity_id:
-    - light.apex_light2
+    - switch.aquarium_light2_apex
     id: Apex switched OFF
     from: 'on'
     to: 'off'
-  - trigger: state
+  - alias: Aquarium Hue Bulb turned ON
+    trigger: state
     entity_id:
-    - light.aquarium_light_hue_light
+    - light.aquarium_light2
     to: 'on'
-    alias: Aquarium Hue Bulb turned ON
     id: Hue Bulb turned ON
   - alias: Aquarium Hue Bulb turned OFF
     trigger: state
     entity_id:
-    - light.aquarium_light_hue_light
+    - light.aquarium_light2
     to: 'off'
     id: Hue Bulb turned OFF
+  - trigger: homeassistant
+    event: start
+    id: HA Started
   conditions: []
   actions:
   - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - HA Started
+      sequence:
+      - choose:
+        - conditions:
+          - condition: state
+            entity_id: switch.aquarium_light2_apex
+            state: 'on'
+          sequence:
+          - action: light.turn_on
+            metadata: {}
+            data: {}
+            target:
+              device_id: 23f380f8dc7a09b2577dbbc97bbb313f
+        - conditions:
+          - condition: state
+            entity_id: switch.aquarium_light2_apex
+            state: 'off'
+          sequence:
+          - action: light.turn_off
+            metadata: {}
+            data: {}
+            target:
+              device_id: 23f380f8dc7a09b2577dbbc97bbb313f
     - conditions:
       - condition: and
         conditions:
@@ -466,34 +495,31 @@
           id:
           - Apex switched ON
         - condition: state
-          entity_id: light.aquarium_light_hue_light
+          entity_id: light.aquarium_light2
           state: 'off'
       sequence:
       - action: light.turn_on
         metadata: {}
-        data:
-          kelvin: 3800
-          brightness_pct: 100
+        data: {}
         target:
-          entity_id:
-          - light.aquarium_light_hue_light
+          device_id: 23f380f8dc7a09b2577dbbc97bbb313f
       alias: Apex switched ON and Hue is OFF
     - conditions:
-      - condition: and
+      - alias: Apex switched OFF and Hue Light is ON
+        condition: and
         conditions:
         - condition: trigger
           id:
           - Apex switched OFF
         - condition: state
-          entity_id: light.aquarium_light_hue_light
+          entity_id: light.aquarium_light2
           state: 'on'
-        alias: Apex switched OFF and Hue Light is ON
       sequence:
       - action: light.turn_off
         metadata: {}
         data: {}
         target:
-          entity_id: light.aquarium_light_hue_light
+          device_id: 23f380f8dc7a09b2577dbbc97bbb313f
     - conditions:
       - alias: Hue Bulb turned ON and Light2 OFF
         condition: and
@@ -502,30 +528,29 @@
           id:
           - Hue Bulb turned ON
         - condition: state
-          entity_id: light.apex_light2
+          entity_id: switch.aquarium_light2_apex
           state: 'off'
       sequence:
       - action: switch.turn_on
         metadata: {}
         data: {}
         target:
-          entity_id: switch.apex_light2
+          entity_id: switch.aquarium_light2_apex
     - conditions:
-      - condition: and
+      - alias: Hue Bulb turned OFF and Light2 ON
+        condition: and
         conditions:
         - condition: trigger
           id:
           - Hue Bulb turned OFF
         - condition: state
-          entity_id: light.apex_light2
+          entity_id: switch.aquarium_light2_apex
           state: 'on'
-        alias: Hue Bulb turned OFF and Light2 ON
       sequence:
       - action: switch.turn_off
-        target:
-          entity_id:
-          - switch.apex_light2
         data: {}
+        target:
+          entity_id: switch.aquarium_light2_apex
   mode: queued
   max: 10
 - id: '1732578412731'
@@ -1924,3 +1949,52 @@
       button_up_double_press: []
       button_down_double_press: []
       button_up_triple_press: []
+- id: '1748619411774'
+  alias: Aquarium Lamp2 Automation
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - schedule.aquarium_lighting_schedule
+  - trigger: state
+    entity_id:
+    - schedule.aquarium_night_light_schedule
+  - trigger: homeassistant
+    event: start
+  conditions: []
+  actions:
+  - if:
+    - condition: state
+      entity_id: schedule.aquarium_lighting_schedule
+      state: 'on'
+    then:
+    - action: light.turn_on
+      metadata: {}
+      data: {}
+      target:
+        device_id: 23f380f8dc7a09b2577dbbc97bbb313f
+    else:
+    - action: light.turn_off
+      metadata: {}
+      data: {}
+      target:
+        device_id: 23f380f8dc7a09b2577dbbc97bbb313f
+    alias: Turn Lamp 2 ON-OFF
+  - if:
+    - condition: state
+      entity_id: schedule.aquarium_night_light_schedule
+      state: 'on'
+    then:
+    - action: switch.turn_on
+      metadata: {}
+      data: {}
+      target:
+        entity_id: switch.adaptive_lighting_sleep_mode_aquarium
+    else:
+    - action: switch.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id: switch.adaptive_lighting_sleep_mode_aquarium
+    alias: Turn Aquarium Adaptive Lighting Sleep Mode ON-OFF
+  mode: restart
