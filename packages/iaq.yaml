@@ -17,7 +17,7 @@ template:
           {% set flow_low  = 70 %}
           {% set flow_high = 105 %}
           {# — get conditioned volume from sensor — #}
-          {% set V = states('sensor.house_conditioned_volume') | float(0.01) %}
+          {% set V = states('sensor.house_conditioned_volume') | float %}
 
           {# — only calculate when HRV is running — #}
           {% if is_state('fan.hvac_hrv', 'on') %}
