@@ -39,7 +39,9 @@ logger:
   logs:
     zigpy: warning
     zigpy.zcl: warning
+    zigpy_znp: warning
     zigpy.quirks: warning
+    zhaquirks: warning
     homeassistant.components.zha: info
 
 #==============================================================================
@@ -72,7 +74,3 @@ homeassistant:
       device_class: moisture
     sensor.garden_raspberries_soil_moisture:
       device_class: moisture
-    sensor.apex_total_power:
-      device_class: power
-      state_class: measurement
-      unit_of_measurement: W

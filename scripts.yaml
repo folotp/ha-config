@@ -25,39 +25,6 @@ sleep_mode:
       alias: Unset house from sleep
   description: ''
   fields: {}
-hrv:
-  alias: Run HRV 15 min
-  sequence:
-  - action: climate.set_fan_mode
-    metadata: {}
-    data:
-      fan_mode: 'on'
-    target:
-      device_id: 74b2e490499eba29d6e6edcb89e9f9e6
-    enabled: false
-  - action: fan.turn_on
-    metadata: {}
-    data: {}
-    target:
-      entity_id: fan.hvac_hrv
-  - delay:
-      hours: 0
-      minutes: 15
-      seconds: 0
-      milliseconds: 0
-  - action: climate.set_fan_mode
-    metadata: {}
-    data:
-      fan_mode: auto
-    target:
-      device_id: 74b2e490499eba29d6e6edcb89e9f9e6
-    enabled: false
-  - action: fan.turn_off
-    metadata: {}
-    data: {}
-    target:
-      entity_id: fan.hvac_hrv
-  description: Runs the HRV and fan for 15 minutes
 blind_automation_main_floor:
   sequence:
   - choose:

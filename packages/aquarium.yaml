@@ -1,0 +1,10 @@
+homeassistant:
+  # Customizations
+  customize:
+    sensor.apex_total_power:
+      device_class: power
+      state_class: measurement
+      unit_of_measurement: W
+    sensor.aquarium_conductivity:
+      state_class: measurement
+      unit_of_measurement: "µS/cm"

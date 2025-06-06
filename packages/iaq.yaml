@@ -35,6 +35,128 @@ template:
             0
           {% endif %}
 
+      #-------------------------------------------------------------------------
+      # Indoor Air Quality Index (U.S. AQI)
+      # Methodology: EPA AQI formula: https://www.airnow.gov/aqi/aqi-calculation/
+      #-------------------------------------------------------------------------
+      - name: "IAQ Air Quality Index US"
+        unique_id: 5dfb24e6-1452-45e5-8f94-1956a2a5466b
+        unit_of_measurement: "AQI"
+        device_class: aqi
+        state: >-
+          {% set pm25 = states('sensor.iaq_apollo_air1_pm2_5')|float(0) %}
+          {% set pm10 = states('sensor.iaq_apollo_air1_pm10')|float(0) %}
+          {% set breakpoints_25 = [
+            (0.0, 12.0, 0, 50),
+            (12.1, 35.4, 51, 100),
+            (35.5, 55.4, 101, 150),
+            (55.5, 150.4, 151, 200),
+            (150.5, 250.4, 201, 300),
+            (250.5, 350.4, 301, 400),
+            (350.5, 500.4, 401, 500)
+          ] %}
+          {% set breakpoints_10 = [
+            (0, 54, 0, 50),
+            (55, 154, 51, 100),
+            (155, 254, 101, 150),
+            (255, 354, 151, 200),
+            (355, 424, 201, 300),
+            (425, 504, 301, 400),
+            (505, 604, 401, 500)
+          ] %}
+          {% macro calc_aqi(C, breakpoints) -%}
+            {%- set v = namespace(result=none) -%}
+            {%- for bp in breakpoints %}
+              {%- set Clow, Chigh, Ilow, Ihigh = bp %}
+              {%- if C >= Clow and C <= Chigh %}
+                {%- set v.result = ((Ihigh - Ilow) / (Chigh - Clow) * (C - Clow) + Ilow) | round(0) %}
+              {%- endif %}
+            {%- endfor %}
+            {{ v.result if v.result is not none else (500 if C > breakpoints[-1][1] else 0) }}
+          {%- endmacro %}
+          {% set aqi_25 = calc_aqi(pm25, breakpoints_25) | int(0) %}
+          {% set aqi_10 = calc_aqi(pm10, breakpoints_10) | int(0) %}
+          {{ ( [aqi_25, aqi_10] | max ) if ( [aqi_25, aqi_10] | max ) > 0 else 0 }}
+        icon: >-
+          {% set level = state_attr('sensor.iaq_air_quality_index_us','aqi_category') %}
+          {% if level == 'good' %}
+            mdi:emoticon-happy-outline
+          {% elif level == 'moderate' %}
+            mdi:emoticon-neutral-outline
+          {% elif level == 'unhealthy_sensitive' %}
+            mdi:emoticon-sad-outline
+          {% elif level == 'unhealthy' %}
+            mdi:face-mask-outline
+          {% elif level == 'very_unhealthy' %}
+            mdi:biohazard
+          {% elif level == 'hazardous' %}
+            mdi:biohazard
+          {% else %}
+            mdi:help-circle-outline
+          {% endif %}
+        attributes:
+          pm2_5: "{{ states('sensor.iaq_apollo_air1_pm2_5') }}"
+          pm10: "{{ states('sensor.iaq_apollo_air1_pm10') }}"
+          aqi_pm2_5: >-
+            {% set pm25 = states('sensor.iaq_apollo_air1_pm2_5')|float(0) %}
+            {% set breakpoints_25 = [
+              (0.0, 12.0, 0, 50),
+              (12.1, 35.4, 51, 100),
+              (35.5, 55.4, 101, 150),
+              (55.5, 150.4, 151, 200),
+              (150.5, 250.4, 201, 300),
+              (250.5, 350.4, 301, 400),
+              (350.5, 500.4, 401, 500)
+            ] %}
+            {% macro calc_aqi(C, breakpoints) -%}
+              {% for bp in breakpoints %}
+                {% set Clow, Chigh, Ilow, Ihigh = bp %}
+                {% if C >= Clow and C <= Chigh %}
+                  {{ ((Ihigh - Ilow) / (Chigh - Clow) * (C - Clow) + Ilow) | round(0) }}
+                {% endif %}
+              {% endfor %}
+              {{ 500 if C > breakpoints[-1][1] else 0 }}
+            {%- endmacro %}
+            {{ calc_aqi(pm25, breakpoints_25) }}
+          aqi_pm10: >-
+            {% set pm10 = states('sensor.iaq_apollo_air1_pm10')|float(0) %}
+            {% set breakpoints_10 = [
+              (0, 54, 0, 50),
+              (55, 154, 51, 100),
+              (155, 254, 101, 150),
+              (255, 354, 151, 200),
+              (355, 424, 201, 300),
+              (425, 504, 301, 400),
+              (505, 604, 401, 500)
+            ] %}
+            {% macro calc_aqi(C, breakpoints) -%}
+              {% for bp in breakpoints %}
+                {% set Clow, Chigh, Ilow, Ihigh = bp %}
+                {% if C >= Clow and C <= Chigh %}
+                  {{ ((Ihigh - Ilow) / (Chigh - Clow) * (C - Clow) + Ilow) | round(0) }}
+                {% endif %}
+              {% endfor %}
+              {{ 500 if C > breakpoints[-1][1] else 0 }}
+            {%- endmacro %}
+            {{ calc_aqi(pm10, breakpoints_10) }}
+          aqi_category: >-
+            {% set aqi = states('sensor.iaq_air_quality_index_us') | int(0) %}
+            {% if aqi <= 50 %}
+              good
+            {% elif aqi <= 100 %}
+              moderate
+            {% elif aqi <= 150 %}
+              unhealthy_sensitive
+            {% elif aqi <= 200 %}
+              unhealthy
+            {% elif aqi <= 300 %}
+              very_unhealthy
+            {% elif aqi > 300 %}
+              hazardous
+            {% else %}
+              unknown
+            {% endif %}
+
   #-------------------------------------------------------------------------
   # Natural Infiltration Instantaneous Air Changes per Hour Estimate
   # - uncontrolled air changes (infiltration) driven by stack & wind

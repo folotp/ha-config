@@ -237,8 +237,8 @@ blueprint:
                 value: use_rgbww_colour
               - label: Disable Colour Control
                 value: disable_colour_control
-              custom_value: false
               multiple: false
+              custom_value: false
               sort: false
         light_colour_temperature:
           name: Colour Temperature
@@ -357,8 +357,8 @@ blueprint:
                 value: enable_time_controled_brightness_inv
               - label: 13 - Time Controlled - Colour Temp + Brightness
                 value: enable_time_controled_colour_brightness
-              custom_value: false
               multiple: false
+              custom_value: false
               sort: false
         dynamic_lighting_lux_sensor:
           name: Dynamic Lighting - Ambient Light Sensor
@@ -679,8 +679,8 @@ blueprint:
                 value: enable_state_control
               - label: Disable State Control Option
                 value: disable_state_control
-              custom_value: false
               multiple: false
+              custom_value: false
               sort: false
         dynamic_lighting_state_control_activation_state:
           name: Dynamic Lighting - State Control Activation State
@@ -698,8 +698,8 @@ blueprint:
                 value: 'on'
               - label: OFF State
                 value: 'off'
-              custom_value: false
               multiple: false
+              custom_value: false
               sort: false
         dynamic_lighting_state_control_entity:
           name: Dynamic Lighting - State Control Entity
@@ -848,8 +848,8 @@ blueprint:
                 value: sun_enabled
               - label: Disable the sun option
                 value: sun_disabled
-              custom_value: false
               multiple: false
+              custom_value: false
               sort: false
         sun_elevation:
           name: Sun Elevation Falling
@@ -906,8 +906,8 @@ blueprint:
                 value: ambient_enabled
               - label: Disable the ambient options
                 value: ambient_disabled
-              custom_value: false
               multiple: false
+              custom_value: false
               sort: false
         ambient_light_sensor:
           name: Ambient Light Sensor
@@ -942,8 +942,8 @@ blueprint:
                 value: ambient_light_option_enabled
               - label: NO - My Ambient Light Sensor is not affected by the Lights
                 value: ambient_light_option_disabled
-              custom_value: false
               multiple: false
+              custom_value: false
               sort: false
         ambient_light_value:
           name: Ambient Light - Low Lux Value
@@ -1001,8 +1001,8 @@ blueprint:
                 value: time_enabled
               - label: Disable the time options
                 value: time_disabled
-              custom_value: false
               multiple: false
+              custom_value: false
               sort: false
         after_time:
           name: Start Time
@@ -1083,8 +1083,8 @@ blueprint:
                 value: zone_people_enabled
               - label: Disable the device tracker options
                 value: device_tracker_disabled
-              custom_value: false
               multiple: false
+              custom_value: false
               sort: false
         zone:
           name: Device Tracker - Zone
@@ -1137,8 +1137,8 @@ blueprint:
                 value: night_lights_enabled
               - label: Disable the night lights options
                 value: night_lights_disabled
-              custom_value: false
               multiple: false
+              custom_value: false
               sort: false
         night_lights_conditions:
           name: Night Lights Conditions (Required For Night Lights)
@@ -1379,8 +1379,8 @@ blueprint:
                 value: use_rgbww_colour
               - label: Disable Colour Control
                 value: disable_colour_control
-              custom_value: false
               multiple: false
+              custom_value: false
               sort: false
         night_light_colour_temperature:
           name: Night Lights - Colour Temperature
@@ -1460,8 +1460,8 @@ blueprint:
                 value: night_glow_enabled
               - label: Disable night glow
                 value: night_glow_disabled
-              custom_value: false
               multiple: false
+              custom_value: false
               sort: false
         night_glow_lights:
           name: Night Glow - Lights
@@ -1565,8 +1565,8 @@ blueprint:
                 value: use_rgbww_colour
               - label: Disable Colour Control
                 value: disable_colour_control
-              custom_value: false
               multiple: false
+              custom_value: false
               sort: false
         night_glow_light_colour_temperature:
           name: Night Glow - Colour Temperature

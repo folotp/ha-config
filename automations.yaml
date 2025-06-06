@@ -211,7 +211,7 @@
     path: Blackshome/sensor-light-add-on.yaml
     input:
       trigger_entities:
-      - media_player.ht_appletv
+      - media_player.home_theatre_appletv
       trigger_on_state:
       - playing
       - Idle
@@ -259,13 +259,14 @@
       - input_boolean.ht_automation_link_tv_lighting
       include_automation_link_time_delay: disable_time_delay
       automation_link_time_delay: 0
-      include_bypass: bypass_disabled
+      include_bypass: bypass_enabled_turn_off_automations
       light_brightness: 0
       include_light_colour_control: use_colour_temperature
       light_colour_temperature: 2700
       include_light_control:
       - use_brightness
       - use_transition
+      trigger_bypass: binary_sensor.home_theatre_appletv_music_active
 - id: '1725404798236'
   alias: First Person Arrives Homes
   description: ''
@@ -525,51 +526,37 @@
       alias: Cooling Mode
   mode: restart
 - id: '1733714466587'
-  alias: When TV turns ON or OFF
+  alias: Home Theatre Cleanup Light Automation Helpers When TV Turns OFF
   description: ''
   triggers:
-  - type: changed_states
-    device_id: 3e3a04862972c9de2c4ae4d675cdf83f
-    entity_id: eff01c7754491d49954d2db5fc75936f
+  - device_id: 3e3a04862972c9de2c4ae4d675cdf83f
     domain: media_player
+    entity_id: eff01c7754491d49954d2db5fc75936f
+    type: turned_off
     trigger: device
   conditions: []
   actions:
-  - action: remote.turn_on
+  - action: automation.turn_off
+    target:
+      entity_id:
+      - automation.new_automation
+      - automation.xbox_light_automation
+    data:
+      stop_actions: true
+  - action: input_boolean.turn_off
     metadata: {}
     data: {}
     target:
-      entity_id: remote.ht_appletv
-  - choose:
-    - conditions:
-      - condition: device
-        device_id: 3e3a04862972c9de2c4ae4d675cdf83f
-        domain: media_player
-        entity_id: eff01c7754491d49954d2db5fc75936f
-        type: is_off
-      sequence:
-      - action: automation.turn_off
-        target:
-          entity_id:
-          - automation.new_automation
-          - automation.xbox_light_automation
-        data:
-          stop_actions: true
-      - action: input_boolean.turn_off
-        metadata: {}
-        data: {}
-        target:
-          entity_id:
-          - input_boolean.ht_automation_link_tv_lighting
-          - input_boolean.ht_automation_link_xbox_lighting
-      - action: automation.turn_on
-        metadata: {}
-        data: {}
-        target:
-          entity_id:
-          - automation.new_automation
-          - automation.xbox_light_automation
-    enabled: true
+      entity_id:
+      - input_boolean.ht_automation_link_tv_lighting
+      - input_boolean.ht_automation_link_xbox_lighting
+  - action: automation.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - automation.new_automation
+      - automation.xbox_light_automation
   mode: single
 - id: '1734214418097'
   alias: AVR Quick Select 1
@@ -577,7 +564,7 @@
   use_blueprint:
     path: dotWee/denon_avr_quick_select.yaml
     input:
-      denon_entity: media_player.ht_avr
+      denon_entity: media_player.home_theatre_avr
       quick_select: 1
 - id: '1734486132576'
   alias: MBR Bedside Remote Right OLD
@@ -868,21 +855,31 @@
     Also, Enables forcing the fan on working around the Flair controller that wants
     to turn it back off.
   triggers:
-  - type: changed_states
-    device_id: 498e396176a0d7c38288bb0762e85da4
-    entity_id: 91f217b8f50f4e485fc2397b220eca0c
-    domain: fan
-    trigger: device
-    enabled: false
   - trigger: state
     entity_id:
     - input_boolean.hvac_fan_force_on
-  - trigger: homeassistant
-    event: start
   - trigger: state
     entity_id:
     - climate.hvac_thermostat_ecobee
     attribute: fan_mode
+  - trigger: numeric_state
+    entity_id:
+    - sensor.iaq_air_quality_index_us
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+    above: 100
+  - trigger: numeric_state
+    entity_id:
+    - sensor.iaq_air_quality_index_us
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+    below: 100
+  - trigger: homeassistant
+    event: start
   conditions: []
   actions:
   - if:
@@ -892,16 +889,9 @@
       - condition: state
         entity_id: input_boolean.hvac_fan_force_on
         state: 'on'
-      - condition: device
-        device_id: 498e396176a0d7c38288bb0762e85da4
-        domain: fan
-        entity_id: 91f217b8f50f4e485fc2397b220eca0c
-        type: is_on
-        enabled: false
-      - condition: state
-        entity_id: fan.hvac_hrv
-        state: 'on'
-        enabled: false
+      - condition: numeric_state
+        entity_id: sensor.iaq_air_quality_index_us
+        above: 100
     then:
     - alias: Turn HVAC Fan ON
       action: climate.set_fan_mode
@@ -1063,7 +1053,8 @@
       motion_trigger:
       - binary_sensor.ht_sensor_occupancy_fm
       light_switch:
-        entity_id: light.gym_group_lights
+        entity_id:
+        - light.basement_group_lights
       time_delay: 1
       include_bypass:
       - bypass_enabled_stop
@@ -1076,9 +1067,6 @@
   alias: HVAC HRV Control
   description: HRV Automation using IAQ, Natural Cooling, min runtime... triggers.
   triggers:
-  - trigger: homeassistant
-    event: start
-    enabled: true
   - entity_id:
     - binary_sensor.hvac_hrv_air_quality_trigger
     trigger: state
@@ -1104,94 +1092,85 @@
   - trigger: state
     entity_id:
     - input_boolean.hrv_force_on
-  - trigger: state
+  - trigger: numeric_state
     entity_id:
-    - climate.hvac_thermostat_ecobee
-    attribute: fan_mode
-    enabled: false
-  conditions:
-  - condition: or
-    conditions:
-    - condition: and
-      conditions:
-      - condition: numeric_state
-        entity_id: sensor.outdoor_airvisual_air_quality_index_us
-        below: 150
-      - condition: or
-        conditions:
-        - alias: Outdoor Temp above -15
-          type: is_temperature
-          condition: device
-          device_id: 27ce292095211b77b34576b6a4349d86
-          entity_id: 33adb820f449fde31e63fa4e1355c5b9
-          domain: sensor
-          above: -15
-        - condition: state
-          entity_id: binary_sensor.hvac_hrv_air_quality_trigger
-          state: 'on'
-        alias: Outdoor temp above -15°C unless IAQ unsafe
-    - condition: state
-      entity_id: input_boolean.hrv_force_on
-      state: 'on'
+    - sensor.outdoor_airvisual_air_quality_index_us
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+    above: 100
+  - trigger: numeric_state
+    entity_id:
+    - sensor.outdoor_airvisual_air_quality_index_us
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+    below: 100
+  - trigger: homeassistant
+    event: start
+    enabled: true
+  conditions: []
   actions:
   - choose:
     - conditions:
       - condition: or
         conditions:
         - condition: state
-          entity_id: binary_sensor.hvac_natural_cooling_useful
+          entity_id: input_boolean.hrv_force_on
           state: 'on'
-        - condition: state
-          entity_id: binary_sensor.hvac_hrv_air_quality_trigger
-          state: 'on'
-        - condition: and
-          conditions:
-          - condition: or
-            conditions:
-            - condition: state
-              entity_id: climate.hvac_thermostat_ecobee
-              attribute: hvac_action
-              state: heating
-              alias: HVAC is Heating
-            - condition: state
-              entity_id: climate.hvac_thermostat_ecobee
-              attribute: hvac_action
-              state: cooling
-              alias: HVAC is Cooling
-            alias: HVAC is Heating or Cooling
-          - condition: numeric_state
-            entity_id: sensor.hvac_hrv_last_2_hour_runtime
-            below: 30
-          alias: Heating or Cooling and last 2-hour runtime less than 30 minutes
-          enabled: true
-        - alias: HRV has run less than 15 minutes in last hour and less than 30 minutes
-            in last 2 hours
+        - alias: Only if Outdoor Air Quality is good enough
           condition: and
           conditions:
           - condition: numeric_state
-            entity_id: sensor.hvac_hrv_last_hour_runtime
-            below: 15
-          - condition: numeric_state
-            entity_id: sensor.hvac_hrv_last_2_hour_runtime
-            below: 30
-          enabled: true
-        - condition: state
-          entity_id: input_boolean.hrv_force_on
-          state: 'on'
+            entity_id: sensor.outdoor_airvisual_air_quality_index_us
+            below: 100
+          - condition: or
+            conditions:
+            - condition: state
+              entity_id: binary_sensor.hvac_natural_cooling_useful
+              state: 'on'
+            - condition: state
+              entity_id: binary_sensor.hvac_hrv_air_quality_trigger
+              state: 'on'
+            - condition: and
+              conditions:
+              - condition: or
+                conditions:
+                - condition: state
+                  entity_id: climate.hvac_thermostat_ecobee
+                  attribute: hvac_action
+                  state: heating
+                  alias: HVAC is Heating
+                - condition: state
+                  entity_id: climate.hvac_thermostat_ecobee
+                  attribute: hvac_action
+                  state: cooling
+                  alias: HVAC is Cooling
+                alias: HVAC is Heating or Cooling
+              - condition: numeric_state
+                entity_id: sensor.hvac_hrv_last_2_hour_runtime
+                below: 30
+              alias: Heating or Cooling and last 2-hour runtime less than 30 minutes
+              enabled: true
+            - alias: HRV has run less than 15 minutes in last hour and less than 30
+                minutes in last 2 hours
+              condition: and
+              conditions:
+              - condition: numeric_state
+                entity_id: sensor.hvac_hrv_last_hour_runtime
+                below: 15
+              - condition: numeric_state
+                entity_id: sensor.hvac_hrv_last_2_hour_runtime
+                below: 30
+              enabled: true
       sequence:
       - action: fan.turn_on
         metadata: {}
         data: {}
         target:
           device_id: 498e396176a0d7c38288bb0762e85da4
-      - action: climate.set_fan_mode
-        metadata: {}
-        data:
-          fan_mode: 'on'
-        target:
-          device_id: 74b2e490499eba29d6e6edcb89e9f9e6
-        alias: Turn HVAC Fan ON
-        enabled: false
       alias: Run HRV
     default:
     - action: fan.turn_off
@@ -1199,14 +1178,6 @@
       data: {}
       target:
         device_id: 498e396176a0d7c38288bb0762e85da4
-    - alias: Return HVAC Fan to Auto mode
-      action: climate.set_fan_mode
-      metadata: {}
-      data:
-        fan_mode: auto
-      target:
-        device_id: 74b2e490499eba29d6e6edcb89e9f9e6
-      enabled: false
   mode: restart
 - id: '1744569094629'
   alias: HT Light Automation - Xbox
@@ -1815,4 +1786,259 @@
       target:
         entity_id: switch.adaptive_lighting_sleep_mode_aquarium
     alias: Turn Aquarium Adaptive Lighting Sleep Mode ON-OFF
+  mode: restart
+- id: '1748993789848'
+  alias: Living Room Apple TV Control AVR Power
+  description: Turns AVR on via smart plug when Apple TV wakes, off when it sleeps.
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.living_room_appletv_active
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 2
+    to: 'on'
+    id: appletv_turned_on
+  - trigger: state
+    entity_id:
+    - binary_sensor.living_room_appletv_active
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    to: 'off'
+    id: appletv_turned_off
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - appletv_turned_on
+      - condition: state
+        entity_id: binary_sensor.living_room_appletv_active
+        state: 'on'
+        enabled: false
+      sequence:
+      - action: switch.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.living_room_avr
+    - conditions:
+      - condition: trigger
+        id:
+        - appletv_turned_off
+      - condition: state
+        entity_id: binary_sensor.living_room_appletv_active
+        state: 'off'
+        enabled: false
+      sequence:
+      - action: switch.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.living_room_avr
+  mode: queued
+  max: 2
+- id: '1749067063398'
+  alias: Home Theatre AVR Music Listening
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.home_theatre_appletv_music_active
+    from: 'off'
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+    id: music_session_started
+  - trigger: state
+    entity_id:
+    - binary_sensor.home_theatre_appletv_music_active
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+    id: music_session_ended
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - music_session_started
+      sequence:
+      - action: denonavr.get_command
+        metadata: {}
+        data:
+          command: /goform/formiPhoneAppDirect.xml?MSAUTO
+        target:
+          entity_id: media_player.home_theatre_avr
+        alias: 'Surround Mode: Auto'
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 3
+          milliseconds: 0
+      - alias: MultEQ Flat
+        action: denonavr.get_command
+        metadata: {}
+        data:
+          command: /goform/formiPhoneAppDirect.xml?PSMULTEQ:FLAT
+        target:
+          entity_id: media_player.home_theatre_avr
+      alias: Music Session Started
+    - conditions:
+      - condition: trigger
+        id:
+        - music_session_ended
+      sequence:
+      - alias: 'MultEQ: Reference'
+        action: denonavr.get_command
+        metadata: {}
+        data:
+          command: /goform/formiPhoneAppDirect.xml?PSMULTEQ:AUDYSSEY
+        target:
+          entity_id: media_player.home_theatre_avr
+      alias: Music Session Ended
+  mode: restart
+- id: '1749132912228'
+  alias: Home Theatre AVR Turn OFF
+  description: Turns OFF the AVR when the TV turns OFF.
+  triggers:
+  - device_id: 3e3a04862972c9de2c4ae4d675cdf83f
+    domain: media_player
+    entity_id: eff01c7754491d49954d2db5fc75936f
+    type: turned_off
+    trigger: device
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  conditions: []
+  actions:
+  - alias: 'MultEQ: Reference'
+    action: denonavr.get_command
+    metadata: {}
+    data:
+      command: /goform/formiPhoneAppDirect.xml?PSMULTEQ:AUDYSSEY
+    target:
+      entity_id: media_player.home_theatre_avr
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - alias: Reference Offset 10dB
+    action: denonavr.get_command
+    metadata: {}
+    data:
+      command: /goform/formiPhoneAppDirect.xml?PSREFLEV 10
+    target:
+      entity_id: media_player.home_theatre_avr
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - alias: Audyssey Dynamic Volume OFF
+    action: denonavr.get_command
+    metadata: {}
+    data:
+      command: /goform/formiPhoneAppDirect.xml?PSDYNVOL OFF
+    target:
+      entity_id: media_player.home_theatre_avr
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - action: media_player.turn_off
+    metadata: {}
+    data: {}
+    target:
+      device_id: fb02f0db9806aee351f4166c3c47d4d8
+  mode: single
+- id: '1749134518034'
+  alias: Home Theatre AVR Video 2CH in Dolby Surround
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - media_player.home_theatre_avr
+    attribute: sound_mode_raw
+    to: STEREO
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.home_theatre_appletv_music_active
+    state: 'off'
+  actions:
+  - alias: 'Surround Mode: Dolby Surround'
+    action: denonavr.get_command
+    metadata: {}
+    data:
+      command: /goform/formiPhoneAppDirect.xml?MSDOLBY DIGITAL
+    target:
+      entity_id: media_player.home_theatre_avr
+  mode: single
+- id: '1749135467568'
+  alias: Home Theatre AVR Movie Audio
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.home_theatre_appletv_movie_active
+    to: 'on'
+    id: movie_mode_on
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+    from: 'off'
+  - trigger: state
+    entity_id:
+    - binary_sensor.home_theatre_appletv_movie_active
+    to: 'off'
+    from: 'on'
+    id: movie_mode_off
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - movie_mode_on
+      sequence:
+      - alias: Reference Offset 5dB
+        action: denonavr.get_command
+        metadata: {}
+        data:
+          command: /goform/formiPhoneAppDirect.xml?PSREFLEV 5
+        target:
+          entity_id: media_player.home_theatre_avr
+    - conditions:
+      - condition: trigger
+        id:
+        - movie_mode_off
+      sequence:
+      - alias: Reference Offset 5dB
+        action: denonavr.get_command
+        metadata: {}
+        data:
+          command: /goform/formiPhoneAppDirect.xml?PSREFLEV 10
+        target:
+          entity_id: media_player.home_theatre_avr
   mode: restart
