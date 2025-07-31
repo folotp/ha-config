@@ -31,9 +31,9 @@ template:
           {% if is_state('climate.hvac_thermostat_ecobee', 'off') %}
             off
           {% elif action == 'cooling' %}
-            high
-          {% elif action in ['fan', 'heating'] %}
             med-high
+          {% elif action in ['fan', 'heating'] %}
+            med-low
           {% else %}
             low
           {% endif %}

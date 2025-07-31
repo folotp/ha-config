@@ -124,7 +124,7 @@
         target:
           entity_id:
           - light.living_room_couch_lamp_left
-      on_button_mode: fixed brightness
+      on_button_mode: always toggle
 - id: '1722636238022'
   alias: Living Room - Couch Remote Right
   description: ''
@@ -141,7 +141,7 @@
         action: light.turn_on
         target:
           entity_id: light.living_room_couch_lamp_right
-      on_button_mode: fixed brightness
+      on_button_mode: always toggle
 - id: '1725317287020'
   alias: Last Person Leaves Home
   description: ''
@@ -152,9 +152,12 @@
     for:
       hours: 0
       minutes: 0
-      seconds: 0
+      seconds: 30
     trigger: state
-  conditions: []
+  conditions:
+  - condition: state
+    entity_id: zone.home
+    state: '0'
   actions:
   - action: light.turn_off
     metadata: {}
@@ -271,16 +274,25 @@
   alias: First Person Arrives Homes
   description: ''
   triggers:
-  - entity_id:
+  - trigger: numeric_state
+    entity_id:
     - zone.home
     for:
       hours: 0
       minutes: 0
-      seconds: 0
-    from: '0'
-    trigger: state
-  conditions: []
+      seconds: 30
+    above: 0
+  conditions:
+  - condition: template
+    value_template: "{{ trigger.to_state.state not in ['unknown', 'unavailable'] and\n
+      \  trigger.to_state.state | int(0) > 0 }}"
   actions:
+  - device_id: fb9ae35f77be16649bc913ff71258e38
+    domain: select
+    entity_id: 7a919670c81e5ae6f393446e5704c35b
+    type: select_option
+    option: Home
+    alias: Set Flair to Home
   - sequence:
     - action: switch.turn_on
       target:
@@ -292,12 +304,6 @@
       target:
         label_id: adaptive_cover_reset_buttons
     alias: Reset all blinds to their adaptive position
-  - device_id: fb9ae35f77be16649bc913ff71258e38
-    domain: select
-    entity_id: 7a919670c81e5ae6f393446e5704c35b
-    type: select_option
-    option: Home
-    alias: Set Flair to Home
   mode: single
 - id: '1728945551366'
   alias: MBR Underbed Sensor Light Automation
@@ -867,17 +873,17 @@
     - sensor.iaq_air_quality_index_us
     for:
       hours: 0
-      minutes: 10
+      minutes: 30
       seconds: 0
-    above: 100
+    above: 50
   - trigger: numeric_state
     entity_id:
     - sensor.iaq_air_quality_index_us
     for:
       hours: 0
-      minutes: 10
+      minutes: 30
       seconds: 0
-    below: 100
+    below: 50
   - trigger: homeassistant
     event: start
   conditions: []
@@ -891,7 +897,7 @@
         state: 'on'
       - condition: numeric_state
         entity_id: sensor.iaq_air_quality_index_us
-        above: 100
+        above: 50
     then:
     - alias: Turn HVAC Fan ON
       action: climate.set_fan_mode
@@ -1053,8 +1059,7 @@
       motion_trigger:
       - binary_sensor.ht_sensor_occupancy_fm
       light_switch:
-        entity_id:
-        - light.basement_group_lights
+        entity_id: light.basement_group_lights
       time_delay: 1
       include_bypass:
       - bypass_enabled_stop
@@ -1097,7 +1102,7 @@
     - sensor.outdoor_airvisual_air_quality_index_us
     for:
       hours: 0
-      minutes: 10
+      minutes: 30
       seconds: 0
     above: 100
   - trigger: numeric_state
@@ -1105,7 +1110,7 @@
     - sensor.outdoor_airvisual_air_quality_index_us
     for:
       hours: 0
-      minutes: 10
+      minutes: 30
       seconds: 0
     below: 100
   - trigger: homeassistant
@@ -1310,7 +1315,8 @@
               transition: 0.3
               brightness_step_pct: 8
             target:
-              entity_id: light.mbr_bedside_lamp_left_light
+              entity_id:
+              - light.mbr_bedside_lamp_left
           alias: If already ON, dim UP
         default:
         - action: light.turn_on
@@ -1318,7 +1324,8 @@
           data:
             transition: 1
           target:
-            entity_id: light.mbr_bedside_lamp_left_light
+            entity_id:
+            - light.mbr_bedside_lamp_left
       button_on_double_press:
       - choose:
         - conditions:
@@ -1331,16 +1338,16 @@
               domain: light
             - alias: Adaptive Lighting manual control
               condition: template
-              value_template: "{{ 'light.mbr_bedside_lamp_left_light'\n                     in
+              value_template: "{{ 'light.mbr_bedside_lamp_left'\n                     in
                 state_attr('switch.mbr_adaptive_lighting','manual_control')\n                     |
                 default([]) }}"
           sequence:
           - action: script.sync_two_lights
             metadata: {}
             data:
-              source_light: light.mbr_bedside_lamp_left_light
               target_light:
               - light.mbr_bedside_lamp_right_light
+              source_light: light.mbr_bedside_lamp_left
           alias: Sync if in manual control mode
         default:
         - action: light.turn_on
@@ -1349,8 +1356,8 @@
             transition: 1
           target:
             entity_id:
-            - light.mbr_bedside_lamp_left_light
             - light.mbr_bedside_lamp_right_light
+            - light.mbr_bedside_lamp_left
       button_on_triple_press: []
       button_off_triple_press:
       - action: light.turn_off
@@ -1380,13 +1387,14 @@
           data:
             transition: 2
           target:
-            entity_id: light.mbr_bedside_lamp_left_light
+            entity_id:
+            - light.mbr_bedside_lamp_left
       button_off_single_press:
       - alias: DIM to min brightness
         choose:
         - conditions:
           - condition: numeric_state
-            entity_id: light.mbr_bedside_lamp_left_light
+            entity_id: light.mbr_bedside_lamp_left
             attribute: brightness
             below: 22
           sequence:
@@ -1396,7 +1404,8 @@
               brightness: 2
               transition: 0.8
             target:
-              entity_id: light.mbr_bedside_lamp_left_light
+              entity_id:
+              - light.mbr_bedside_lamp_left
           alias: Minimum brightness 2
         default:
         - alias: Dim Down 8%
@@ -1406,7 +1415,8 @@
             brightness_step_pct: -8
             transition: 0.3
           target:
-            entity_id: light.mbr_bedside_lamp_left_light
+            entity_id:
+            - light.mbr_bedside_lamp_left
       button_up_hold: []
       button_up_single_press:
       - action: scene.turn_on
@@ -1430,8 +1440,7 @@
         choose:
         - conditions:
           - condition: numeric_state
-            entity_id: light.mbr_bedside_lamp_left_light
-            attribute: brightness
+            entity_id: light.mbr_bedside_lamp_left
             below: 22
           sequence:
           - action: light.turn_on
@@ -1440,7 +1449,8 @@
               transition: 0.5
               brightness: 2
             target:
-              entity_id: light.mbr_bedside_lamp_left_light
+              entity_id:
+              - light.mbr_bedside_lamp_left
           alias: Minimum brightness 2
         default:
         - alias: Dim Down 8%
@@ -1450,7 +1460,8 @@
             transition: 0.7
             brightness_step_pct: -10
           target:
-            entity_id: light.mbr_bedside_lamp_left_light
+            entity_id:
+            - light.mbr_bedside_lamp_left
       button_on_hold:
       - alias: Dim Up 8%
         action: light.turn_on
@@ -1460,7 +1471,7 @@
           transition: 0.7
         target:
           entity_id:
-          - light.mbr_bedside_lamp_left_light
+          - light.mbr_bedside_lamp_left
       button_up_double_press:
       - action: scene.turn_on
         metadata: {}
@@ -1647,7 +1658,15 @@
       button_on_double_press: []
       button_on_triple_press: []
       button_off_triple_press: []
-      button_off_double_press: []
+      button_off_double_press:
+      - type: turn_off
+        device_id: 5d408e56108a46b741570acf5c43caf4
+        entity_id: ffb7fb73d8213f09247179220478ac42
+        domain: light
+      - type: turn_off
+        device_id: f9c51bb461bfaa9851831aefcfcbc316
+        entity_id: 93562380c74129c7a879fe90e78dcf5b
+        domain: light
       button_off_single_press:
       - action: light.turn_off
         metadata: {}
@@ -2042,3 +2061,111 @@
         target:
           entity_id: media_player.home_theatre_avr
   mode: restart
+- id: '1749301744922'
+  alias: HVAC Cooling Setpoint Scheduling
+  description: ''
+  triggers:
+  - trigger: time
+    at: '19:30:00'
+  - trigger: time
+    at: 06:00:00
+  - trigger: homeassistant
+    event: start
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: time
+        after: '19:30:00'
+        before: 06:00:00
+        weekday:
+        - sun
+        - sat
+        - fri
+        - thu
+        - wed
+        - tue
+        - mon
+      sequence:
+      - action: climate.set_temperature
+        metadata: {}
+        data:
+          temperature: 22
+        target:
+          device_id: fb9ae35f77be16649bc913ff71258e38
+    - conditions:
+      - condition: time
+        after: 06:00:00
+        before: '19:30:00'
+        weekday:
+        - sun
+        - sat
+        - fri
+        - thu
+        - wed
+        - tue
+        - mon
+      sequence:
+      - action: climate.set_temperature
+        metadata: {}
+        data:
+          temperature: 24
+        target:
+          device_id: fb9ae35f77be16649bc913ff71258e38
+  mode: queued
+  max: 10
+- id: '1753979623852'
+  alias: Robot Vacuum Automation
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - zone.home
+    to: '0'
+    for:
+      hours: 0
+      minutes: 15
+      seconds: 0
+    id: away
+  - trigger: numeric_state
+    entity_id:
+    - zone.home
+    above: 0
+    id: home
+  conditions:
+  - condition: or
+    conditions:
+    - condition: and
+      conditions:
+      - condition: trigger
+        id: away
+      - condition: template
+        value_template: "{% set last_run = states('sensor.robotron_last_mission_start_time')
+          %} {% if last_run %}\n  {% set last_run_dt = as_datetime(last_run) %}\n
+          \ {{ (now() - last_run_dt).total_seconds() > 24*3600 }}\n{% else %}\n  true\n{%
+          endif %}"
+    - condition: trigger
+      id: home
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - away
+      sequence:
+      - action: vacuum.start
+        metadata: {}
+        data: {}
+        target:
+          device_id: bdf6db226db0a46f1ac526374ae19696
+    - conditions:
+      - condition: trigger
+        id:
+        - home
+      sequence:
+      - action: vacuum.return_to_base
+        metadata: {}
+        data: {}
+        target:
+          device_id: bdf6db226db0a46f1ac526374ae19696
+  mode: single

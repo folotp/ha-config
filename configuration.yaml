@@ -13,6 +13,10 @@ http:
   ssl_certificate: /ssl/fullchain.pem
   ssl_key: /ssl/privkey.pem
 
+# Enable frontend themes
+frontend:
+  themes: !include_dir_merge_named themes
+
 #==============================================================================
 # Recorder settings
 #   - Use MariaDB
@@ -49,6 +53,11 @@ logger:
 #==============================================================================
 prometheus:
   requires_auth: false
+
+#==============================================================================
+# Enable Adaptive Lighting integration
+#==============================================================================
+adaptive_lighting:
 
 #==============================================================================
 # ZHA Configuration

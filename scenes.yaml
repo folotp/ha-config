@@ -90,7 +90,7 @@
 - id: '1734492918766'
   name: MBR Before Bed Lighting
   entities:
-    light.mbr_bedside_lamp_left_light:
+    light.mbr_bedside_lamp_left:
       min_color_temp_kelvin: 2202
       max_color_temp_kelvin: 6535
       min_mireds: 153
@@ -113,7 +113,6 @@
       - 0.388
       off_with_transition: false
       off_brightness:
-      icon: mdi:lamp
       friendly_name: MBR Bedside Lamp Left
       supported_features: 40
       state: 'on'
@@ -191,20 +190,12 @@
       friendly_name: MBR Torchiere
       supported_features: 32
       state: 'off'
-  metadata:
-    light.mbr_bedside_lamp_left_light:
-      entity_only: true
-    light.mbr_bedside_lamp_right_light:
-      entity_only: true
-    light.mbr_underbed:
-      entity_only: true
-    light.mbr_torchiere:
-      entity_only: true
-  icon: mdi:lightbulb-night
+  metadata: {}
+  icon: mdi:book-open-variant
 - id: '1734493816298'
   name: MBR Underbed Nightlight
   entities:
-    light.mbr_bedside_lamp_left_light:
+    light.mbr_bedside_lamp_left:
       min_color_temp_kelvin: 2202
       max_color_temp_kelvin: 6535
       min_mireds: 153
@@ -218,10 +209,9 @@
       hs_color:
       rgb_color:
       xy_color:
-      off_with_transition: true
-      off_brightness: 10
-      icon: mdi:lamp
-      friendly_name: MBR Bedside Lamp Left Light
+      off_with_transition: false
+      off_brightness: 51
+      friendly_name: MBR Bedside Lamp Left
       supported_features: 40
       state: 'off'
     light.mbr_bedside_lamp_right_light:
@@ -238,11 +228,31 @@
       hs_color:
       rgb_color:
       xy_color:
-      off_with_transition: true
-      off_brightness: 36
+      off_with_transition: false
+      off_brightness: 51
       icon: mdi:lamp
-      friendly_name: MBR Bedside Lamp Right Light
+      friendly_name: MBR Bedside Lamp Right
       supported_features: 40
+      state: 'off'
+    light.mbr_torchiere:
+      min_color_temp_kelvin: 2127
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 470
+      supported_color_modes:
+      - color_temp
+      - hs
+      - xy
+      color_mode:
+      brightness:
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      rgb_color:
+      xy_color:
+      icon: mdi:floor-lamp-torchiere
+      friendly_name: MBR Torchiere
+      supported_features: 32
       state: 'off'
     light.mbr_underbed:
       min_color_temp_kelvin: 2127
@@ -267,44 +277,16 @@
       xy_color:
       - 0.136
       - 0.04
-      icon: mdi:bed-king
-      friendly_name: MBR Underbed Light
+      icon: mdi:led-strip-variant
+      friendly_name: MBR Underbed Strip Light
       supported_features: 32
       state: 'on'
-    light.mbr_torchiere:
-      min_color_temp_kelvin: 2127
-      max_color_temp_kelvin: 6535
-      min_mireds: 153
-      max_mireds: 470
-      supported_color_modes:
-      - color_temp
-      - hs
-      - xy
-      color_mode:
-      brightness:
-      color_temp_kelvin:
-      color_temp:
-      hs_color:
-      rgb_color:
-      xy_color:
-      icon: mdi:floor-lamp-torchiere
-      friendly_name: MBR Torchiere
-      supported_features: 32
-      state: 'off'
   icon: mdi:bed
-  metadata:
-    light.mbr_bedside_lamp_left_light:
-      entity_only: true
-    light.mbr_bedside_lamp_right_light:
-      entity_only: true
-    light.mbr_underbed:
-      entity_only: true
-    light.mbr_torchiere:
-      entity_only: true
+  metadata: {}
 - id: '1734495316972'
   name: MBR Romance Lighting
   entities:
-    light.mbr_bedside_lamp_left_light:
+    light.mbr_bedside_lamp_left:
       min_color_temp_kelvin: 2202
       max_color_temp_kelvin: 6535
       min_mireds: 153
@@ -318,9 +300,8 @@
       hs_color:
       rgb_color:
       xy_color:
-      off_with_transition: true
+      off_with_transition: false
       off_brightness: 51
-      icon: mdi:lamp
       friendly_name: MBR Bedside Lamp Left
       supported_features: 40
       state: 'off'
@@ -338,39 +319,12 @@
       hs_color:
       rgb_color:
       xy_color:
-      off_with_transition: true
+      off_with_transition: false
       off_brightness: 51
       icon: mdi:lamp
       friendly_name: MBR Bedside Lamp Right
       supported_features: 40
       state: 'off'
-    light.mbr_underbed:
-      min_color_temp_kelvin: 2127
-      max_color_temp_kelvin: 6535
-      min_mireds: 153
-      max_mireds: 470
-      supported_color_modes:
-      - color_temp
-      - hs
-      - xy
-      color_mode: hs
-      brightness: 128
-      color_temp_kelvin:
-      color_temp:
-      hs_color:
-      - 0
-      - 100
-      rgb_color:
-      - 255
-      - 0
-      - 0
-      xy_color:
-      - 0.701
-      - 0.299
-      icon: mdi:led-strip-variant
-      friendly_name: MBR Underbed Strip Light
-      supported_features: 32
-      state: 'on'
     light.mbr_torchiere:
       min_color_temp_kelvin: 2127
       max_color_temp_kelvin: 6535
@@ -398,20 +352,39 @@
       friendly_name: MBR Torchiere
       supported_features: 32
       state: 'on'
-  metadata:
-    light.mbr_bedside_lamp_left_light:
-      entity_only: true
-    light.mbr_bedside_lamp_right_light:
-      entity_only: true
     light.mbr_underbed:
-      entity_only: true
-    light.mbr_torchiere:
-      entity_only: true
+      min_color_temp_kelvin: 2127
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 470
+      supported_color_modes:
+      - color_temp
+      - hs
+      - xy
+      color_mode: hs
+      brightness: 128
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      - 0
+      - 100
+      rgb_color:
+      - 255
+      - 0
+      - 0
+      xy_color:
+      - 0.701
+      - 0.299
+      icon: mdi:led-strip-variant
+      friendly_name: MBR Underbed Strip Light
+      supported_features: 32
+      state: 'on'
+  metadata: {}
   icon: mdi:heart-multiple
 - id: '1734786216024'
   name: MBR Face Lighting
   entities:
-    light.mbr_bedside_lamp_left_light:
+    light.mbr_bedside_lamp_left:
       min_color_temp_kelvin: 2202
       max_color_temp_kelvin: 6535
       min_mireds: 153
@@ -425,10 +398,9 @@
       hs_color:
       rgb_color:
       xy_color:
-      off_with_transition: true
-      off_brightness: 10
-      icon: mdi:lamp
-      friendly_name: MBR Bedside Lamp Left Light
+      off_with_transition: false
+      off_brightness: 51
+      friendly_name: MBR Bedside Lamp Left
       supported_features: 40
       state: 'off'
     light.mbr_bedside_lamp_right_light:
@@ -445,10 +417,10 @@
       hs_color:
       rgb_color:
       xy_color:
-      off_with_transition: true
-      off_brightness: 36
+      off_with_transition: false
+      off_brightness: 51
       icon: mdi:lamp
-      friendly_name: MBR Bedside Lamp Right Light
+      friendly_name: MBR Bedside Lamp Right
       supported_features: 40
       state: 'off'
     light.mbr_underbed:
@@ -474,8 +446,8 @@
       xy_color:
       - 0.136
       - 0.04
-      icon: mdi:bed-king
-      friendly_name: MBR Underbed Light
+      icon: mdi:led-strip-variant
+      friendly_name: MBR Underbed Strip Light
       supported_features: 32
       state: 'on'
     light.mbr_torchiere:
@@ -498,16 +470,8 @@
       friendly_name: MBR Torchiere
       supported_features: 32
       state: 'off'
-  icon: mdi:bed-outline
-  metadata:
-    light.mbr_bedside_lamp_left_light:
-      entity_only: true
-    light.mbr_bedside_lamp_right_light:
-      entity_only: true
-    light.mbr_underbed:
-      entity_only: true
-    light.mbr_torchiere:
-      entity_only: true
+  icon: mdi:emoticon
+  metadata: {}
 - id: '1736252824778'
   name: Workout
   entities:
@@ -594,7 +558,7 @@
 - id: '1745674053901'
   name: MBR Underbed Nightlight Blue
   entities:
-    light.mbr_bedside_lamp_left_light:
+    light.mbr_bedside_lamp_left:
       min_color_temp_kelvin: 2202
       max_color_temp_kelvin: 6535
       min_mireds: 153
@@ -608,9 +572,8 @@
       hs_color:
       rgb_color:
       xy_color:
-      off_with_transition: true
+      off_with_transition: false
       off_brightness: 51
-      icon: mdi:lamp
       friendly_name: MBR Bedside Lamp Left
       supported_features: 40
       state: 'off'
@@ -628,11 +591,31 @@
       hs_color:
       rgb_color:
       xy_color:
-      off_with_transition: true
+      off_with_transition: false
       off_brightness: 51
       icon: mdi:lamp
       friendly_name: MBR Bedside Lamp Right
       supported_features: 40
+      state: 'off'
+    light.mbr_torchiere:
+      min_color_temp_kelvin: 2127
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 470
+      supported_color_modes:
+      - color_temp
+      - hs
+      - xy
+      color_mode:
+      brightness:
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      rgb_color:
+      xy_color:
+      icon: mdi:floor-lamp-torchiere
+      friendly_name: MBR Torchiere
+      supported_features: 32
       state: 'off'
     light.mbr_underbed:
       min_color_temp_kelvin: 2127
@@ -661,33 +644,5 @@
       friendly_name: MBR Underbed Strip Light
       supported_features: 32
       state: 'on'
-    light.mbr_torchiere:
-      min_color_temp_kelvin: 2127
-      max_color_temp_kelvin: 6535
-      min_mireds: 153
-      max_mireds: 470
-      supported_color_modes:
-      - color_temp
-      - hs
-      - xy
-      color_mode:
-      brightness:
-      color_temp_kelvin:
-      color_temp:
-      hs_color:
-      rgb_color:
-      xy_color:
-      icon: mdi:floor-lamp-torchiere
-      friendly_name: MBR Torchiere
-      supported_features: 32
-      state: 'off'
-  icon: mdi:bed-outline
-  metadata:
-    light.mbr_bedside_lamp_left_light:
-      entity_only: true
-    light.mbr_bedside_lamp_right_light:
-      entity_only: true
-    light.mbr_underbed:
-      entity_only: true
-    light.mbr_torchiere:
-      entity_only: true
+  icon: mdi:bed
+  metadata: {}

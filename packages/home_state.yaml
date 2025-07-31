@@ -1,0 +1,10 @@
+template:
+  - binary_sensor:
+      - name: "Home Occupancy"
+        unique_id: 0c5e4ef0-64d8-4f8a-b9cf-b18c8c8d0934 # Update UUID for your env!
+        device_class: occupancy
+        state: >-
+          {% set s = states('zone.home') %}
+          {{ s not in ['unknown', 'unavailable'] and s | int(0) > 0 }}
+        attributes:
+          occupants: "{{ state_attr('zone.home', 'persons') }}"
