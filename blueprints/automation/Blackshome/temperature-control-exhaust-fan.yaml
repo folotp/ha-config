@@ -1,6 +1,6 @@
 blueprint:
   name: Temperature Control Fan
-  description: "# \U0001F321️ Temperature Control Fan\n**Version: 1.9**\n\nFan-tastic
+  description: "# \U0001F321️ Temperature Control Fan\n**Version: 2.0**\n\nFan-tastic
     Fan Control: The Ultimate Fan Control for Optimal Temperature Regulation. \U0001F32C️\U0001F4C9\n\n**If
     you like my blueprints, and would like to show your support or just say thank
     you?** [Click Here](https://www.paypal.com/donate/?hosted_button_id=WAZS3QSDTPGA8)
@@ -51,6 +51,7 @@ blueprint:
               filter:
               - domain:
                 - sensor
+              reorder: false
               multiple: false
         auto_mode_entity:
           name: Auto Mode Control Entity *
@@ -78,6 +79,7 @@ blueprint:
               - domain:
                 - switch
                 - input_boolean
+              reorder: false
               multiple: false
         rising_temp:
           name: Rising Temperature
@@ -124,9 +126,9 @@ blueprint:
                 value: fan
               - label: Ceiling Fan
                 value: ceiling_fan
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
     fan_settings:
       name: Fan
       icon: mdi:fan
@@ -168,9 +170,9 @@ blueprint:
                 value: economy_mode
               - label: Heat Transfer Mode
                 value: heat_transfer_mode
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         fan_switch:
           name: Fan Switch
           description: 'Enter the fan you would like to turn ON.
@@ -198,9 +200,9 @@ blueprint:
                 value: fan_speed_off_enabled
               - label: Disable Fan Speed - Switch OFF
                 value: fan_speed_off_disabled
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         fan_speed_off:
           name: Fan Speed - Switch OFF
           description: 'This entity will be used to turn the fan OFF if you have selected
@@ -216,6 +218,7 @@ blueprint:
               - domain:
                 - switch
                 - fan
+              reorder: false
         maximum_run_time:
           name: Maximum Run Time
           description: 'If you enabled Maximum Run Time above, please enter the duration
@@ -247,6 +250,7 @@ blueprint:
               filter:
               - domain:
                 - sensor
+              reorder: false
               multiple: false
         secondary_sensor_setpoint:
           name: Secondary Sensor - Setpoint
@@ -323,9 +327,9 @@ blueprint:
                 value: fan_preset
               - label: Fan Percentage
                 value: fan_percentage
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         fan_high_speed:
           name: High Speed
           description: 'Specifies the fan entity that will be controlled to operate
@@ -344,6 +348,7 @@ blueprint:
               - domain:
                 - fan
                 - switch
+              reorder: false
         fan_medium_speed:
           name: Medium Speed
           description: 'Specifies the fan entity that will be controlled to operate
@@ -363,6 +368,7 @@ blueprint:
               - domain:
                 - fan
                 - switch
+              reorder: false
         fan_low_speed:
           name: Low Speed
           description: 'Specifies the fan entity that will be controlled to operate
@@ -383,6 +389,7 @@ blueprint:
               - domain:
                 - fan
                 - switch
+              reorder: false
         fan_off:
           name: Fan OFF
           description: 'Specifies the fan entity that will be turned on to stop the
@@ -402,6 +409,7 @@ blueprint:
               - domain:
                 - fan
                 - switch
+              reorder: false
         medium_speed_temp:
           name: Medium Speed Temperature
           description: 'Defines the temperature threshold at which the fan will switch
@@ -482,7 +490,7 @@ blueprint:
               step: 1.0
               mode: slider
         preset_fan_entities:
-          name: Fan Controled By A Preset Mode
+          name: Fan Controlled By A Preset Mode
           description: 'Specify the fan entities that will be controlled using a preset
             mode. These fans will have their preset speeds adjusted based on the defined
             temperature thresholds.
@@ -500,7 +508,6 @@ blueprint:
             target:
               entity:
               - domain:
-                - climate
                 - fan
         preset_high_speed:
           name: High Speed
@@ -531,8 +538,8 @@ blueprint:
                 value: '4'
               - label: '3'
                 value: '3'
-              multiple: false
               sort: false
+              multiple: false
         preset_medium_speed:
           name: Medium Speed
           description: 'Specifies the fan entity that will be controlled to operate
@@ -563,8 +570,8 @@ blueprint:
                 value: '3'
               - label: '2'
                 value: '2'
-              multiple: false
               sort: false
+              multiple: false
         preset_low_speed:
           name: Low Speed
           description: 'Specifies the fan entity that will be controlled to operate
@@ -596,8 +603,8 @@ blueprint:
                 value: '2'
               - label: '1'
                 value: '1'
-              multiple: false
               sort: false
+              multiple: false
         preset_off:
           name: Fan OFF
           description: 'Specifies the fan entity that will be turned on to stop the
@@ -618,8 +625,8 @@ blueprint:
                 value: 'off'
               - label: '0'
                 value: '0'
-              multiple: false
               sort: false
+              multiple: false
         preset_medium_speed_temp:
           name: Medium Speed Temperature
           description: 'Defines the temperature threshold at which the fan will switch
@@ -700,7 +707,7 @@ blueprint:
               step: 1.0
               mode: slider
         ceiling_fan_entities:
-          name: Fan Controled By A Percentage Value
+          name: Fan Controlled By A Percentage Value
           description: 'Specify the fan entities that will be controlled using a percentage
             value. These fans will have their speeds adjusted based on the defined
             temperature thresholds.
@@ -718,7 +725,6 @@ blueprint:
             target:
               entity:
               - domain:
-                - climate
                 - fan
         ceiling_fan_max_temp:
           name: Max Temperature
@@ -873,9 +879,9 @@ blueprint:
                 value: bypass_enabled_stop
               - label: Disable the By-pass option
                 value: bypass_disabled
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         bypass_fan_off:
           name: Trigger Sensor By-pass
           description: 'Select a switch that will bypass the **Trigger Sensor** and
@@ -908,9 +914,9 @@ blueprint:
                 value: bypass_auto_off_enabled
               - label: Disable the by-pass auto off option
                 value: bypass_auto_off_disabled
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         bypass_auto_off_delay:
           name: By-pass Auto OFF - Time Delay
           description: 'Please set the auto OFF time delay for the bypass.
@@ -944,9 +950,9 @@ blueprint:
                 value: time_enabled
               - label: Disable the time options
                 value: time_disabled
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         after_time:
           name: Start Time
           description: 'Set the start time.
@@ -1061,41 +1067,41 @@ variables:
   pct_control_ceiling_fan: "{% set b = ceiling_fan_entities and ceiling_fan_entities.entity_id
     %} {% if b %}\n  {{ expand(b) | selectattr('domain', 'eq', 'fan') | map(attribute='entity_id')
     | list }}\n{% else %}\n  []\n{% endif %}"
-trigger:
-- platform: numeric_state
+triggers:
+- trigger: numeric_state
   id: t0
   entity_id: !input trigger_sensor
   above: !input rising_temp
-- platform: time
+- trigger: time
   id: t1
   at: !input after_time
-- platform: time
+- trigger: time
   id: t2
   at: !input before_time
-- platform: state
+- trigger: state
   id: t3
   entity_id: !input bypass_fan_off
   from: 'off'
   to: 'on'
-- platform: state
+- trigger: state
   id: t4
   entity_id: !input bypass_fan_off
   from: 'on'
   to: 'off'
-- platform: state
+- trigger: state
   id: t5
   entity_id: !input auto_mode_entity
   from: 'off'
   to: 'on'
-- platform: state
+- trigger: state
   id: t6
   entity_id: !input auto_mode_entity
   from: 'on'
   to: 'off'
-- platform: homeassistant
+- trigger: homeassistant
   id: t7
   event: start
-condition:
+conditions:
 - condition: or
   conditions:
   - condition: and
@@ -1223,7 +1229,7 @@ action:
           }}'
         sequence:
         - alias: Turn off the entity
-          service: homeassistant.turn_off
+          action: homeassistant.turn_off
           target:
             entity_id: '{{ fan_switch_target }}'
         - choose:
@@ -1232,7 +1238,7 @@ action:
             - '{{ include_fan_speed_options == ''fan_speed_off_enabled'' }}'
             sequence:
             - alias: Fan speed off option
-              service: homeassistant.turn_on
+              action: homeassistant.turn_on
               entity_id: !input fan_speed_off
       - alias: 3 Speed Ceiling Fan
         conditions:
@@ -1240,16 +1246,16 @@ action:
         - '{{ ceiling_fan_control_mode == ''three_speed'' }}'
         sequence:
         - alias: Safeguard turn off high speed
-          service: homeassistant.turn_off
+          action: homeassistant.turn_off
           entity_id: !input fan_high_speed
         - alias: Safeguard turn off medium speed
-          service: homeassistant.turn_off
+          action: homeassistant.turn_off
           entity_id: !input fan_medium_speed
         - alias: Safeguard turn off low speed
-          service: homeassistant.turn_off
+          action: homeassistant.turn_off
           entity_id: !input fan_low_speed
         - alias: Turn on the fan off
-          service: homeassistant.turn_on
+          action: homeassistant.turn_on
           entity_id: !input fan_off
       - alias: Preset Mode Ceiling Fan
         conditions:
@@ -1257,18 +1263,18 @@ action:
         - '{{ ceiling_fan_control_mode == ''fan_preset'' }}'
         sequence:
         - alias: Turn preset fan off
-          service: fan.set_preset_mode
+          action: fan.set_preset_mode
           target:
             entity_id: '{{ preset_control_ceiling_fan }}'
           data:
             preset_mode: '{{ preset_off }}'
-      - alias: Percentage Controled Ceiling Fan
+      - alias: Percentage Controlled Ceiling Fan
         conditions:
         - '{{ fan_mode == ''ceiling_fan'' }}'
         - '{{ ceiling_fan_control_mode == ''fan_percentage'' }}'
         sequence:
         - alias: Turn off the fan
-          service: fan.turn_off
+          action: fan.turn_off
           target:
             entity_id: '{{ pct_control_ceiling_fan }}'
     - stop: Stop the automation
@@ -1288,7 +1294,7 @@ action:
           }}'
         sequence:
         - alias: Turn off the entity
-          service: homeassistant.turn_off
+          action: homeassistant.turn_off
           target:
             entity_id: '{{ fan_switch_target }}'
         - choose:
@@ -1297,7 +1303,7 @@ action:
             - '{{ include_fan_speed_options == ''fan_speed_off_enabled'' }}'
             sequence:
             - alias: Fan speed off option
-              service: homeassistant.turn_on
+              action: homeassistant.turn_on
               entity_id: !input fan_speed_off
       - alias: 3 Speed Ceiling Fan
         conditions:
@@ -1305,16 +1311,16 @@ action:
         - '{{ ceiling_fan_control_mode == ''three_speed'' }}'
         sequence:
         - alias: Safeguard turn off high speed
-          service: homeassistant.turn_off
+          action: homeassistant.turn_off
           entity_id: !input fan_high_speed
         - alias: Safeguard turn off medium speed
-          service: homeassistant.turn_off
+          action: homeassistant.turn_off
           entity_id: !input fan_medium_speed
         - alias: Safeguard turn off low speed
-          service: homeassistant.turn_off
+          action: homeassistant.turn_off
           entity_id: !input fan_low_speed
         - alias: Turn on the fan off
-          service: homeassistant.turn_on
+          action: homeassistant.turn_on
           entity_id: !input fan_off
       - alias: Preset Mode Ceiling Fan
         conditions:
@@ -1322,18 +1328,18 @@ action:
         - '{{ ceiling_fan_control_mode == ''fan_preset'' }}'
         sequence:
         - alias: Turn preset fan off
-          service: fan.set_preset_mode
+          action: fan.set_preset_mode
           target:
             entity_id: '{{ preset_control_ceiling_fan }}'
           data:
             preset_mode: '{{ preset_off }}'
-      - alias: Percentage Controled Ceiling Fan
+      - alias: Percentage Controlled Ceiling Fan
         conditions:
         - '{{ fan_mode == ''ceiling_fan'' }}'
         - '{{ ceiling_fan_control_mode == ''fan_percentage'' }}'
         sequence:
         - alias: Turn off the fan
-          service: fan.turn_off
+          action: fan.turn_off
           target:
             entity_id: '{{ pct_control_ceiling_fan }}'
     - choose:
@@ -1347,7 +1353,7 @@ action:
           delay:
             minutes: !input bypass_auto_off_delay
         - alias: Turn off the by-pass
-          service: homeassistant.turn_off
+          action: homeassistant.turn_off
           entity_id: !input bypass_fan_off
     - stop: Stop the automation
   - alias: By-pass is turned on & check by-pass option - keep the current fan state
@@ -1368,7 +1374,7 @@ action:
           delay:
             minutes: !input bypass_auto_off_delay
         - alias: Turn off the by-pass
-          service: homeassistant.turn_off
+          action: homeassistant.turn_off
           entity_id: !input bypass_fan_off
     - stop: Stop the automation
   - alias: By-pass is turned off & check if the sensor is below set value
@@ -1390,7 +1396,7 @@ action:
           below: !input falling_temp
         sequence:
         - alias: Turn off the entity
-          service: homeassistant.turn_off
+          action: homeassistant.turn_off
           target:
             entity_id: '{{ fan_switch_target }}'
         - choose:
@@ -1399,7 +1405,7 @@ action:
             - '{{ include_fan_speed_options == ''fan_speed_off_enabled'' }}'
             sequence:
             - alias: Fan speed off option
-              service: homeassistant.turn_on
+              action: homeassistant.turn_on
               entity_id: !input fan_speed_off
       - alias: 3 Speed Ceiling Fan
         conditions:
@@ -1410,16 +1416,16 @@ action:
           below: !input falling_temp
         sequence:
         - alias: Safeguard turn off high speed
-          service: homeassistant.turn_off
+          action: homeassistant.turn_off
           entity_id: !input fan_high_speed
         - alias: Safeguard turn off medium speed
-          service: homeassistant.turn_off
+          action: homeassistant.turn_off
           entity_id: !input fan_medium_speed
         - alias: Safeguard turn off low speed
-          service: homeassistant.turn_off
+          action: homeassistant.turn_off
           entity_id: !input fan_low_speed
         - alias: Turn on the fan off
-          service: homeassistant.turn_on
+          action: homeassistant.turn_on
           entity_id: !input fan_off
       - alias: Preset Mode Ceiling Fan
         conditions:
@@ -1430,12 +1436,12 @@ action:
           below: !input falling_temp
         sequence:
         - alias: Turn preset fan off
-          service: fan.set_preset_mode
+          action: fan.set_preset_mode
           target:
             entity_id: '{{ preset_control_ceiling_fan }}'
           data:
             preset_mode: '{{ preset_off }}'
-      - alias: Percentage Controled Ceiling Fan
+      - alias: Percentage Controlled Ceiling Fan
         conditions:
         - '{{ fan_mode == ''ceiling_fan'' }}'
         - '{{ ceiling_fan_control_mode == ''fan_percentage'' }}'
@@ -1444,7 +1450,7 @@ action:
           below: !input falling_temp
         sequence:
         - alias: Turn off the fan
-          service: fan.turn_off
+          action: fan.turn_off
           target:
             entity_id: '{{ pct_control_ceiling_fan }}'
     - stop: Stop the automation
@@ -1464,7 +1470,7 @@ action:
           }}'
         sequence:
         - alias: Turn on the entity
-          service: homeassistant.turn_on
+          action: homeassistant.turn_on
           target:
             entity_id: '{{ fan_switch_target }}'
       - alias: 3 Speed Ceiling Fan
@@ -1473,7 +1479,7 @@ action:
         - '{{ ceiling_fan_control_mode == ''three_speed'' }}'
         sequence:
         - alias: Fan on the fan speed as per settings
-          service: homeassistant.turn_on
+          action: homeassistant.turn_on
           data:
             entity_id: !input fan_high_speed
       - alias: Preset Mode Ceiling Fan
@@ -1482,17 +1488,17 @@ action:
         - '{{ ceiling_fan_control_mode == ''fan_preset'' }}'
         sequence:
         - alias: Turn preset fan off
-          service: fan.set_preset_mode
+          action: fan.set_preset_mode
           target:
             entity_id: '{{ preset_control_ceiling_fan }}'
           data:
             preset_mode: '{{ preset_high_speed }}'
-      - alias: Percentage Controled Ceiling Fan
+      - alias: Percentage Controlled Ceiling Fan
         conditions:
         - '{{ fan_mode == ''ceiling_fan'' }}'
         - '{{ ceiling_fan_control_mode == ''fan_percentage'' }}'
         sequence:
-        - service: fan.set_percentage
+        - action: fan.set_percentage
           target:
             entity_id: '{{ pct_control_ceiling_fan }}'
           data:
@@ -1508,7 +1514,7 @@ action:
           delay:
             minutes: !input bypass_auto_off_delay
         - alias: Turn off the by-pass
-          service: homeassistant.turn_off
+          action: homeassistant.turn_off
           entity_id: !input bypass_fan_off
     - stop: Stop the automation
   - alias: Safe Guard when HA restarts
@@ -1531,7 +1537,7 @@ action:
           delay:
             minutes: !input bypass_auto_off_delay
         - alias: Turn off the by-pass
-          service: homeassistant.turn_off
+          action: homeassistant.turn_off
           entity_id: !input bypass_fan_off
         - stop: Stop the automation
       - alias: Check if the by-pass is enabled, by-pass is ON
@@ -1558,7 +1564,7 @@ action:
               }}'
             sequence:
             - alias: Turn off the entity
-              service: homeassistant.turn_off
+              action: homeassistant.turn_off
               target:
                 entity_id: '{{ fan_switch_target }}'
             - choose:
@@ -1567,7 +1573,7 @@ action:
                 - '{{ include_fan_speed_options == ''fan_speed_off_enabled'' }}'
                 sequence:
                 - alias: Fan speed off option
-                  service: homeassistant.turn_on
+                  action: homeassistant.turn_on
                   entity_id: !input fan_speed_off
           - alias: 3 Speed Ceiling Fan
             conditions:
@@ -1575,16 +1581,16 @@ action:
             - '{{ ceiling_fan_control_mode == ''three_speed'' }}'
             sequence:
             - alias: Safeguard turn off high speed
-              service: homeassistant.turn_off
+              action: homeassistant.turn_off
               entity_id: !input fan_high_speed
             - alias: Safeguard turn off medium speed
-              service: homeassistant.turn_off
+              action: homeassistant.turn_off
               entity_id: !input fan_medium_speed
             - alias: Safeguard turn off low speed
-              service: homeassistant.turn_off
+              action: homeassistant.turn_off
               entity_id: !input fan_low_speed
             - alias: Turn on the fan off
-              service: homeassistant.turn_on
+              action: homeassistant.turn_on
               entity_id: !input fan_off
           - alias: Preset Mode Ceiling Fan
             conditions:
@@ -1592,18 +1598,18 @@ action:
             - '{{ ceiling_fan_control_mode == ''fan_preset'' }}'
             sequence:
             - alias: Turn preset fan off
-              service: fan.set_preset_mode
+              action: fan.set_preset_mode
               target:
                 entity_id: '{{ preset_control_ceiling_fan }}'
               data:
                 preset_mode: '{{ preset_off }}'
-          - alias: Percentage Controled Ceiling Fan
+          - alias: Percentage Controlled Ceiling Fan
             conditions:
             - '{{ fan_mode == ''ceiling_fan'' }}'
             - '{{ ceiling_fan_control_mode == ''fan_percentage'' }}'
             sequence:
             - alias: Turn off the fan
-              service: fan.turn_off
+              action: fan.turn_off
               target:
                 entity_id: '{{ pct_control_ceiling_fan }}'
         - stop: Stop the automation
@@ -1617,16 +1623,16 @@ action:
       above: !input rising_temp
     sequence:
     - alias: Turn on the entity
-      service: homeassistant.turn_on
+      action: homeassistant.turn_on
       target:
         entity_id: '{{ fan_switch_target }}'
     - alias: Wait until sensor is below set value
       wait_for_trigger:
-        platform: numeric_state
+        trigger: numeric_state
         entity_id: !input trigger_sensor
         below: !input falling_temp
     - alias: Turn off the entity
-      service: homeassistant.turn_off
+      action: homeassistant.turn_off
       target:
         entity_id: '{{ fan_switch_target }}'
     - choose:
@@ -1635,7 +1641,7 @@ action:
         - '{{ include_fan_speed_options == ''fan_speed_off_enabled'' }}'
         sequence:
         - alias: Fan speed off option
-          service: homeassistant.turn_on
+          action: homeassistant.turn_on
           entity_id: !input fan_speed_off
   - alias: Check if the trigger is on maximum run time
     conditions:
@@ -1646,17 +1652,17 @@ action:
       above: !input rising_temp
     sequence:
     - alias: Turn on the entity
-      service: homeassistant.turn_on
+      action: homeassistant.turn_on
       target:
         entity_id: '{{ fan_switch_target }}'
     - alias: Wait until sensor is below set value
       wait_for_trigger:
-        platform: numeric_state
+        trigger: numeric_state
         entity_id: !input trigger_sensor
         below: !input falling_temp
       timeout: !input maximum_run_time
     - alias: Turn off the entity
-      service: homeassistant.turn_off
+      action: homeassistant.turn_off
       target:
         entity_id: '{{ fan_switch_target }}'
     - choose:
@@ -1665,7 +1671,7 @@ action:
         - '{{ include_fan_speed_options == ''fan_speed_off_enabled'' }}'
         sequence:
         - alias: Fan speed off option
-          service: homeassistant.turn_on
+          action: homeassistant.turn_on
           entity_id: !input fan_speed_off
   - alias: Check if the trigger is on differential temp
     conditions:
@@ -1700,7 +1706,7 @@ action:
                 '
             sequence:
             - alias: Turn on the entity
-              service: homeassistant.turn_on
+              action: homeassistant.turn_on
               target:
                 entity_id: '{{ fan_switch_target }}'
           - conditions:
@@ -1723,7 +1729,7 @@ action:
                   '
             sequence:
             - alias: Turn off the entity
-              service: homeassistant.turn_off
+              action: homeassistant.turn_off
               target:
                 entity_id: '{{ fan_switch_target }}'
             - choose:
@@ -1733,12 +1739,12 @@ action:
                     }}'
                 sequence:
                 - alias: Fan speed off option
-                  service: homeassistant.turn_on
+                  action: homeassistant.turn_on
                   entity_id: !input fan_speed_off
         - delay:
             minutes: !input fan_heartbeat
     - alias: Turn off the entity
-      service: homeassistant.turn_off
+      action: homeassistant.turn_off
       target:
         entity_id: '{{ fan_switch_target }}'
     - choose:
@@ -1747,7 +1753,7 @@ action:
         - '{{ include_fan_speed_options == ''fan_speed_off_enabled'' }}'
         sequence:
         - alias: Fan speed off option
-          service: homeassistant.turn_on
+          action: homeassistant.turn_on
           entity_id: !input fan_speed_off
   - alias: Check if the trigger is on differential temp
     conditions:
@@ -1772,7 +1778,7 @@ action:
                 '
             sequence:
             - alias: Turn on the entity
-              service: homeassistant.turn_on
+              action: homeassistant.turn_on
               target:
                 entity_id: '{{ fan_switch_target }}'
           - conditions:
@@ -1783,7 +1789,7 @@ action:
                 '
             sequence:
             - alias: Turn off the entity
-              service: homeassistant.turn_off
+              action: homeassistant.turn_off
               target:
                 entity_id: '{{ fan_switch_target }}'
             - choose:
@@ -1793,12 +1799,12 @@ action:
                     }}'
                 sequence:
                 - alias: Fan speed off option
-                  service: homeassistant.turn_on
+                  action: homeassistant.turn_on
                   entity_id: !input fan_speed_off
         - delay:
             minutes: !input fan_heartbeat
     - alias: Turn off the entity
-      service: homeassistant.turn_off
+      action: homeassistant.turn_off
       target:
         entity_id: '{{ fan_switch_target }}'
     - choose:
@@ -1807,7 +1813,7 @@ action:
         - '{{ include_fan_speed_options == ''fan_speed_off_enabled'' }}'
         sequence:
         - alias: Fan speed off option
-          service: homeassistant.turn_on
+          action: homeassistant.turn_on
           entity_id: !input fan_speed_off
 - choose:
   - alias: 3 Speed Ceiling Fan
@@ -1863,11 +1869,11 @@ action:
               value_template: '{{ all_fan_speeds_off }}'
             sequence:
             - alias: Safeguard make sure other speeds are off
-              service: homeassistant.turn_off
+              action: homeassistant.turn_off
               data:
                 entity_id: '{{ safeguard_fan_speeds }}'
             - alias: Fan on the fan speed as per settings
-              service: homeassistant.turn_on
+              action: homeassistant.turn_on
               data:
                 entity_id: '{{ fan_speed_off }}'
             - alias: The three speed heartbeat
@@ -1895,29 +1901,29 @@ action:
               value_template: '{{ ceiling_fan_control_mode == ''three_speed'' }}'
             sequence:
             - alias: Safeguard make sure other speeds are off
-              service: homeassistant.turn_off
+              action: homeassistant.turn_off
               data:
                 entity_id: '{{ safeguard_fan_speeds }}'
             - alias: Fan on the fan speed as per settings
-              service: homeassistant.turn_on
+              action: homeassistant.turn_on
               data:
                 entity_id: '{{ fan_speed_on }}'
             - alias: The three speed heartbeat
               delay:
                 minutes: !input three_speed_heartbeat
     - alias: Safeguard turn off high speed
-      service: homeassistant.turn_off
+      action: homeassistant.turn_off
       entity_id: !input fan_high_speed
     - alias: Safeguard turn off medium speed
-      service: homeassistant.turn_off
+      action: homeassistant.turn_off
       entity_id: !input fan_medium_speed
     - alias: Safeguard turn off low speed
-      service: homeassistant.turn_off
+      action: homeassistant.turn_off
       entity_id: !input fan_low_speed
     - alias: Turn on the fan off
-      service: homeassistant.turn_on
+      action: homeassistant.turn_on
       entity_id: !input fan_off
-  - alias: Preset Controled Ceiling Fan
+  - alias: Preset Controlled Ceiling Fan
     conditions:
     - '{{ fan_mode == ''ceiling_fan'' }}'
     - '{{ ceiling_fan_control_mode == ''fan_preset'' }}'
@@ -1958,7 +1964,7 @@ action:
                 | list | length }}'
             sequence:
             - alias: Turn on the fan preset as per settings
-              service: fan.set_preset_mode
+              action: fan.set_preset_mode
               target:
                 entity_id: '{{ preset_control_ceiling_fan }}'
               data:
@@ -1982,7 +1988,7 @@ action:
               value_template: '{{ ceiling_fan_control_mode == ''fan_preset'' }}'
             sequence:
             - alias: Fan on the fan preset as per settings
-              service: fan.set_preset_mode
+              action: fan.set_preset_mode
               target:
                 entity_id: '{{ preset_control_ceiling_fan }}'
               data:
@@ -1991,12 +1997,12 @@ action:
               delay:
                 minutes: !input preset_heartbeat
     - alias: Turn preset fan off
-      service: fan.set_preset_mode
+      action: fan.set_preset_mode
       target:
         entity_id: '{{ preset_control_ceiling_fan }}'
       data:
         preset_mode: '{{ preset_off }}'
-  - alias: Percentage Controled Ceiling Fan
+  - alias: Percentage Controlled Ceiling Fan
     conditions:
     - '{{ fan_mode == ''ceiling_fan'' }}'
     - '{{ ceiling_fan_control_mode == ''fan_percentage'' }}'
@@ -2052,10 +2058,9 @@ action:
                 ''equalto'', ''off'') | list | length) == (expand(pct_control_ceiling_fan)
                 | list | length) }}'
             sequence:
-            - service: fan.set_percentage
-              target:
-                entity_id: '{{ pct_control_ceiling_fan }}'
+            - action: fan.turn_on
               data:
+                entity_id: '{{ pct_control_ceiling_fan }}'
                 percentage: '{{ ceiling_fan_min_pct }}'
             - alias: Fan heartbeat
               delay:
@@ -2071,7 +2076,7 @@ action:
             - condition: template
               value_template: '{{ ceiling_fan_control_mode == ''fan_percentage'' }}'
             sequence:
-            - service: fan.set_percentage
+            - action: fan.set_percentage
               target:
                 entity_id: '{{ pct_control_ceiling_fan }}'
               data:
@@ -2080,7 +2085,7 @@ action:
               delay:
                 minutes: !input ceiling_fan_heartbeat
     - alias: Turn off the fan
-      service: fan.set_percentage
+      action: fan.set_percentage
       target:
         entity_id: '{{ pct_control_ceiling_fan }}'
       data:

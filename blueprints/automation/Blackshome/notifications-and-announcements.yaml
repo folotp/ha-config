@@ -104,6 +104,7 @@ blueprint:
           selector:
             entity:
               multiple: true
+              reorder: false
         trigger_numeric_entity:
           name: Numeric State Entities
           description: '**Used in options 8, 9 or 10**. Enter the entities that will
@@ -114,6 +115,7 @@ blueprint:
           selector:
             entity:
               multiple: true
+              reorder: false
         above_state:
           name: Numeric State Above Option
           description: '**Used in options 8, or 10**. Set the above value. The numeric
@@ -173,8 +175,8 @@ blueprint:
                 value: enable_mobile_app_notify
               - label: Disable Mobile App Notify Options
                 value: disable_mobile_app_notify
-              sort: false
               custom_value: false
+              sort: false
               multiple: false
         notify_device:
           name: Devices Notified
@@ -229,8 +231,8 @@ blueprint:
                 value: time-sensitive
               - label: Quiet Notifications Without Waking Screen
                 value: passive
-              sort: false
               custom_value: false
+              sort: false
               multiple: false
         notify_sound:
           name: Notification Sound - iOS Only
@@ -277,8 +279,8 @@ blueprint:
                 value: sticky
               - label: Notification Channel
                 value: channel
-              sort: false
               custom_value: false
+              sort: false
         notify_channel:
           name: Notification Channel - Android Only
           description: 'If you have chosen to use a notification channel, simply enter
@@ -315,8 +317,8 @@ blueprint:
                 value: zone_enabled
               - label: Disable the zone option
                 value: zone_disabled
-              sort: false
               custom_value: false
+              sort: false
               multiple: false
         notify_zone:
           name: Notify Zone
@@ -329,6 +331,7 @@ blueprint:
               filter:
               - domain:
                 - zone
+              reorder: false
               multiple: false
     persistent_notify_settings:
       name: Notifications
@@ -347,8 +350,8 @@ blueprint:
                 value: enable_persistent_notification
               - label: Disable UI Notifications
                 value: disabled_persistent_notification
-              sort: false
               custom_value: false
+              sort: false
               multiple: false
         persistent_title:
           name: Title
@@ -385,8 +388,8 @@ blueprint:
                 value: enable_tts_announcement
               - label: Disable Text-to-Speech Announcements
                 value: disable_tts_announcement
-              sort: false
               custom_value: false
+              sort: false
               multiple: false
         text_to_speech_engine:
           name: Text-to-Speech Service Provider
@@ -399,6 +402,7 @@ blueprint:
               filter:
               - domain:
                 - tts
+              reorder: false
               multiple: false
         media_player:
           name: Media Player
@@ -413,6 +417,7 @@ blueprint:
               - domain:
                 - media_player
               multiple: true
+              reorder: false
         notify_tts_message:
           name: Announcement Message
           description: 'Enter in the message of your Text-to-Speech announcement.
@@ -444,8 +449,8 @@ blueprint:
                 value: enable_custom_actions
               - label: Disable Custom Actions
                 value: disable_custom_actions
-              sort: false
               custom_value: false
+              sort: false
               multiple: false
         custom_actions:
           name: Custom Actions
@@ -478,8 +483,8 @@ blueprint:
                 value: time_enabled
               - label: Disable the time options
                 value: time_disabled
-              sort: false
               custom_value: false
+              sort: false
               multiple: false
         after_time:
           name: Start Time
@@ -531,8 +536,8 @@ blueprint:
                 value: sat
               - label: Sunday
                 value: sun
-              sort: false
               custom_value: false
+              sort: false
     global_conditions_settings:
       name: Global Conditions
       icon: mdi:earth

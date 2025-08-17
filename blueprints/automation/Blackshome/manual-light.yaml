@@ -38,6 +38,7 @@ blueprint:
             - light
             - switch
           multiple: true
+          reorder: false
     include_trigger_sync:
       name: Use The Synchronized Option (Optional)
       description: Select this option if you would like to synchronize the ON/OFF
@@ -51,9 +52,9 @@ blueprint:
             value: enable_trigger_sync
           - label: Disable the synchronize option
             value: disable_trigger_sync
-          multiple: false
           custom_value: false
           sort: false
+          multiple: false
     include_motion_trigger:
       name: Use The Motion Sensor Option (Optional)
       description: 'Enable this option to utilize a motion sensor for pausing your
@@ -70,9 +71,9 @@ blueprint:
             value: enable_motion_trigger
           - label: Disable the motion sensor option
             value: disable_motion_trigger
-          multiple: false
           custom_value: false
           sort: false
+          multiple: false
     motion_trigger:
       name: Motion Sensor - Binary Sensors
       description: 'Select a motion sensors or any binary sensors you would like to
@@ -88,6 +89,7 @@ blueprint:
           filter:
           - domain:
             - binary_sensor
+          reorder: false
           multiple: false
     include_timer_helper:
       name: Use The Timer Helper Option (Optional)
@@ -108,9 +110,9 @@ blueprint:
             value: enable_timer_helper
           - label: Disable timer helper option
             value: disable_timer_helper
-          multiple: false
           custom_value: false
           sort: false
+          multiple: false
     timer_helper:
       name: Timer Helper
       description: Select the timer helper to be used if you have chosen to use a
@@ -121,6 +123,7 @@ blueprint:
           filter:
           - domain:
             - timer
+          reorder: false
           multiple: false
     time_delay:
       name: Time Delay

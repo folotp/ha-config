@@ -146,18 +146,16 @@
   alias: Last Person Leaves Home
   description: ''
   triggers:
-  - entity_id:
-    - zone.home
-    to: '0'
+  - trigger: state
+    entity_id:
+    - binary_sensor.home_occupancy
+    from: 'on'
+    to: 'off'
     for:
       hours: 0
       minutes: 0
       seconds: 30
-    trigger: state
-  conditions:
-  - condition: state
-    entity_id: zone.home
-    state: '0'
+  conditions: []
   actions:
   - action: light.turn_off
     metadata: {}
@@ -220,7 +218,6 @@
       - Idle
       trigger_off_state:
       - 'off'
-      - standby
       light_switch:
         entity_id:
         - scene.ht_blind_closed
@@ -274,18 +271,16 @@
   alias: First Person Arrives Homes
   description: ''
   triggers:
-  - trigger: numeric_state
+  - trigger: state
     entity_id:
-    - zone.home
+    - binary_sensor.home_occupancy
+    from: 'off'
+    to: 'on'
     for:
       hours: 0
       minutes: 0
       seconds: 30
-    above: 0
-  conditions:
-  - condition: template
-    value_template: "{{ trigger.to_state.state not in ['unknown', 'unavailable'] and\n
-      \  trigger.to_state.state | int(0) > 0 }}"
+  conditions: []
   actions:
   - device_id: fb9ae35f77be16649bc913ff71258e38
     domain: select
@@ -2120,38 +2115,31 @@
   triggers:
   - trigger: state
     entity_id:
-    - zone.home
-    to: '0'
+    - binary_sensor.home_occupancy
+    to: 'off'
     for:
       hours: 0
       minutes: 15
       seconds: 0
-    id: away
-  - trigger: numeric_state
+    id: Last Person Left Home
+    from: 'on'
+  - trigger: state
     entity_id:
-    - zone.home
-    above: 0
-    id: home
-  conditions:
-  - condition: or
-    conditions:
-    - condition: and
-      conditions:
-      - condition: trigger
-        id: away
-      - condition: template
-        value_template: "{% set last_run = states('sensor.robotron_last_mission_start_time')
-          %} {% if last_run %}\n  {% set last_run_dt = as_datetime(last_run) %}\n
-          \ {{ (now() - last_run_dt).total_seconds() > 24*3600 }}\n{% else %}\n  true\n{%
-          endif %}"
-    - condition: trigger
-      id: home
+    - binary_sensor.home_occupancy
+    from: 'off'
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
+    id: Someone Returned Home
+  conditions: []
   actions:
   - choose:
     - conditions:
       - condition: trigger
         id:
-        - away
+        - Last Person Left Home
       sequence:
       - action: vacuum.start
         metadata: {}
@@ -2161,7 +2149,7 @@
     - conditions:
       - condition: trigger
         id:
-        - home
+        - Someone Returned Home
       sequence:
       - action: vacuum.return_to_base
         metadata: {}

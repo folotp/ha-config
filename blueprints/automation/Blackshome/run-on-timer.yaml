@@ -33,9 +33,9 @@ blueprint:
             value: trigger_state_on
           - label: Trigger entity state OFF
             value: trigger_state_off
-          multiple: false
-          sort: false
           custom_value: false
+          sort: false
+          multiple: false
     trigger_input:
       name: Trigger - Entities *
       description: 'Select the entities that will be turned ON or OFF in the below
@@ -46,6 +46,7 @@ blueprint:
       selector:
         entity:
           multiple: true
+          reorder: false
     include_trigger_sync:
       name: The Trigger Entity Sync Option (Optional)
       description: Select this option if you would like all the entities to be turned
@@ -59,9 +60,9 @@ blueprint:
             value: enable_trigger_sync
           - label: Disable the trigger entity sync
             value: disable_trigger_sync
-          multiple: false
-          sort: false
           custom_value: false
+          sort: false
+          multiple: false
     include_timer_helper:
       name: Use The Timer Helper Option (Optional)
       description: 'Select enable if you would like to use a timer helper.
@@ -78,9 +79,9 @@ blueprint:
             value: enable_timer_helper
           - label: Dont use a timer helper
             value: disable_timer_helper
-          multiple: false
-          sort: false
           custom_value: false
+          sort: false
+          multiple: false
     timer_helper:
       name: Timer Helper
       description: Select the timer helper to be used if you have chosen to use a
@@ -91,6 +92,7 @@ blueprint:
           filter:
           - domain:
             - timer
+          reorder: false
           multiple: false
     time_seconds:
       name: Seconds

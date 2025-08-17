@@ -29,6 +29,7 @@ blueprint:
           filter:
           - domain:
             - sensor
+          reorder: false
           multiple: false
     entity_turn_on:
       name: Fan Switch *
@@ -53,9 +54,9 @@ blueprint:
             value: fan_speed_off_enabled
           - label: Disable the fan speed - switch off option
             value: fan_speed_off_disabled
-          multiple: false
           custom_value: false
           sort: false
+          multiple: false
     entity_turn_off:
       name: Fan Speed - Switch Off Option (Optional)
       description: Select the entity that will turn the fan off. Please DO NOT select
@@ -69,6 +70,7 @@ blueprint:
           - domain:
             - switch
             - fan
+          reorder: false
     falling_value:
       name: Falling Value
       description: The falling value to turn the fan ON.
@@ -108,9 +110,9 @@ blueprint:
             value: bypass_enabled_stop
           - label: Disable the By-pass option
             value: bypass_disabled
-          multiple: false
           custom_value: false
           sort: false
+          multiple: false
     trigger_bypass:
       name: Trigger Sensor By-pass
       description: Select a switch that will By-pass the trigger sensor and make your
@@ -133,9 +135,9 @@ blueprint:
             value: bypass_auto_off_enabled
           - label: Disable the by-pass auto off option
             value: bypass_auto_off_disabled
-          multiple: false
           custom_value: false
           sort: false
+          multiple: false
     bypass_auto_off_delay:
       name: By-pass Auto OFF - Time Delay
       description: Set the by-pass auto OFF time delay.
@@ -159,9 +161,9 @@ blueprint:
             value: time_enabled
           - label: Disable the time options
             value: time_disabled
-          multiple: false
           custom_value: false
           sort: false
+          multiple: false
     after_time:
       name: Start Time
       description: Set the start time.

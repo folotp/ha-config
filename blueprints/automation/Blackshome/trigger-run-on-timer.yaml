@@ -45,9 +45,9 @@ blueprint:
                 value: 'off'
               - label: Any State Change - Example Button Helper
                 value: state
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         include_timer_helper:
           name: Use The Timer Helper Options (Optional)
           description: 'Enable this option if you would like to use a timer helper.
@@ -67,9 +67,9 @@ blueprint:
                 value: enable_timer_helper
               - label: Dont use a timer helper
                 value: disable_timer_helper
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         timer_helper:
           name: Timer Helper
           description: 'Select the timer helper to be used if you have chosen to enable
@@ -82,6 +82,7 @@ blueprint:
               filter:
               - domain:
                 - timer
+              reorder: false
               multiple: false
         entity_input:
           name: Entities To Turn ON *
@@ -116,6 +117,7 @@ blueprint:
           selector:
             entity:
               multiple: true
+              reorder: false
         trigger_one_time:
           name: Timer Duration One
           description: 'Set the duration for Trigger One. This defines how long the
@@ -166,6 +168,7 @@ blueprint:
           selector:
             entity:
               multiple: true
+              reorder: false
         trigger_two_time:
           name: Timer Duration Two
           description: 'Set the duration for Trigger Two. This defines how long the
@@ -194,6 +197,7 @@ blueprint:
           selector:
             entity:
               multiple: true
+              reorder: false
         trigger_three_time:
           name: Timer Duration Three
           description: 'Set the duration for Trigger Three. This defines how long
@@ -222,6 +226,7 @@ blueprint:
           selector:
             entity:
               multiple: true
+              reorder: false
         trigger_four_time:
           name: Timer Duration Four
           description: 'Set the duration for Trigger Four. This defines how long the
@@ -259,6 +264,7 @@ blueprint:
               filter:
               - domain:
                 - input_button
+              reorder: false
               multiple: false
         trigger_five_time:
           name: Increment Duration

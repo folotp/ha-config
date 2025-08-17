@@ -42,6 +42,7 @@ blueprint:
               filter:
               - domain:
                 - calendar
+              reorder: false
               multiple: false
         include_calendar_trigger:
           name: Use The Calendar Trigger - Key Word (Optional)
@@ -60,9 +61,9 @@ blueprint:
                 value: disable_key_word
               - label: Use "Key Word" in calendar
                 value: enable_key_word
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         calendar_trigger:
           name: Calendar Trigger - Key Word In Calendar Summary & / or Description
           description: 'Input a single keyword or, for multiple keywords, use a comma-separated
@@ -132,9 +133,9 @@ blueprint:
                 value: enable_start_notify_options
               - label: Disable Start Notify Options
                 value: disable_start_notify_options
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         start_notify_device:
           name: Start Notify - Devices To Notify
           description: 'Select the devices to receive notifications at the start of
@@ -191,9 +192,9 @@ blueprint:
                 value: time-sensitive
               - label: Quiet Notifications Without Waking Screen
                 value: passive
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         start_notify_sound:
           name: Notification Sound - iOS Only
           description: 'The Home Assistant app for iOS includes built-in notification
@@ -370,9 +371,9 @@ blueprint:
                 value: enable_start_action_button_confirmation
               - label: Disable Action Button Confirmation
                 value: disable_start_action_button_confirmation
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         start_action_button_confirmation_title:
           name: Start Notify - Action Button Confirmation Title
           description: 'Specify the notification title when an action button is pressed
@@ -507,9 +508,9 @@ blueprint:
                 value: enable_end_notify_options
               - label: Disable End Notify Options
                 value: disable_end_notify_options
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         end_notify_device:
           name: End Notify - Devices To Notify
           description: 'Select the devices to receive notifications at the end of
@@ -566,9 +567,9 @@ blueprint:
                 value: time-sensitive
               - label: Quiet Notifications Without Waking Screen
                 value: passive
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         end_notify_sound:
           name: Notification Sound - iOS Only
           description: 'The Home Assistant app for iOS includes built-in notification
@@ -745,9 +746,9 @@ blueprint:
                 value: enable_end_action_button_confirmation
               - label: Disable Action Button Confirmation
                 value: disable_end_action_button_confirmation
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         end_action_button_confirmation_title:
           name: End Notify - Action Button Confirmation Title
           description: 'Specify the notification title when an action button is pressed

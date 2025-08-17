@@ -31,6 +31,7 @@ blueprint:
           - domain:
             - light
             - switch
+          reorder: false
     manual_tracking:
       name: Manual Control Status - Toggle Helper
       description: 'Select the entity to update when the target entity is manually
@@ -47,6 +48,7 @@ blueprint:
           filter:
           - domain:
             - input_boolean
+          reorder: false
           multiple: false
     include_auto_off:
       name: Auto OFF Option (Optional)
@@ -63,9 +65,9 @@ blueprint:
             value: enable_manual_tracking_auto_off
           - label: Disable Auto OFF
             value: disable_auto_off
-          multiple: false
           custom_value: false
           sort: false
+          multiple: false
     time_delay:
       name: Auto OFF - Time Delay
       description: 'The time delay determines how long the entities will remain ON.

@@ -168,6 +168,7 @@ blueprint:
                 - sensor
                 device_class:
                 - illuminance
+              reorder: false
               multiple: false
         ambient_light_value:
           name: Ambient Light - Low Lux Value
@@ -283,6 +284,7 @@ blueprint:
               filter:
               - domain:
                 - input_boolean
+              reorder: false
               multiple: false
         end_scenes:
           name: Scenes - Scripts To Turn OFF
@@ -300,6 +302,7 @@ blueprint:
               - domain:
                 - scene
                 - script
+              reorder: false
     lights_settings:
       name: Light Control
       icon: mdi:lightbulb-on-outline
@@ -389,8 +392,8 @@ blueprint:
               - label: Disable Colour Control
                 value: disable_colour_control
               custom_value: false
-              multiple: false
               sort: false
+              multiple: false
         light_colour_temperature:
           name: Colour Temperature
           description: 'The colour temperature setting for the lights when they are
@@ -534,8 +537,8 @@ blueprint:
               - label: 13 - Time Controlled - Colour Temp + Brightness
                 value: enable_time_controled_colour_brightness
               custom_value: false
-              multiple: false
               sort: false
+              multiple: false
         dynamic_lighting_lux_sensor:
           name: Dynamic Lighting - Ambient Light Sensor
           description: '**Used in options 1, 2, 8 or 9** - Enter the specific ambient
@@ -550,6 +553,7 @@ blueprint:
                 - sensor
                 device_class:
                 - illuminance
+              reorder: false
               multiple: false
         dynamic_lighting_max_lux:
           name: Dynamic Lighting - Max Lux Value
@@ -634,6 +638,7 @@ blueprint:
               filter:
               - domain:
                 - input_boolean
+              reorder: false
               multiple: false
         dynamic_lighting_max_colour_temp:
           name: Dynamic Lighting - Max Colour Temperature
@@ -856,8 +861,8 @@ blueprint:
               - label: Disable State Control Option
                 value: disable_state_control
               custom_value: false
-              multiple: false
               sort: false
+              multiple: false
         dynamic_lighting_state_control_activation_state:
           name: Dynamic Lighting - State Control Activation State
           description: 'Select the state the entity must be in to activate dynamic
@@ -875,8 +880,8 @@ blueprint:
               - label: OFF State
                 value: 'off'
               custom_value: false
-              multiple: false
               sort: false
+              multiple: false
         dynamic_lighting_state_control_entity:
           name: Dynamic Lighting - State Control Entity
           description: 'If the state control option above is enabled, select the entity
@@ -923,6 +928,7 @@ blueprint:
           selector:
             entity:
               multiple: true
+              reorder: false
         bypass_lights_off:
           name: Bypass Switch - Turn the Lights OFF
           description: 'Select the switches that will turn your lights OFF, bypass
@@ -935,6 +941,7 @@ blueprint:
           selector:
             entity:
               multiple: true
+              reorder: false
         bypass_lights_stop:
           name: Bypass Switch - Keep the Lights Current State
           description: 'Select the switches that will keep your lights current state,
@@ -947,6 +954,7 @@ blueprint:
           selector:
             entity:
               multiple: true
+              reorder: false
         bypass_time_delay:
           name: Bypass - Time Delay
           description: "This is only used in two specific bypass scenarios when your
@@ -1018,8 +1026,8 @@ blueprint:
               - label: Disable the weekday option
                 value: weekday_disabled
               custom_value: false
-              multiple: false
               sort: false
+              multiple: false
         weekday_options:
           name: Weekdays
           description: 'Select the days of the week on which you want the automation
@@ -1083,8 +1091,8 @@ blueprint:
               - label: Disable the night lights options
                 value: night_lights_disabled
               custom_value: false
-              multiple: false
               sort: false
+              multiple: false
         night_lights_conditions:
           name: Night Lights Conditions (Required For Night Lights)
           description: 'Select any night light condition from the options provided.
@@ -1122,6 +1130,7 @@ blueprint:
           selector:
             entity:
               multiple: true
+              reorder: false
         night_lights_after_time:
           name: Night Lights - Start Time
           description: 'Set the start time.
@@ -1209,6 +1218,7 @@ blueprint:
               filter:
               - domain:
                 - input_boolean
+              reorder: false
               multiple: false
     night_lights_light_control_settings:
       name: Night Light Control
@@ -1326,8 +1336,8 @@ blueprint:
               - label: Disable Colour Control
                 value: disable_colour_control
               custom_value: false
-              multiple: false
               sort: false
+              multiple: false
         night_light_colour_temperature:
           name: Night Lights - Colour Temperature
           description: 'The colour temperature setting for the night lights when they

@@ -52,6 +52,7 @@ blueprint:
               - domain:
                 - binary_sensor
               multiple: true
+              reorder: false
         include_timer:
           name: Use The Timer Option (Optional)
           description: Choose whether to activate the timer. The timer determines
@@ -65,9 +66,9 @@ blueprint:
                 value: enable_timer
               - label: Disable timer
                 value: disable_timer
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         timer:
           name: Timer
           description: Enter the desired duration for the timer.
@@ -89,9 +90,9 @@ blueprint:
                 value: enable_motion_trigger
               - label: Disable the motion sensor option
                 value: disable_motion_trigger
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         motion_trigger:
           name: Motion Sensor - Binary Sensors
           description: 'Select a motion sensor or any binary sensors you would like
@@ -107,6 +108,7 @@ blueprint:
               filter:
               - domain:
                 - binary_sensor
+              reorder: false
               multiple: false
     lights:
       name: Lights *
@@ -207,9 +209,9 @@ blueprint:
                 value: use_rgbww_colour
               - label: Disable Colour Control
                 value: disable_colour_control
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         light_colour_temperature:
           name: Colour Temperature
           description: The colour temperature setting for the lights when they are
@@ -282,9 +284,9 @@ blueprint:
                 value: night_lights_enabled
               - label: Disable the night lights options
                 value: night_lights_disabled
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         night_lights_conditions:
           name: Night Lights Conditions (Required For Night Lights)
           description: 'Select any night light condition from the options provided.
@@ -317,6 +319,7 @@ blueprint:
           selector:
             entity:
               multiple: true
+              reorder: false
         night_lights_after_time:
           name: Night Lights - Start Time
           description: Set the start time.
@@ -371,9 +374,9 @@ blueprint:
                 value: enable_night_timer
               - label: Disable timer
                 value: disable_night_timer
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         night_timer:
           name: Night Lights - Night Timer
           description: Enter the desired duration for the timer.
@@ -486,9 +489,9 @@ blueprint:
                 value: use_rgbww_colour
               - label: Disable Colour Control
                 value: disable_colour_control
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         night_light_colour_temperature:
           name: Night Lights - Colour Temperature
           description: The colour temperature setting for the night lights when they

@@ -24,6 +24,7 @@ blueprint:
       selector:
         entity:
           multiple: true
+          reorder: false
     alternating_entity:
       name: Alternating Entity (optional)
       description: The alternating entity that will be the opposite state to the main
@@ -32,6 +33,7 @@ blueprint:
       selector:
         entity:
           multiple: true
+          reorder: false
   source_url: https://gist.github.com/Blackshome/ca6be121c8d3e4404e33114fc88b599a
 variables:
   press_button: !input press_button

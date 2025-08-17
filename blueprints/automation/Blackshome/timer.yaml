@@ -35,6 +35,7 @@ blueprint:
               filter:
               - domain:
                 - timer
+              reorder: false
               multiple: false
         entity_input:
           name: Entities To Turn ON *
@@ -129,9 +130,9 @@ blueprint:
                 value: weekday_enabled
               - label: Disable the weekday option
                 value: weekday_disabled
-              multiple: false
               custom_value: false
               sort: false
+              multiple: false
         weekday_options:
           name: Weekdays
           description: Select the days of the week on which you want the automation

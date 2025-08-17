@@ -44,6 +44,7 @@ blueprint:
           filter:
           - domain:
             - binary_sensor
+          reorder: false
           multiple: false
     door_sensor:
       name: Door Sensor *
@@ -57,6 +58,7 @@ blueprint:
           filter:
           - domain:
             - binary_sensor
+          reorder: false
           multiple: false
     door_time_delay:
       name: Door Time Delay
@@ -96,6 +98,7 @@ blueprint:
           filter:
           - domain:
             - input_boolean
+          reorder: false
           multiple: false
   source_url: https://gist.github.com/Blackshome/00da6c9c96e1f7ec3aeeab400f048c16
 mode: restart
